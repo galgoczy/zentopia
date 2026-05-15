@@ -19,6 +19,7 @@ export function BreathingBonsai({
   sweepSeconds = 4.5,
   glitch = true,
   glitchCycle = 9,
+  kickoffAt = 1,
 }: {
   size?: number;
   base?: Base;
@@ -26,10 +27,18 @@ export function BreathingBonsai({
   sweepSeconds?: number;
   glitch?: boolean;
   glitchCycle?: number;
+  /** Seconds after mount to fire the first glitch. Set 0 to disable. */
+  kickoffAt?: number;
 }) {
   const raw = useId();
   const id = "bb-" + raw.replace(/[^a-z0-9]/gi, "");
   const baseSrc = SRC[base];
+
+  // Pre-roll the cycle so the first glitch (which fires at 90.4% of the loop)
+  // lands `kickoffAt` seconds after mount. Negative delay = start mid-cycle.
+  const glitchStartFrac = 0.904;
+  const kickoffDelay =
+    kickoffAt > 0 ? -(glitchCycle * glitchStartFrac - kickoffAt) : 0;
 
   const debris = useMemo(() => {
     let s = (id.charCodeAt(2) || 11) * 9301 + 49297;
@@ -97,7 +106,7 @@ export function BreathingBonsai({
           91.8%              { opacity: 0;    transform: scale(0.7); }
         }
         .${id}-breath { animation: ${id}-breath ${sweepSeconds * 1.2}s ease-in-out infinite; }
-        .${id}-pixelate { animation: ${id}-pixelate ${glitchCycle}s steps(1,end) infinite; }
+        .${id}-pixelate { animation: ${id}-pixelate ${glitchCycle}s steps(1,end) ${kickoffDelay}s infinite; }
         .${id}-overlay {
           -webkit-mask-image: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 30%, rgba(0,0,0,1) 55%, rgba(0,0,0,0) 85%);
                   mask-image: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 30%, rgba(0,0,0,1) 55%, rgba(0,0,0,0) 85%);
@@ -108,11 +117,11 @@ export function BreathingBonsai({
           animation: ${id}-sweep ${sweepSeconds}s ease-in-out infinite;
         }
         ${glitch ? `
-          .${id}-shake   { animation: ${id}-shake   ${glitchCycle}s steps(1,end) infinite; transform-origin: 50% 50%; }
-          .${id}-tear1   { animation: ${id}-tear1   ${glitchCycle}s steps(1,end) infinite; clip-path: polygon(0 18%, 100% 18%, 100% 38%, 0 38%); }
-          .${id}-tear2   { animation: ${id}-tear2   ${glitchCycle}s steps(1,end) infinite; clip-path: polygon(0 46%, 100% 46%, 100% 60%, 0 60%); }
-          .${id}-tear3   { animation: ${id}-tear3   ${glitchCycle}s steps(1,end) infinite; clip-path: polygon(0 72%, 100% 72%, 100% 88%, 0 88%); }
-          .${id}-debris  { animation: ${id}-debris  ${glitchCycle}s steps(1,end) infinite; }
+          .${id}-shake   { animation: ${id}-shake   ${glitchCycle}s steps(1,end) ${kickoffDelay}s infinite; transform-origin: 50% 50%; }
+          .${id}-tear1   { animation: ${id}-tear1   ${glitchCycle}s steps(1,end) ${kickoffDelay}s infinite; clip-path: polygon(0 18%, 100% 18%, 100% 38%, 0 38%); }
+          .${id}-tear2   { animation: ${id}-tear2   ${glitchCycle}s steps(1,end) ${kickoffDelay}s infinite; clip-path: polygon(0 46%, 100% 46%, 100% 60%, 0 60%); }
+          .${id}-tear3   { animation: ${id}-tear3   ${glitchCycle}s steps(1,end) ${kickoffDelay}s infinite; clip-path: polygon(0 72%, 100% 72%, 100% 88%, 0 88%); }
+          .${id}-debris  { animation: ${id}-debris  ${glitchCycle}s steps(1,end) ${kickoffDelay}s infinite; }
         ` : ''}
         @media (prefers-reduced-motion: reduce) {
           .${id}-overlay, .${id}-breath, .${id}-shake, .${id}-pixelate,

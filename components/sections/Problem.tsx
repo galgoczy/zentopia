@@ -74,12 +74,11 @@ function ProblemCard({ p, idx }: { p: Problem; idx: number }) {
       }}
     >
       <div style={{ height: 5, background: p.color }} />
-      <div className="flex flex-col flex-1 gap-[14px] md:gap-[18px] px-5 pt-[22px] pb-6 md:px-8 md:pt-9 md:pb-10">
+      <div className="flex flex-col flex-1 gap-5 md:gap-[18px] px-6 pt-7 pb-8 md:px-8 md:pt-9 md:pb-10">
         <div className="flex items-baseline justify-between">
           <span
-            className="font-mono uppercase"
+            className="font-mono uppercase text-[16px] md:text-[11px]"
             style={{
-              fontSize: 11,
               color: Z.slate,
               letterSpacing: "0.08em",
             }}
@@ -88,13 +87,11 @@ function ProblemCard({ p, idx }: { p: Problem; idx: number }) {
           </span>
         </div>
         <div
-          className="font-sans font-bold transition-transform duration-500 group-hover:scale-[1.04] origin-bottom-left"
+          className="font-sans font-bold transition-transform duration-500 group-hover:scale-[1.04] origin-bottom-left text-[90px] md:text-[104px]"
           style={{
-            fontSize: "clamp(60px, 9vw, 104px)",
             color: p.color,
             letterSpacing: "-0.06em",
             lineHeight: 0.85,
-            height: "clamp(51px, 8vw, 88px)",
             display: "flex",
             alignItems: "flex-start",
           }}
@@ -102,9 +99,8 @@ function ProblemCard({ p, idx }: { p: Problem; idx: number }) {
           {p.symbol}
         </div>
         <h3
-          className="m-0 font-sans font-bold"
+          className="m-0 font-sans font-bold text-[33px] md:text-[30px]"
           style={{
-            fontSize: "clamp(22px, 3vw, 30px)",
             letterSpacing: "-0.03em",
             color: Z.forest,
             lineHeight: 1.1,
@@ -120,9 +116,8 @@ function ProblemCard({ p, idx }: { p: Problem; idx: number }) {
           />
         </h3>
         <p
-          className="m-0 italic leading-[1.5] mt-auto"
+          className="m-0 italic leading-[1.5] mt-auto text-[21px] md:text-[15px]"
           style={{
-            fontSize: 14,
             color: Z.slate,
           }}
         >
