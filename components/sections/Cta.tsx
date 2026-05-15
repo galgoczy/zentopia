@@ -91,7 +91,8 @@ function ContactForm() {
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     if (state.status === "loading") return;
-    const fd = new FormData(e.currentTarget);
+    const form = e.currentTarget;
+    const fd = new FormData(form);
     const payload = Object.fromEntries(fd.entries());
     setState({ status: "loading" });
     try {
@@ -100,10 +101,15 @@ function ContactForm() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
-      const json = await res.json();
+      let json: { ok?: boolean; error?: string } = {};
+      try {
+        json = await res.json();
+      } catch {
+        // Server returned non-JSON (e.g. HTML error page). Treat as failure.
+      }
       if (res.ok && json.ok) {
         setState({ status: "success" });
-        (e.currentTarget as HTMLFormElement).reset();
+        form.reset();
       } else {
         setState({
           status: "error",
@@ -112,13 +118,14 @@ function ContactForm() {
               ? "Tölts ki minden kötelező mezőt."
               : json?.error === "invalid_email"
               ? "Adj meg egy érvényes email címet."
-              : "Hiba történt. Próbáld újra, vagy írj a hello@zentopia.io-ra.",
+              : "Hiba történt. Próbáld újra, vagy írj a team@zentopia.io-ra.",
         });
       }
-    } catch {
+    } catch (err) {
+      console.error("[contact form]", err);
       setState({
         status: "error",
-        msg: "Nem sikerült elküldeni. Próbáld újra, vagy írj a hello@zentopia.io-ra.",
+        msg: "Nem sikerült elküldeni. Próbáld újra, vagy írj a team@zentopia.io-ra.",
       });
     }
   }

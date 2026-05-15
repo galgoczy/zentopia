@@ -34,50 +34,55 @@ const TEAM_EMAIL = process.env.CONTACT_TO || "team@zentopia.io";
 const FROM_EMAIL = process.env.CONTACT_FROM || "Zentopia <team@zentopia.io>";
 
 export async function POST(req: Request) {
-  let body: ContactPayload;
   try {
-    body = await req.json();
-  } catch {
-    return NextResponse.json({ ok: false, error: "invalid_json" }, { status: 400 });
-  }
-
-  const data: FormData = {
-    name: (body.name || "").trim(),
-    email: (body.email || "").trim(),
-    phone: (body.phone || "").trim(),
-    company: (body.company || "").trim(),
-    industry: (body.industry || "").trim(),
-    challenge: (body.challenge || "").trim(),
-  };
-
-  if (!data.name || !data.email || !data.challenge) {
-    return NextResponse.json({ ok: false, error: "missing_fields" }, { status: 400 });
-  }
-  if (!isEmail(data.email)) {
-    return NextResponse.json({ ok: false, error: "invalid_email" }, { status: 400 });
-  }
-
-  // Fan-out: team email, visitor confirmation, Telegram. Failures on any one
-  // channel are tolerated so the visitor's submission isn't lost. If every
-  // configured external send fails, log loudly and surface 502.
-  const results = await Promise.allSettled([
-    sendTeamNotification(data),
-    sendVisitorConfirmation(data),
-    sendTelegramNotification(data),
-  ]);
-
-  const failures = results.filter((r) => r.status === "rejected");
-  if (failures.length === results.length) {
-    for (const f of failures) {
-      console.error("[contact] all channels failed:", (f as PromiseRejectedResult).reason);
+    let body: ContactPayload;
+    try {
+      body = await req.json();
+    } catch {
+      return NextResponse.json({ ok: false, error: "invalid_json" }, { status: 400 });
     }
-    return NextResponse.json({ ok: false, error: "send_failed" }, { status: 502 });
-  }
-  for (const f of failures) {
-    console.warn("[contact] channel failure:", (f as PromiseRejectedResult).reason);
-  }
 
-  return NextResponse.json({ ok: true });
+    const data: FormData = {
+      name: (body.name || "").trim(),
+      email: (body.email || "").trim(),
+      phone: (body.phone || "").trim(),
+      company: (body.company || "").trim(),
+      industry: (body.industry || "").trim(),
+      challenge: (body.challenge || "").trim(),
+    };
+
+    if (!data.name || !data.email || !data.challenge) {
+      return NextResponse.json({ ok: false, error: "missing_fields" }, { status: 400 });
+    }
+    if (!isEmail(data.email)) {
+      return NextResponse.json({ ok: false, error: "invalid_email" }, { status: 400 });
+    }
+
+    // Fan-out: team email, visitor confirmation, Telegram. Failures on any one
+    // channel are tolerated so the visitor's submission isn't lost. If every
+    // configured external send fails, log loudly and surface 502.
+    const results = await Promise.allSettled([
+      sendTeamNotification(data),
+      sendVisitorConfirmation(data),
+      sendTelegramNotification(data),
+    ]);
+
+    const failures = results.filter((r) => r.status === "rejected");
+    if (failures.length === results.length) {
+      for (const f of failures) {
+        console.error("[contact] all channels failed:", (f as PromiseRejectedResult).reason);
+      }
+      return NextResponse.json({ ok: false, error: "send_failed" }, { status: 502 });
+    }
+    for (const f of failures) {
+      console.warn("[contact] channel failure:", (f as PromiseRejectedResult).reason);
+    }
+
+    return NextResponse.json({ ok: true });
+  } catch (err) {
+    console.error("[contact] unhandled error:", err);
+    return NextResponse.json({ ok: false, error: "server_error" }, { status: 500 });
+  }
 }
 
 async function sendResendEmail({
