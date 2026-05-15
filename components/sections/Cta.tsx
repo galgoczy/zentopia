@@ -393,7 +393,7 @@ function AltContact() {
         {t.cta.direct.label}
       </PixelLabel>
       <a
-        href="mailto:hello@zentopia.io"
+        href="mailto:team@zentopia.io"
         className="zen-arrow-host inline-flex items-center gap-2 font-sans w-fit zen-link-underline"
         style={{
           fontSize: 18,
@@ -403,7 +403,7 @@ function AltContact() {
           letterSpacing: "-0.02em",
         }}
       >
-        hello@zentopia.io{" "}
+        team@zentopia.io{" "}
         <span className="zen-arrow-nudge" style={{ color: Z.lime }}>
           →
         </span>
