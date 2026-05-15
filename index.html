@@ -1,0 +1,280 @@
+<!doctype html>
+<html lang="hu">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Zentopia · Hero + wordmark</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Press+Start+2P&display=swap" rel="stylesheet" />
+
+<style>
+  html, body { margin: 0; padding: 0; height: 100%; background: #efece3; font-family: "Space Grotesk", system-ui, sans-serif; }
+  * { box-sizing: border-box; }
+  button { font-family: inherit; }
+  img { -webkit-user-drag: none; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+<script type="text/babel" src="design-canvas.jsx"></script>
+<script type="text/babel" src="tweaks-panel.jsx"></script>
+<script type="text/babel" src="shared.jsx"></script>
+<script type="text/babel" src="hero-v1.jsx"></script>
+<script type="text/babel" src="hero-v2.jsx"></script>
+<script type="text/babel" src="hero-v3.jsx"></script>
+<script type="text/babel" src="services.jsx"></script>
+<script type="text/babel" src="problem.jsx"></script>
+<script type="text/babel" src="process.jsx"></script>
+<script type="text/babel" src="cases.jsx"></script>
+<script type="text/babel" src="founder.jsx"></script>
+<script type="text/babel" src="faq.jsx"></script>
+<script type="text/babel" src="cta.jsx"></script>
+<script type="text/babel" src="footer.jsx"></script>
+<script type="text/babel" src="wordmark-studio.jsx"></script>
+
+<script type="text/babel">
+const MOBILE_W = 390;
+const MOBILE_H = 900;
+const DESKTOP_W = 1440;
+const DESKTOP_H = 940;
+const STUDIO_W = 1440;
+const STUDIO_H = 1280;
+
+const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+  "fontMul": 0.9,
+  "iconScale": 1,
+  "gap": 5,
+  "tracking": -0.035,
+  "weight": 500,
+  "lockup": "horizontal",
+  "showAlts": true,
+  "palette": "punchier"
+}/*EDITMODE-END*/;
+
+function PaletteSwatches({ palette }) {
+  const swatches = ['ember', 'sky', 'violet', 'coral', 'sunshine'];
+  return (
+    <div style={{
+      display: 'grid',
+      gridTemplateColumns: 'repeat(5, 1fr)',
+      gap: 4,
+      padding: '2px 0 4px',
+    }}>
+      {swatches.map(k => (
+        <div key={k} style={{
+          height: 28,
+          borderRadius: 4,
+          background: palette[k],
+          border: '1px solid rgba(0,0,0,0.06)',
+        }} title={k} />
+      ))}
+    </div>
+  );
+}
+
+function App() {
+  const [t, setTweak] = useTweaks(TWEAK_DEFAULTS);
+
+  const wmCtx = React.useMemo(() => ({
+    fontMul: t.fontMul,
+    iconScale: t.iconScale,
+    gap: t.gap,
+    tracking: t.tracking,
+    weight: t.weight,
+    lockup: t.lockup,
+  }), [t.fontMul, t.iconScale, t.gap, t.tracking, t.weight, t.lockup]);
+
+  const palette = Z.palettes[t.palette] || Z.palettes.punchier;
+
+  return (
+    <WordmarkCtx.Provider value={wmCtx}>
+     <ColorsCtx.Provider value={palette}>
+      <DesignCanvas>
+        <DCSection
+          id="chosen"
+          title="Kiválasztott irány"
+          subtitle="Mobile V2 (Monument) + Desktop V1 (Grid + Glitch) — ezekkel megyünk tovább."
+        >
+          <DCArtboard id="m-v2" label="Mobile · V2 Monument" width={MOBILE_W} height={MOBILE_H}>
+            <HeroV2 viewport="mobile" />
+          </DCArtboard>
+          <DCArtboard id="d-v1" label="Desktop · V1 Grid + Glitch" width={DESKTOP_W} height={DESKTOP_H}>
+            <HeroV1 viewport="desktop" />
+          </DCArtboard>
+        </DCSection>
+
+        <DCSection
+          id="services"
+          title="[ 02 ] Szolgáltatások"
+          subtitle="Bento elrendezés — AI agents featured kártya, körülötte 4 kisebb."
+        >
+          <DCArtboard id="m-svc-v2" label="Mobile · Bento" width={MOBILE_W} height={1900}>
+            <ServicesV2 viewport="mobile" />
+          </DCArtboard>
+          <DCArtboard id="d-svc-v2" label="Desktop · Bento" width={DESKTOP_W} height={1080}>
+            <ServicesV2 viewport="desktop" />
+          </DCArtboard>
+        </DCSection>
+
+        <DCSection
+          id="problem"
+          title="[ 03 ] A kérdés"
+          subtitle="Kérdés-kártyák a typewriter animációval — 20%-kal kisebb piktogramokkal."
+        >
+          <DCArtboard id="m-prb-v1" label="Mobile · Question grid" width={MOBILE_W} height={1700}>
+            <ProblemV1 viewport="mobile" />
+          </DCArtboard>
+          <DCArtboard id="d-prb-v1" label="Desktop · Question grid" width={DESKTOP_W} height={1080}>
+            <ProblemV1 viewport="desktop" />
+          </DCArtboard>
+        </DCSection>
+
+        <DCSection
+          id="process"
+          title="[ 04 ] Folyamat"
+          subtitle="Linear timeline — auto-pörgő progress demoként; éles kódban mobilra scroll-tied."
+        >
+          <DCArtboard id="m-prc-v1" label="Mobile · Linear timeline" width={MOBILE_W} height={1900}>
+            <ProcessV1 viewport="mobile" />
+          </DCArtboard>
+          <DCArtboard id="d-prc-v1" label="Desktop · Linear timeline" width={DESKTOP_W} height={1080}>
+            <ProcessV1 viewport="desktop" />
+          </DCArtboard>
+        </DCSection>
+
+        <DCSection
+          id="cases"
+          title="[ 05 ] Munkák"
+          subtitle="Ledger elrendezés — 4 példa projekt 2×2 grid-ben, big stat-row felül. Dark moment."
+        >
+          <DCArtboard id="m-case-v2" label="Mobile · Ledger" width={MOBILE_W} height={2900}>
+            <CasesV2 viewport="mobile" />
+          </DCArtboard>
+          <DCArtboard id="d-case-v2" label="Desktop · Ledger" width={DESKTOP_W} height={1480}>
+            <CasesV2 viewport="desktop" />
+          </DCArtboard>
+        </DCSection>
+
+        <DCSection
+          id="founder"
+          title="[ 06 ] Alapító"
+          subtitle="Pull-quote led editorial — bio split egy big Ember-bordered idézettel."
+        >
+          <DCArtboard id="m-fnd-v2" label="Mobile · Pull-quote" width={MOBILE_W} height={1800}>
+            <FounderV2 viewport="mobile" />
+          </DCArtboard>
+          <DCArtboard id="d-fnd-v2" label="Desktop · Pull-quote" width={DESKTOP_W} height={1080}>
+            <FounderV2 viewport="desktop" />
+          </DCArtboard>
+        </DCSection>
+
+        <DCSection
+          id="faq"
+          title="[ 07 ] GYIK"
+          subtitle="Accordion — első kérdés alapból nyitva, smooth max-height + chevron rotation."
+        >
+          <DCArtboard id="m-faq-v1" label="Mobile · Accordion" width={MOBILE_W} height={1500}>
+            <FaqV1 viewport="mobile" />
+          </DCArtboard>
+          <DCArtboard id="d-faq-v1" label="Desktop · Accordion" width={DESKTOP_W} height={1100}>
+            <FaqV1 viewport="desktop" />
+          </DCArtboard>
+        </DCSection>
+
+        <DCSection
+          id="cta"
+          title="[ 08 ] Beszéljünk"
+          subtitle="Záró dark moment — split form bal, Mire számíthatsz + alt kontakt jobb."
+        >
+          <DCArtboard id="m-cta-v1" label="Mobile · Split form" width={MOBILE_W} height={2200}>
+            <CtaV1 viewport="mobile" />
+          </DCArtboard>
+          <DCArtboard id="d-cta-v1" label="Desktop · Split form" width={DESKTOP_W} height={1280}>
+            <CtaV1 viewport="desktop" />
+          </DCArtboard>
+        </DCSection>
+
+        <DCSection
+          id="footer"
+          title="[ 09 ] Footer"
+          subtitle="Manifesto-led — nagy tagline felül, link-sorok alatta. Easter egg: [ MADE WITH 8-BIT LOVE ]."
+        >
+          <DCArtboard id="m-ftr-v2" label="Mobile · Manifesto-led" width={MOBILE_W} height={1300}>
+            <FooterV2 viewport="mobile" />
+          </DCArtboard>
+          <DCArtboard id="d-ftr-v2" label="Desktop · Manifesto-led" width={DESKTOP_W} height={780}>
+            <FooterV2 viewport="desktop" />
+          </DCArtboard>
+        </DCSection>
+
+        <DCSection
+          id="wordmark"
+          title="Wordmark studio"
+          subtitle="Tweakolható élőben — a tweaks panel a jobb alsó sarokban. Minden nav frissül."
+        >
+          <DCArtboard id="wm-studio" label="Logo + tipo arányok" width={STUDIO_W} height={STUDIO_H}>
+            <WordmarkStudio width={STUDIO_W} />
+          </DCArtboard>
+        </DCSection>
+      </DesignCanvas>
+
+      <TweaksPanel title="Brand Tweaks">
+        <TweakSection label="Section colors" />
+        <TweakRadio label="Paletta" value={t.palette}
+                    options={[{label:'Book', value:'book'},{label:'Punchy', value:'punchier'},{label:'Electric', value:'electric'}]}
+                    onChange={(v) => setTweak('palette', v)} />
+        <PaletteSwatches palette={Z.palettes[t.palette] || Z.palettes.punchier} />
+
+        <TweakSection label="Wordmark — méret arány" />
+        <TweakSlider label="Tipo / icon"  value={t.fontMul}   min={0.45} max={1.10} step={0.01}
+                     onChange={(v) => setTweak('fontMul', v)} />
+        <TweakSlider label="Icon scale"  value={t.iconScale} min={0.70} max={1.30} step={0.01}
+                     onChange={(v) => setTweak('iconScale', v)} />
+        <TweakSlider label="Gap (px)"     value={t.gap}       min={0}    max={20}   step={1}
+                     onChange={(v) => setTweak('gap', v)} />
+
+        <TweakSection label="Wordmark — tipográfia" />
+        <TweakSlider label="Tracking"     value={t.tracking}  min={-0.06} max={0.02} step={0.005}
+                     onChange={(v) => setTweak('tracking', v)} />
+        <TweakRadio  label="Súly"         value={t.weight}
+                     options={[{label:'500', value:500},{label:'600', value:600},{label:'700', value:700}]}
+                     onChange={(v) => setTweak('weight', v)} />
+
+        <TweakSection label="Wordmark — lockup" />
+        <TweakRadio  label="Layout"       value={t.lockup}
+                     options={[{label:'Vízsz.', value:'horizontal'},{label:'Stack.', value:'stacked'}]}
+                     onChange={(v) => setTweak('lockup', v)} />
+
+        <TweakSection label="Wordmark — preset" />
+        <TweakButton label="↺ Baseline" onClick={() => {
+          setTweak({ fontMul: 0.72, iconScale: 1.00, gap: 8, tracking: -0.025, weight: 700, lockup: 'horizontal' });
+        }} />
+        <TweakButton label="B · Compact" onClick={() => {
+          setTweak({ fontMul: 0.80, iconScale: 1.00, gap: 5, tracking: -0.030, weight: 700, lockup: 'horizontal' });
+        }} />
+        <TweakButton label="C · Optical match" onClick={() => {
+          setTweak({ fontMul: 0.90, iconScale: 1.00, gap: 6, tracking: -0.035, weight: 700, lockup: 'horizontal' });
+        }} />
+        <TweakButton label="D · Smaller mark" onClick={() => {
+          setTweak({ fontMul: 0.86, iconScale: 0.82, gap: 6, tracking: -0.030, weight: 700, lockup: 'horizontal' });
+        }} />
+        <TweakButton label="E · Bigger mark" onClick={() => {
+          setTweak({ fontMul: 0.62, iconScale: 1.18, gap: 10, tracking: -0.020, weight: 700, lockup: 'horizontal' });
+        }} />
+      </TweaksPanel>
+     </ColorsCtx.Provider>
+    </WordmarkCtx.Provider>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>
