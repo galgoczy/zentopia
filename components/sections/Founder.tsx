@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { Z } from "@/lib/tokens";
 import { PixelGrid } from "@/components/ui/PixelGrid";
 import { PixelLabel } from "@/components/ui/PixelLabel";
@@ -168,50 +169,55 @@ function PortraitCard() {
         style={{
           aspectRatio: "1 / 1",
           borderRadius: 6,
-          background: `linear-gradient(135deg, ${accent}28, ${accent}10)`,
           border: `1px solid ${accent}40`,
         }}
       >
-        <svg
-          viewBox="0 0 200 200"
-          preserveAspectRatio="xMidYMid meet"
-          className="absolute inset-0 w-full h-full transition-transform duration-700 group-hover:scale-105"
-        >
-          <path
-            d="M 30 188 Q 50 138 100 134 Q 150 138 170 188"
-            fill="none"
-            stroke={accent}
-            strokeWidth="2"
+        <picture>
+          <source srcSet="/assets/founder.avif" type="image/avif" />
+          <source srcSet="/assets/founder.webp" type="image/webp" />
+          <Image
+            src="/assets/founder.jpg"
+            alt="Galgóczy Gergely · Zentopia alapító"
+            width={800}
+            height={800}
+            priority={false}
+            className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.04]"
           />
-          <circle cx="100" cy="88" r="34" fill="none" stroke={accent} strokeWidth="2" />
-          <line x1="15" y1="64" x2="64" y2="64" stroke={accent} strokeWidth="1.2" strokeDasharray="2 4" opacity="0.7" />
-          <line x1="136" y1="64" x2="185" y2="64" stroke={accent} strokeWidth="1.2" strokeDasharray="2 4" opacity="0.7" />
-          <circle cx="15" cy="64" r="2" fill={accent} />
-          <circle cx="185" cy="64" r="2" fill={accent} />
-          <circle cx="100" cy="88" r="4" fill={accent} opacity="0.4" />
-        </svg>
+        </picture>
+        {/* warm ember tint overlay on hover, very subtle */}
         <div
           aria-hidden="true"
-          className="absolute inset-0 pointer-events-none"
+          className="absolute inset-0 pointer-events-none transition-opacity duration-500 opacity-0 group-hover:opacity-100"
           style={{
-            backgroundImage: `linear-gradient(to right, ${accent}14 1px, transparent 1px), linear-gradient(to bottom, ${accent}14 1px, transparent 1px)`,
-            backgroundSize: "10px 10px",
+            background: `linear-gradient(135deg, ${accent}26, transparent 60%)`,
+            mixBlendMode: "overlay",
           }}
         />
+        {/* pixel-grid overlay, faint, signature brand element */}
+        <div
+          aria-hidden="true"
+          className="absolute inset-0 pointer-events-none opacity-40"
+          style={{
+            backgroundImage: `linear-gradient(to right, ${accent}1f 1px, transparent 1px), linear-gradient(to bottom, ${accent}1f 1px, transparent 1px)`,
+            backgroundSize: "12px 12px",
+            mixBlendMode: "overlay",
+          }}
+        />
+        {/* mono caption stamp in the brand style */}
         <span
           className="absolute font-mono"
           style={{
             bottom: 10,
             left: 12,
             fontSize: 9,
-            color: accent,
+            color: Z.forest,
             letterSpacing: "0.06em",
-            background: "rgba(255,255,255,0.85)",
+            background: "rgba(250,250,247,0.9)",
             padding: "3px 6px",
             borderRadius: 2,
           }}
         >
-          // portrait placeholder
+          // gergő · 2026
         </span>
       </div>
       <div
