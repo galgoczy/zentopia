@@ -2,7 +2,13 @@
 
 import { Z } from "@/lib/tokens";
 
-export function GlitchTE({ blockColor = Z.lime }: { blockColor?: string }) {
+export function GlitchTE({
+  blockColor = Z.lime,
+  children = "TE",
+}: {
+  blockColor?: string;
+  children?: React.ReactNode;
+}) {
   return (
     <span
       className="inline-block relative align-baseline"
@@ -15,7 +21,7 @@ export function GlitchTE({ blockColor = Z.lime }: { blockColor?: string }) {
       }}
     >
       <span className="inline-block" style={{ transform: "skewX(2deg)" }}>
-        TE
+        {children}
       </span>
     </span>
   );

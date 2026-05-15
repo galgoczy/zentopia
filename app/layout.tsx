@@ -1,4 +1,3 @@
-import type { Metadata } from "next";
 import { Space_Grotesk, JetBrains_Mono, Press_Start_2P } from "next/font/google";
 import "./globals.css";
 
@@ -23,22 +22,8 @@ const pressStart = Press_Start_2P({
   display: "swap",
 });
 
-export const metadata: Metadata = {
-  metadataBase: new URL("https://zentopia.io"),
-  title: "Zentopia · AI ügynökség, ami működő rendszereket épít",
-  description:
-    "Egyedi AI megoldások vállalkozásoknak — AI agentek, automatizáció, custom webappok. Hetek alatt, nem hónapok alatt. Magyar AI agency.",
-  openGraph: {
-    title: "Zentopia · AI ügynökség, ami működő rendszereket épít",
-    description:
-      "Egyedi AI megoldások vállalkozásoknak — AI agentek, automatizáció, custom webappok. Hetek alatt, nem hónapok alatt.",
-    url: "https://zentopia.io",
-    siteName: "Zentopia",
-    locale: "hu_HU",
-    type: "website",
-  },
-};
-
+// Per-locale metadata is set in each route's page.tsx. This layout just
+// applies the font variables and the HTML/body chrome.
 export default function RootLayout({
   children,
 }: {
@@ -49,7 +34,9 @@ export default function RootLayout({
       lang="hu"
       className={`${spaceGrotesk.variable} ${jetbrainsMono.variable} ${pressStart.variable}`}
     >
-      <body className="bg-offwhite font-sans text-forest antialiased">{children}</body>
+      <body className="bg-offwhite font-sans text-forest antialiased">
+        {children}
+      </body>
     </html>
   );
 }

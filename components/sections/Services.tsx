@@ -1,6 +1,7 @@
 "use client";
 
 import { Z } from "@/lib/tokens";
+import { useT } from "@/lib/i18n";
 import { PixelGrid } from "@/components/ui/PixelGrid";
 import { PixelLabel } from "@/components/ui/PixelLabel";
 import { CircuitIcon } from "@/components/ui/CircuitIcon";
@@ -16,15 +17,16 @@ type Service = {
   icon: "content" | "agents" | "flow" | "webapp" | "consult";
 };
 
-const SERVICES: Service[] = [
-  { n: "02", color: Z.ember,    title: "AI tartalomgyártás",      sub: "Kreatív kommunikáció",        body: "Social poszt, kampányszöveg, blog, video script, AI képek és kreatív tesztek — gyorsabban, több verzióban.", icon: "content" },
-  { n: "01", color: Z.sky,      title: "AI agentek",              sub: "Digitális asszisztensek",     body: "Ügyfélszolgálati, sales, admin, HR vagy dokumentumkezelő AI munkatársak. Saját rendszerre szabva.",          icon: "agents"  },
-  { n: "03", color: Z.violet,   title: "Folyamat-automatizáció",  sub: "Ismétlődő munka, eltüntetve", body: "E-mailek, ajánlatkérések, CRM, számlák, riportok automatizálása n8n / Make / Zapier alapon.",            icon: "flow"    },
-  { n: "04", color: Z.coral,    title: "AI webappok",             sub: "Egyedi üzleti alkalmazások",  body: "Dashboard-ok, tudásbázisok (RAG), ajánlatkészítő rendszerek, integrált CRM/ERP megoldások.",                icon: "webapp"  },
-  { n: "05", color: Z.sunshine, title: "AI tanácsadás",           sub: "Képzés és bevezetés",         body: "AI audit, eszközválasztás, vezetői workshop, csapat-tréning, promptolás, bevezetési roadmap.",               icon: "consult" },
-];
-
 export function Services() {
+  const t = useT();
+  const SERVICES: Service[] = [
+    { n: "02", color: Z.ember,    icon: "content", ...t.services.items.content },
+    { n: "01", color: Z.sky,      icon: "agents",  ...t.services.items.agents },
+    { n: "03", color: Z.violet,   icon: "flow",    ...t.services.items.flow },
+    { n: "04", color: Z.coral,    icon: "webapp",  ...t.services.items.webapp },
+    { n: "05", color: Z.sunshine, icon: "consult", ...t.services.items.consult },
+  ];
+
   const featured = SERVICES[1];
   const others = SERVICES.filter((_, i) => i !== 1);
 
@@ -38,7 +40,7 @@ export function Services() {
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-7 md:mb-12">
           <Reveal className="flex flex-col gap-3.5 max-w-[760px]">
             <PixelLabel size={10} className="md:text-[11px]">
-              [ 02 ] SZOLGÁLTATÁSOK
+              {t.services.label}
             </PixelLabel>
             <h2
               className="m-0 font-sans font-bold"
@@ -49,7 +51,7 @@ export function Services() {
                 lineHeight: 0.98,
               }}
             >
-              Amit a Zentopia épít.
+              {t.services.h2}
             </h2>
           </Reveal>
           <Reveal delay={80} className="md:max-w-[320px]">
@@ -60,7 +62,7 @@ export function Services() {
                 color: Z.slate,
               }}
             >
-              Öt terület — minden problémára egy konkrét megoldás.
+              {t.services.sub}
             </p>
           </Reveal>
         </div>
@@ -109,6 +111,7 @@ function ServiceCard({
   big?: boolean;
   idx?: number;
 }) {
+  const t = useT();
   return (
     <div
       className="group zen-card-lift relative overflow-hidden flex flex-col h-full"
@@ -184,7 +187,7 @@ function ServiceCard({
           textDecoration: "none",
         }}
       >
-        Olvasd el{" "}
+        {t.services.miniCta}{" "}
         <span className="zen-arrow-nudge" style={{ color: s.color }}>
           →
         </span>

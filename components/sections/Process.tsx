@@ -2,6 +2,8 @@
 
 import { useEffect, useRef, useState } from "react";
 import { Z } from "@/lib/tokens";
+import { useT } from "@/lib/i18n";
+import type { Dict } from "@/lib/translations/hu";
 import { PixelGrid } from "@/components/ui/PixelGrid";
 import { PixelLabel } from "@/components/ui/PixelLabel";
 import { CTAPrimary } from "@/components/ui/CTA";
@@ -10,12 +12,17 @@ import { Reveal } from "@/components/ui/Reveal";
 
 type Step = { n: string; color: string; title: string; time: string; body: string };
 
-const STEPS: Step[] = [
-  { n: "01", color: Z.ember,    title: "Audit",    time: "~1 hét",      body: "Átnézzük együtt a működésedet. Megkeressük, hol veszítesz időt, és hol térül meg gyorsan az AI." },
-  { n: "02", color: Z.sky,      title: "Roadmap",  time: "~3 nap",      body: "Megkapod a prioritás-sorrendet. 3-5 konkrét projekt, sorba rakva ROI alapján. Nem 60 oldal PDF." },
-  { n: "03", color: Z.violet,   title: "Build",    time: "2-8 hét",     body: "A legjobb ROI-pontnál elkezdjük építeni. Iteratívan, heti demókkal. Te látod, mi készül." },
-  { n: "04", color: Z.sunshine, title: "Skálázás", time: "folyamatos",  body: "A működő rendszert kibővítjük. Új use case-eket integrálunk, mérjük az eredményeket." },
-];
+const STEP_COLORS = [Z.ember, Z.sky, Z.violet, Z.sunshine];
+
+function buildSteps(t: Dict): Step[] {
+  return t.process.steps.map((s, i) => ({
+    n: String(i + 1).padStart(2, "0"),
+    color: STEP_COLORS[i],
+    title: s.title,
+    time: s.time,
+    body: s.body,
+  }));
+}
 
 function useIsMobile() {
   const [m, setM] = useState(false);
@@ -30,6 +37,8 @@ function useIsMobile() {
 }
 
 export function Process() {
+  const t = useT();
+  const STEPS = buildSteps(t);
   const isMobile = useIsMobile();
   const [activeIdx, setActiveIdx] = useState(-1);
   const stepRefs = useRef<Array<HTMLDivElement | null>>([]);
@@ -115,7 +124,7 @@ export function Process() {
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8 md:mb-14">
           <Reveal className="flex flex-col gap-3.5 max-w-[720px]">
             <PixelLabel size={10} className="md:text-[11px]">
-              [ 04 ] FOLYAMAT
+              {t.process.label}
             </PixelLabel>
             <h2
               className="m-0 font-sans font-bold"
@@ -126,7 +135,7 @@ export function Process() {
                 lineHeight: 1,
               }}
             >
-              Hogyan dolgozunk.
+              {t.process.h2}
             </h2>
           </Reveal>
           <Reveal delay={80} className="md:max-w-[340px]">
@@ -137,7 +146,7 @@ export function Process() {
                 color: Z.slate,
               }}
             >
-              Négy lépés. Két hét — három hónap, projekttől függően.
+              {t.process.sub}
             </p>
           </Reveal>
         </div>
@@ -286,6 +295,7 @@ function StationBody({
   active: boolean;
   mobile?: boolean;
 }) {
+  const t = useT();
   return (
     <div
       className="flex-1 flex flex-col gap-3 transition-opacity duration-500"
@@ -299,7 +309,7 @@ function StationBody({
           className="font-mono"
           style={{ fontSize: 11, color: s.color, letterSpacing: "0.08em" }}
         >
-          STEP {s.n}
+          {t.process.stepMonoPrefix} {s.n}
         </span>
         <span
           className="font-mono"
@@ -340,6 +350,7 @@ function StationBody({
 }
 
 function KezdesCard() {
+  const t = useT();
   return (
     <Reveal>
       <div
@@ -363,7 +374,7 @@ function KezdesCard() {
         />
         <div className="relative flex-1 flex flex-col gap-3 md:p-6">
           <PixelLabel size={9} color={Z.lime} className="md:text-[10px]">
-            [ 04.5 ] KEZDÉS
+            {t.process.kezdes.label}
           </PixelLabel>
           <h3
             className="m-0 font-sans font-bold"
@@ -374,7 +385,7 @@ function KezdesCard() {
               lineHeight: 1.1,
             }}
           >
-            Az első lépés mindig az{" "}
+            {t.process.kezdes.h3_before}
             <GlitchText cycle={7}>
               <span
                 className="inline-block"
@@ -385,7 +396,7 @@ function KezdesCard() {
                   color: Z.forest,
                 }}
               >
-                Audit.
+                {t.process.kezdes.h3_highlight}
               </span>
             </GlitchText>
           </h3>
@@ -397,12 +408,12 @@ function KezdesCard() {
               maxWidth: 520,
             }}
           >
-            Ingyenes 30 perces beszélgetés, ahol megnézzük, hol érdemes elindulni.
+            {t.process.kezdes.sub}
           </p>
         </div>
         <a href="#beszeljunk" className="md:pr-6">
           <CTAPrimary size="md" className="md:[--cta-size:lg]">
-            Foglalj 30 perces AI-konzultációt →
+            {t.process.kezdes.cta}
           </CTAPrimary>
         </a>
       </div>

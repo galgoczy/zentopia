@@ -1,6 +1,7 @@
 "use client";
 
 import { Z } from "@/lib/tokens";
+import { useT } from "@/lib/i18n";
 import { PixelGrid } from "@/components/ui/PixelGrid";
 import { PixelLabel } from "@/components/ui/PixelLabel";
 import { Wordmark } from "@/components/ui/Wordmark";
@@ -10,29 +11,8 @@ import { Reveal } from "@/components/ui/Reveal";
 
 type Col = { label: string; links: { label: string; href: string }[] };
 
-const COLS: Record<"oldal" | "tartalom", Col> = {
-  oldal: {
-    label: "OLDAL",
-    links: [
-      { label: "Szolgáltatások", href: "#szolgaltatasok" },
-      { label: "Munkák", href: "#munkak" },
-      { label: "Folyamat", href: "#folyamat" },
-      { label: "Alapító", href: "#alapito" },
-      { label: "GYIK", href: "#gyik" },
-    ],
-  },
-  tartalom: {
-    label: "TARTALOM",
-    links: [
-      { label: "labs.zentopia.io ↗", href: "https://labs.zentopia.io" },
-      { label: "Hírlevél", href: "#" },
-    ],
-  },
-};
-
-const LEGAL = ["Impresszum", "Adatkezelés", "Cookie szabályzat"];
-
 export function Footer() {
+  const t = useT();
   return (
     <footer
       className="relative overflow-hidden"
@@ -61,16 +41,16 @@ export function Footer() {
                   maxWidth: 760,
                 }}
               >
-                Jövő-technológia.
+                {t.footer.manifesto.lineA}
                 <br />
-                A Te üzletedben.
+                {t.footer.manifesto.lineB}
                 <br />
-                <span style={{ color: Z.lime }}>Ma.</span>
+                <span style={{ color: Z.lime }}>{t.footer.manifesto.lineC}</span>
               </h3>
             </div>
             <a href="#beszeljunk">
               <CTAPrimary size="md" dark className="md:[--cta-size:lg]">
-                Foglalj időpontot →
+                {t.footer.cta}
               </CTAPrimary>
             </a>
           </div>
@@ -78,18 +58,18 @@ export function Footer() {
 
         {/* Link grid */}
         <div className="grid grid-cols-2 md:grid-cols-3 gap-7 md:gap-10 py-8 md:py-12">
-          <FooterLinkCol col={COLS.oldal} />
-          <FooterLinkCol col={COLS.tartalom} />
+          <FooterLinkCol col={t.footer.cols.page} />
+          <FooterLinkCol col={t.footer.cols.content} />
           <div
             className="flex flex-col gap-3.5"
             style={{ gridColumn: "1 / -1" }}
           >
             <PixelLabel size={10} color={Z.lime}>
-              KAPCSOLAT
+              {t.footer.cols.contact.label}
             </PixelLabel>
             <div className="flex flex-col gap-2.5">
               <a
-                href="mailto:hello@zentopia.io"
+                href="mailto:team@zentopia.io"
                 className="zen-link-underline font-sans w-fit"
                 style={{
                   fontSize: 14,
@@ -99,7 +79,7 @@ export function Footer() {
                   letterSpacing: "-0.01em",
                 }}
               >
-                hello@zentopia.io
+                team@zentopia.io
               </a>
               <span
                 className="font-sans"
@@ -108,7 +88,7 @@ export function Footer() {
                   color: "rgba(250,250,247,0.55)",
                 }}
               >
-                Budapest, HU
+                {t.footer.cols.contact.location}
               </span>
             </div>
           </div>
@@ -127,10 +107,10 @@ export function Footer() {
               letterSpacing: "0.04em",
             }}
           >
-            © 2026 Zentopia
+            {t.footer.copyright}
           </span>
           <div className="flex items-center gap-4 md:gap-6 flex-wrap">
-            {LEGAL.map((l) => (
+            {t.footer.legal.map((l) => (
               <a
                 key={l}
                 href="#"
@@ -182,6 +162,7 @@ function FooterLinkCol({ col }: { col: Col }) {
 }
 
 function BrandBlock() {
+  const t = useT();
   return (
     <div className="flex flex-col gap-4 max-w-[360px]">
       <Wordmark size={32} iconVariant="white" color={Z.offwhite} />
@@ -197,11 +178,7 @@ function BrandBlock() {
         >
           <span>{"//"}</span>
           <RotatingSubline
-            messages={[
-              "AI a TE vállalkozásodnak.",
-              "Hetek, nem hónapok.",
-              "AI, gondozva.",
-            ]}
+            messages={t.hero.sublines}
             intervalMs={4000}
             color={Z.lime}
             className="text-[13px]"
@@ -214,7 +191,7 @@ function BrandBlock() {
             color: "rgba(250,250,247,0.55)",
           }}
         >
-          Jövő-technológia. A Te üzletedben. Ma.
+          {t.footer.manifesto.lineA} {t.footer.manifesto.lineB} {t.footer.manifesto.lineC}
         </p>
       </div>
     </div>
@@ -222,6 +199,7 @@ function BrandBlock() {
 }
 
 function EasterEgg() {
+  const t = useT();
   return (
     <span
       className="font-pixel whitespace-nowrap select-none transition-colors duration-500 hover:!text-lime cursor-default"
@@ -232,7 +210,7 @@ function EasterEgg() {
       }}
       title="zentopia · 8-bit love"
     >
-      [ MADE WITH 8-BIT LOVE ]
+      {t.footer.easterEgg}
     </span>
   );
 }

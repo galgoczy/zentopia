@@ -1,6 +1,7 @@
 "use client";
 
 import { Z } from "@/lib/tokens";
+import { useT } from "@/lib/i18n";
 
 const TOOLS = [
   "OpenAI",
@@ -14,6 +15,7 @@ const TOOLS = [
 ];
 
 export function TechStackStrip({ dark = false }: { dark?: boolean }) {
+  const t = useT();
   const fg = dark ? "rgba(250,250,247,0.62)" : Z.slate;
   const border = dark ? "rgba(250,250,247,0.10)" : Z.hairline;
   const body = dark ? Z.offwhite : Z.forest;
@@ -34,7 +36,7 @@ export function TechStackStrip({ dark = false }: { dark?: boolean }) {
           className="font-mono uppercase shrink-0 pl-5 md:pl-8"
           style={{ fontSize: 11, color: fg, letterSpacing: "0.08em", opacity: 0.85 }}
         >
-          // eszközök
+          {t.tech.label}
         </span>
         <div className="flex w-max gap-8 md:gap-10 whitespace-nowrap animate-ticker">
           {list.map((t, idx) => (

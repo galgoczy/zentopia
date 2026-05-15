@@ -3,18 +3,20 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Z } from "@/lib/tokens";
+import { useT } from "@/lib/i18n";
 import { Wordmark } from "@/components/ui/Wordmark";
 import { LangSwitch } from "@/components/ui/LangSwitch";
 import { CTAPrimary } from "@/components/ui/CTA";
 
-const NAV_LINKS = [
-  { label: "Szolgáltatások", href: "#szolgaltatasok" },
-  { label: "Munkák", href: "#munkak" },
-  { label: "Folyamat", href: "#folyamat" },
-  { label: "GYIK", href: "#gyik" },
-];
-
 export function Nav() {
+  const t = useT();
+  const NAV_LINKS = [
+    { label: t.nav.links.services, href: "#szolgaltatasok" },
+    { label: t.nav.links.cases, href: "#munkak" },
+    { label: t.nav.links.process, href: "#folyamat" },
+    { label: t.nav.links.faq, href: "#gyik" },
+  ];
+
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
 
@@ -53,7 +55,7 @@ export function Nav() {
                 borderLeft: `1px solid ${Z.hairline}`,
               }}
             >
-              jövő-technológia. ma.
+              {t.nav.tagline}
             </span>
           </div>
 
@@ -85,7 +87,7 @@ export function Nav() {
                 textDecoration: "none",
               }}
             >
-              labs{" "}
+              {t.nav.links.labs}{" "}
               <span
                 className="zen-arrow-nudge transition-transform"
                 style={{ fontSize: 10 }}
@@ -99,12 +101,12 @@ export function Nav() {
             <LangSwitch />
             <a href="#beszeljunk" className="inline-flex">
               <CTAPrimary size="sm">
-                <span className="hidden md:inline">Foglalj időpontot →</span>
-                <span className="inline md:hidden">Foglalj →</span>
+                <span className="hidden md:inline">{t.nav.ctaLong}</span>
+                <span className="inline md:hidden">{t.nav.ctaShort}</span>
               </CTAPrimary>
             </a>
             <button
-              aria-label="Menü"
+              aria-label={t.nav.menuLabel}
               aria-expanded={open}
               onClick={() => setOpen((v) => !v)}
               className="md:hidden p-1 transition-transform duration-200 active:scale-90"
@@ -170,7 +172,7 @@ export function Nav() {
               className="zen-link-underline inline-flex items-center gap-1 font-sans py-1.5"
               style={{ fontSize: 16, fontWeight: 500, color: Z.slate, textDecoration: "none" }}
             >
-              labs <span style={{ fontSize: 11 }}>↗</span>
+              {t.nav.links.labs} <span style={{ fontSize: 11 }}>↗</span>
             </a>
           </div>
         </div>

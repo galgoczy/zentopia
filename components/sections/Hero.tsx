@@ -1,6 +1,7 @@
 "use client";
 
 import { Z } from "@/lib/tokens";
+import { useT } from "@/lib/i18n";
 import { PixelGrid } from "@/components/ui/PixelGrid";
 import { PixelLabel } from "@/components/ui/PixelLabel";
 import { GlitchTE } from "@/components/ui/GlitchTE";
@@ -11,6 +12,7 @@ import { TechStackStrip } from "@/components/ui/TechStackStrip";
 import { Reveal } from "@/components/ui/Reveal";
 
 export function Hero() {
+  const t = useT();
   return (
     <section className="relative overflow-hidden" id="manifesto">
       <PixelGrid />
@@ -22,7 +24,7 @@ export function Hero() {
         <div className="order-2 md:order-1 flex flex-col gap-5 md:gap-7 max-w-full md:max-w-[660px]">
           <Reveal>
             <PixelLabel size={10} className="md:text-[11px]">
-              [ 00 ] MANIFESTO
+              {t.hero.label}
             </PixelLabel>
           </Reveal>
 
@@ -37,10 +39,13 @@ export function Hero() {
                 textWrap: "balance" as any,
               }}
             >
-              Jövő-technológia.
-              <br />A <GlitchTE /> üzletedben.
+              {t.hero.h1.lineA}
               <br />
-              Ma.
+              {t.hero.h1.lineB_before}
+              <GlitchTE>{t.hero.h1.lineB_highlight}</GlitchTE>
+              {t.hero.h1.lineB_after}
+              <br />
+              {t.hero.h1.lineC}
             </h1>
           </Reveal>
 
@@ -61,11 +66,7 @@ export function Hero() {
                 //
               </span>
               <RotatingSubline
-                messages={[
-                  "AI a TE vállalkozásodnak.",
-                  "Hetek, nem hónapok.",
-                  "AI, gondozva.",
-                ]}
+                messages={t.hero.sublines}
                 color={Z.forest}
                 className="text-[14px] md:text-[17px]"
               />
@@ -76,11 +77,11 @@ export function Hero() {
             <div className="flex flex-wrap gap-3 mt-1">
               <a href="#beszeljunk">
                 <CTAPrimary size="md" className="md:[--cta-size:lg]">
-                  Foglalj 30 perces AI-konzultációt →
+                  {t.hero.ctaPrimary}
                 </CTAPrimary>
               </a>
               <a href="#munkak">
-                <CTASecondary size="md">Nézd a munkákat</CTASecondary>
+                <CTASecondary size="md">{t.hero.ctaSecondary}</CTASecondary>
               </a>
             </div>
           </Reveal>
@@ -95,6 +96,7 @@ export function Hero() {
 }
 
 function BonsaiPanel({ className = "" }: { className?: string }) {
+  const t = useT();
   return (
     <div className={`relative flex items-center justify-center ${className}`}>
       {/* desktop corner brackets */}
@@ -144,7 +146,7 @@ function BonsaiPanel({ className = "" }: { className?: string }) {
           letterSpacing: "0.06em",
         }}
       >
-        <span className="md:hidden">circuit_bonsai.v2</span>
+        <span className="md:hidden">{t.hero.bonsaiCaption}</span>
       </span>
       <span
         className="hidden md:inline-block absolute font-mono"
@@ -156,7 +158,7 @@ function BonsaiPanel({ className = "" }: { className?: string }) {
           letterSpacing: "0.06em",
         }}
       >
-        circuit_bonsai.v2
+        {t.hero.bonsaiCaption}
       </span>
     </div>
   );

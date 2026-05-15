@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Z } from "@/lib/tokens";
+import { useT } from "@/lib/i18n";
 import { PixelGrid } from "@/components/ui/PixelGrid";
 import { PixelLabel } from "@/components/ui/PixelLabel";
 import { CTAPrimary } from "@/components/ui/CTA";
@@ -18,69 +19,21 @@ type Case = {
   visual: "photo" | "ledger" | "agent" | "shop";
 };
 
-const CASES: Case[] = [
-  {
-    n: "01",
-    tag: "RENDEZVÉNY · CUSTOM BUILD",
-    title: "Élménypont AI Selfiemata",
-    sub: "AI fotóbox, ami 10 másodperc alatt űrhajóst csinál bárkiből.",
-    stats: [
-      ["10mp", "kép / generálás"],
-      ["5k+", "kép készült"],
-      ["end-to-end", "fejlesztés"],
-    ],
-    color: Z.coral,
-    visual: "photo",
-  },
-  {
-    n: "02",
-    tag: "VENDÉGLÁTÁS · AUTOMATIZÁCIÓ",
-    title: "Pepper House",
-    sub: "7-egységes vendéglátó cég teljes AI-vezérelt pénzügyi rendszere.",
-    stats: [
-      ["7", "egység"],
-      ["100%", "AI admin"],
-      ["online", "workflow"],
-    ],
-    color: Z.sunshine,
-    visual: "ledger",
-  },
-  {
-    n: "03",
-    tag: "IRODA · AI AGENT",
-    title: "Alfie the Agent",
-    sub: "Teljes irodai AI munkatárs számlákkal, naptárral, stratégiával.",
-    stats: [
-      ["1", "AI munkatárs"],
-      ["24/7", "működés"],
-      ["NDA", "sandboxed"],
-    ],
-    color: Z.sky,
-    visual: "agent",
-  },
-  {
-    n: "04",
-    tag: "E-COMMERCE · END-TO-END",
-    title: "Nola and Co",
-    sub: "Teljes AI-powered webshop 2 hét alatt, töredék fenntartási költséggel.",
-    stats: [
-      ["2 hét", "build"],
-      ["1", "workflow mindenre"],
-      ["−90%", "költség"],
-    ],
-    color: Z.violet,
-    visual: "shop",
-  },
-];
-
-const TOTAL_STATS: [string, string][] = [
-  ["4", "iparág"],
-  ["2 hét", "leggyorsabb projekt"],
-  ["100%", "AI-powered"],
-  ["1", "enterprise sandbox"],
-];
+const CASE_COLORS = [Z.coral, Z.sunshine, Z.sky, Z.violet];
+const CASE_VISUALS: Case["visual"][] = ["photo", "ledger", "agent", "shop"];
 
 export function Cases() {
+  const t = useT();
+  const CASES: Case[] = t.cases.items.map((c, i) => ({
+    n: String(i + 1).padStart(2, "0"),
+    tag: c.tag,
+    title: c.title,
+    sub: c.sub,
+    stats: c.stats,
+    color: CASE_COLORS[i],
+    visual: CASE_VISUALS[i],
+  }));
+  const TOTAL_STATS = t.cases.statRow;
   return (
     <section
       id="munkak"
@@ -117,7 +70,7 @@ export function Cases() {
         <div className="flex justify-start md:justify-end mt-8 md:mt-12">
           <a href="#beszeljunk">
             <CTAPrimary size="md" dark className="md:[--cta-size:lg]">
-              Foglalj időpontot Te is! →
+              {t.cases.footerCta}
             </CTAPrimary>
           </a>
         </div>
@@ -127,11 +80,12 @@ export function Cases() {
 }
 
 function CasesHeader() {
+  const t = useT();
   return (
     <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-7 md:mb-10">
       <Reveal className="flex flex-col gap-3.5 max-w-[760px]">
         <PixelLabel size={10} color={Z.lime} className="md:text-[11px]">
-          [ 05 ] MUNKÁK
+          {t.cases.label}
         </PixelLabel>
         <h2
           className="m-0 font-sans font-bold"
@@ -142,7 +96,7 @@ function CasesHeader() {
             lineHeight: 0.98,
           }}
         >
-          Amit eddig építettünk.
+          {t.cases.h2}
         </h2>
       </Reveal>
       <Reveal delay={80} className="md:max-w-[340px]">
@@ -153,7 +107,7 @@ function CasesHeader() {
             color: "rgba(250,250,247,0.65)",
           }}
         >
-          Négy példa projekt — négy iparág — egyetlen filozófia.
+          {t.cases.sub}
         </p>
       </Reveal>
     </div>
@@ -161,6 +115,8 @@ function CasesHeader() {
 }
 
 function StatRow() {
+  const t = useT();
+  const TOTAL_STATS = t.cases.statRow;
   const muted = "rgba(250,250,247,0.55)";
   const border = "rgba(250,250,247,0.10)";
   return (
@@ -208,6 +164,7 @@ function StatRow() {
 }
 
 function CaseCard({ c }: { c: Case }) {
+  const t = useT();
   const muted = "rgba(250,250,247,0.62)";
   const border = "rgba(250,250,247,0.10)";
   const [showComing, setShowComing] = useState(false);
@@ -305,7 +262,7 @@ function CaseCard({ c }: { c: Case }) {
             letterSpacing: "-0.01em",
           }}
         >
-          Olvasd el a teljes történetet{" "}
+          {t.cases.cardLink}{" "}
           <span className="zen-arrow-nudge" style={{ color: c.color }}>
             →
           </span>
@@ -323,7 +280,7 @@ function CaseCard({ c }: { c: Case }) {
             pointerEvents: "none",
           }}
         >
-          // részletek hamarosan
+          {t.cases.comingSoon}
         </span>
       </div>
     </div>

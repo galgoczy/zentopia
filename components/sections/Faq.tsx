@@ -2,25 +2,18 @@
 
 import { useEffect, useRef, useState } from "react";
 import { Z } from "@/lib/tokens";
+import { useT } from "@/lib/i18n";
 import { PixelGrid } from "@/components/ui/PixelGrid";
 import { PixelLabel } from "@/components/ui/PixelLabel";
 import { Reveal } from "@/components/ui/Reveal";
 
 type Item = { q: string; a: string };
 
-const FAQ: Item[] = [
-  { q: "Mennyibe kerül egy AI projekt nálatok?", a: "A projektek 500.000 – 5.000.000 HUF közötti tartományban mozognak, a komplexitás függvényében. Egy ügyfélszolgálati chatbot más nagyságrend, mint egy teljes webshop AI workflow. A pontos árajánlatot az Audit után adjuk, számokkal alátámasztva." },
-  { q: "Mennyi időbe telik egy projekt?", a: "A legtöbb build 2–8 hét. A Nola and Co (teljes AI webshop) 2 hét alatt készült el. Egy enterprise AI agent rendszer (mint az Alfie) 6–8 hét. Az időt mindig az Auditban közösen véglegesítjük." },
-  { q: "Mi a különbség köztetek és egy ChatGPT bevezetés között?", a: "A ChatGPT egy eszköz. Mi rendszereket építünk, amik konkrét üzleti folyamatokat futtatnak — számlákat dolgoznak fel, ügyfeleket szolgálnak ki, riportokat készítenek. Egy ChatGPT-fiók válaszol, ha kérdezed. Egy zentopia AI rendszer 0-24 dolgozik, integrálva a többi rendszereddel." },
-  { q: "Mi van, ha nincs sok adatunk vagy nincs technikai csapatunk?", a: 'Ez a leggyakoribb helyzet a vállalkozásoknál — pont ezért dolgozunk velük. Az Auditban átnézzük, mi van, és mi hiányzik. Sokszor a "nincs adatunk" valójában csak azt jelenti, hogy az adat egy másik rendszerben van. Nem kell technikai csapat — mi vagyunk az.' },
-  { q: "Mi van az adataimmal? Biztonságosan kezeled?", a: "Igen. Minden projekt saját, izolált környezetben fut (lásd: Alfie enterprise sandbox). Az ügyfél-adatokat soha nem osztjuk meg AI training-re, harmadik felekkel. GDPR-konform működés, magyar jogi környezet." },
-  { q: "Mi van, ha az ingyenes AI-konzultáció után nem akarok veletek dolgozni?", a: "Akkor a térkép a tied. Megmutattuk, hol érdemes elindulnod — akár saját erőből, akár másik partnerrel. Nincs nyomás, nincs follow-up email-spam." },
-  { q: 'Mi az a "labs.zentopia.io"?', a: 'Ez a "labor" — itt megosztjuk a tanulságokat, a meghibásodásokat, a kísérleteket. Magyar nyelvű AI-tartalom, ami nem hype, hanem tapasztalat. Iratkozz fel, ha akarsz.' },
-];
-
 const accent = Z.ember;
 
 export function Faq() {
+  const t = useT();
+  const FAQ = t.faq.items;
   const [openIdx, setOpenIdx] = useState(0);
 
   return (
@@ -33,7 +26,7 @@ export function Faq() {
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8 md:mb-12">
           <Reveal className="flex flex-col gap-3.5 max-w-[760px]">
             <PixelLabel size={10} className="md:text-[11px]">
-              [ 07 ] GYIK
+              {t.faq.label}
             </PixelLabel>
             <h2
               className="m-0 font-sans font-bold"
@@ -44,7 +37,7 @@ export function Faq() {
                 lineHeight: 0.98,
               }}
             >
-              Gyakori kérdések.
+              {t.faq.h2}
             </h2>
           </Reveal>
           <Reveal delay={80} className="md:max-w-[320px]">
@@ -52,7 +45,7 @@ export function Faq() {
               className="m-0 leading-[1.5] md:text-right"
               style={{ fontSize: 15, color: Z.slate }}
             >
-              Amit minden első beszélgetésen megkérdeznek.
+              {t.faq.sub}
             </p>
           </Reveal>
         </div>

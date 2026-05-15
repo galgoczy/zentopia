@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { LangProvider } from "@/lib/i18n";
-import { hu } from "@/lib/translations/hu";
+import { en } from "@/lib/translations/en";
 import { Nav } from "@/components/sections/Nav";
 import { Hero } from "@/components/sections/Hero";
 import { Services } from "@/components/sections/Services";
@@ -14,29 +14,29 @@ import { Footer } from "@/components/sections/Footer";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://zentopia.io"),
-  title: hu.meta.title,
-  description: hu.meta.description,
+  title: en.meta.title,
+  description: en.meta.description,
   alternates: {
-    canonical: "/",
+    canonical: "/en",
     languages: {
       hu: "/",
       en: "/en",
     },
   },
   openGraph: {
-    title: hu.meta.title,
-    description: hu.meta.ogDescription,
-    url: "/",
+    title: en.meta.title,
+    description: en.meta.ogDescription,
+    url: "/en",
     siteName: "Zentopia",
-    locale: "hu_HU",
-    alternateLocale: ["en_US"],
+    locale: "en_US",
+    alternateLocale: ["hu_HU"],
     type: "website",
   },
 };
 
-export default function HomePage() {
+export default function HomePageEN() {
   return (
-    <LangProvider lang="hu">
+    <LangProvider lang="en">
       <main className="bg-offwhite">
         <Nav />
         <Hero />

@@ -2,27 +2,17 @@
 
 import Image from "next/image";
 import { Z } from "@/lib/tokens";
+import { useT } from "@/lib/i18n";
 import { PixelGrid } from "@/components/ui/PixelGrid";
 import { PixelLabel } from "@/components/ui/PixelLabel";
 import { Reveal } from "@/components/ui/Reveal";
 import { CountUp } from "@/components/ui/CountUp";
 
-const BIO = [
-  "10+ éve dolgozom digitális marketingben — multiknál és KKV-knál egyaránt. Pontosan értem, milyen problémákkal néz szembe egy szervezet, függetlenül a méretétől.",
-  "2023-ban megérkezett a generatív AI, és azonnal megéreztem, hogy ez nem egy újabb hype-ciklus. Azóta hands-on építek AI-t — webshopoktól irodai munkatársakig, rendezvénytechnikától pénzügyi adminig. Négy iparág, négy nagyon különböző use case.",
-  "Ezért indítottam el a Zentopiát.",
-  "A küldetésünk egyszerű: nem AI-stratégiát árulunk PDF-ben — működő rendszereket építünk. Olyanokat, amik ott vannak, dolgoznak, és tényleges különbséget tesznek. Hetek alatt — nem hónapok alatt.",
-];
-
-const STATS: [string, string][] = [
-  ["10+", "év marketing"],
-  ["2023 óta", "AI"],
-  ["4", "iparág"],
-];
-
 const accent = Z.ember;
 
 export function Founder() {
+  const t = useT();
+  const BIO = t.founder.bio;
   const beforeQuote = BIO.slice(0, 2);
   const quote = BIO[2];
   const afterQuote = [BIO[3]];
@@ -36,7 +26,7 @@ export function Founder() {
       <div className="relative z-[1] px-5 pt-14 pb-8 md:px-14 md:pt-[104px] md:pb-14">
         <Reveal className="flex flex-col gap-3.5 mb-8 md:mb-12 max-w-[720px]">
           <PixelLabel size={10} color={accent} className="md:text-[11px]">
-            [ 06 ] ALAPÍTÓ
+            {t.founder.label}
           </PixelLabel>
           <h2
             className="m-0 font-sans font-bold"
@@ -47,7 +37,7 @@ export function Founder() {
               lineHeight: 0.98,
             }}
           >
-            Helló, Gergő vagyok.
+            {t.founder.h2}
           </h2>
           <span
             className="font-mono"
@@ -57,7 +47,7 @@ export function Founder() {
               letterSpacing: "0.04em",
             }}
           >
-            // alapító · zentopia
+            {t.founder.role}
           </span>
         </Reveal>
 
@@ -131,7 +121,7 @@ export function Founder() {
                 letterSpacing: "-0.01em",
               }}
             >
-              LinkedIn{" "}
+              {t.founder.linkedin}{" "}
               <span className="zen-arrow-nudge" style={{ color: accent }}>
                 ↗
               </span>
@@ -152,6 +142,7 @@ export function Founder() {
 }
 
 function PortraitCard() {
+  const t = useT();
   return (
     <div
       className="group relative overflow-hidden flex flex-col gap-3 shrink-0 zen-card-lift"
@@ -177,7 +168,7 @@ function PortraitCard() {
           <source srcSet="/assets/founder.webp" type="image/webp" />
           <Image
             src="/assets/founder.jpg"
-            alt="Galgóczy Gergely · Zentopia alapító"
+            alt={t.founder.photoAlt}
             width={800}
             height={800}
             priority={false}
@@ -217,7 +208,7 @@ function PortraitCard() {
             borderRadius: 2,
           }}
         >
-          // gergő · 2026
+          {t.founder.photoCaption}
         </span>
       </div>
       <div
@@ -232,7 +223,7 @@ function PortraitCard() {
             letterSpacing: "-0.02em",
           }}
         >
-          Galgóczy Gergely
+          {t.founder.photoName}
         </span>
         <span
           className="font-mono"
@@ -242,7 +233,7 @@ function PortraitCard() {
             letterSpacing: "0.04em",
           }}
         >
-          // alapító
+          {t.founder.photoRole}
         </span>
       </div>
     </div>
@@ -250,6 +241,7 @@ function PortraitCard() {
 }
 
 function StatStrip() {
+  const t = useT();
   return (
     <div
       className="grid grid-cols-3 gap-0"
@@ -260,7 +252,7 @@ function StatStrip() {
         borderBottom: `1px solid ${Z.hairline}`,
       }}
     >
-      {STATS.map(([val, lbl], i) => (
+      {t.founder.stats.map(([val, lbl], i) => (
         <div
           key={i}
           className="flex flex-col gap-1"

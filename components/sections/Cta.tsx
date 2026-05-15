@@ -2,21 +2,14 @@
 
 import { useId, useState } from "react";
 import { Z } from "@/lib/tokens";
+import { useT } from "@/lib/i18n";
 import { PixelGrid } from "@/components/ui/PixelGrid";
 import { PixelLabel } from "@/components/ui/PixelLabel";
 import { CTAPrimary } from "@/components/ui/CTA";
 import { Reveal } from "@/components/ui/Reveal";
 
-type Step = { n: string; title: string; body: string };
-
-const STEPS_EXPECT: Step[] = [
-  { n: "1", title: "24 órán belül válasz", body: "Email-en jelentkezünk, és kiválasztunk egy közös időpontot." },
-  { n: "2", title: "30 perces Google Meet", body: "Megnézzük a működésedet, kérdezünk konkrétumokat." },
-  { n: "3", title: "Konkrét AI-térkép", body: "3–5 területet jelölünk meg, ahol érdemes elindulnod." },
-  { n: "4", title: "Te döntesz", body: "Ha nálunk akarsz dolgozni, ajánlatot adunk. Ha nem, akkor is tiéd a térkép." },
-];
-
 export function Cta() {
+  const t = useT();
   return (
     <section
       id="beszeljunk"
@@ -42,7 +35,7 @@ export function Cta() {
       <div className="relative z-[1] px-5 pt-14 pb-[72px] md:px-14 md:pt-[104px] md:pb-[120px]">
         <Reveal className="flex flex-col gap-[18px] max-w-[820px] mb-9 md:mb-14">
           <PixelLabel size={10} color={Z.lime} className="md:text-[11px]">
-            [ 08 ] BESZÉLJÜNK
+            {t.cta.label}
           </PixelLabel>
           <h2
             className="m-0 font-sans font-bold"
@@ -53,7 +46,8 @@ export function Cta() {
               lineHeight: 0.94,
             }}
           >
-            30 perc, <span style={{ color: Z.lime }}>ami megéri.</span>
+            {t.cta.h2_before}
+            <span style={{ color: Z.lime }}>{t.cta.h2_highlight}</span>
           </h2>
           <p
             className="m-0 leading-[1.5] max-w-[620px]"
@@ -62,8 +56,7 @@ export function Cta() {
               color: "rgba(250,250,247,0.7)",
             }}
           >
-            Egy fél órás beszélgetés, amiben átnézzük együtt, hol érdemes neked
-            AI-zni — és hol nem.
+            {t.cta.sub}
           </p>
         </Reveal>
 
@@ -82,6 +75,7 @@ export function Cta() {
 }
 
 function ContactForm() {
+  const t = useT();
   const [state, setState] = useState<
     | { status: "idle" | "loading" }
     | { status: "success" }
@@ -115,19 +109,19 @@ function ContactForm() {
           status: "error",
           msg:
             json?.error === "missing_fields"
-              ? "Tölts ki minden kötelező mezőt."
+              ? t.cta.form.errorMissing
               : json?.error === "invalid_email"
-              ? "Adj meg egy érvényes email címet."
+              ? t.cta.form.errorEmail
               : json?.error === "not_configured"
-              ? "A küldés még nincs beüzemelve. Írj a team@zentopia.io-ra."
-              : "Hiba történt. Próbáld újra, vagy írj a team@zentopia.io-ra.",
+              ? t.cta.form.errorNotConfigured
+              : t.cta.form.errorGeneric,
         });
       }
     } catch (err) {
       console.error("[contact form]", err);
       setState({
         status: "error",
-        msg: "Nem sikerült elküldeni. Próbáld újra, vagy írj a team@zentopia.io-ra.",
+        msg: t.cta.form.errorNetwork,
       });
     }
   }
@@ -170,7 +164,7 @@ function ContactForm() {
 
       <div className="flex flex-col gap-1">
         <PixelLabel size={11} color={Z.lime}>
-          FOGLALJ IDŐPONTOT
+          {t.cta.form.label}
         </PixelLabel>
         <span
           className="font-sans mt-2"
@@ -180,19 +174,19 @@ function ContactForm() {
             letterSpacing: "-0.01em",
           }}
         >
-          Töltsd ki és 24 órán belül megkeresünk, hogy időpontot egyeztessünk.
+          {t.cta.form.caption}
         </span>
       </div>
 
-      <DarkField name="name" label="Név" placeholder="Hogyan szólítsunk?" required />
-      <DarkField name="email" label="Email" type="email" placeholder="pl. neved@cegnev.hu" required />
-      <DarkField name="phone" label="Telefonszám" placeholder="+36 30 123 4567" />
-      <DarkField name="company" label="Cégnév" placeholder="A vállalkozásod neve" />
-      <DarkField name="industry" label="Iparág" placeholder="pl. e-commerce, vendéglátás" />
+      <DarkField name="name" label={t.cta.form.fields.name.label} placeholder={t.cta.form.fields.name.placeholder} required />
+      <DarkField name="email" label={t.cta.form.fields.email.label} type="email" placeholder={t.cta.form.fields.email.placeholder} required />
+      <DarkField name="phone" label={t.cta.form.fields.phone.label} placeholder={t.cta.form.fields.phone.placeholder} />
+      <DarkField name="company" label={t.cta.form.fields.company.label} placeholder={t.cta.form.fields.company.placeholder} />
+      <DarkField name="industry" label={t.cta.form.fields.industry.label} placeholder={t.cta.form.fields.industry.placeholder} />
       <DarkField
         name="challenge"
-        label="Mi a kihívás?"
-        placeholder="Szeretnénk az ügyfélszolgálatot AI-jal támogatni, de nem tudjuk hol kezdjük..."
+        label={t.cta.form.fields.challenge.label}
+        placeholder={t.cta.form.fields.challenge.placeholder}
         required
         textarea
       />
@@ -204,9 +198,7 @@ function ContactForm() {
           dark
           className="md:[--cta-size:lg]"
         >
-          {state.status === "loading"
-            ? "Küldés…"
-            : "Foglalj 30 perces AI-konzultációt →"}
+          {state.status === "loading" ? t.cta.form.submitting : t.cta.form.submit}
         </CTAPrimary>
         <span
           className="font-mono"
@@ -216,7 +208,7 @@ function ContactForm() {
             letterSpacing: "0.04em",
           }}
         >
-          * kötelező mező · 100% spam-mentes
+          {t.cta.form.disclaimer}
         </span>
       </div>
 
@@ -233,7 +225,7 @@ function ContactForm() {
             fontSize: 14,
           }}
         >
-          Köszi! Megkaptuk — 24 órán belül jelentkezünk.
+          {t.cta.form.success}
         </div>
       )}
       {state.status === "error" && (
@@ -335,15 +327,16 @@ function DarkField({
 }
 
 function MireSzamithatsz() {
+  const t = useT();
   return (
     <div className="flex flex-col gap-5">
       <PixelLabel size={11} color={Z.lime}>
-        MIRE SZÁMÍTHATSZ
+        {t.cta.expect.label}
       </PixelLabel>
       <div className="flex flex-col gap-[18px]">
-        {STEPS_EXPECT.map((s, idx) => (
+        {t.cta.expect.steps.map((s, idx) => (
           <div
-            key={s.n}
+            key={idx}
             className="group flex items-start gap-4 transition-transform duration-300 hover:translate-x-1"
             style={{ animation: `fade-up 600ms ${idx * 80}ms both` }}
           >
@@ -357,7 +350,7 @@ function MireSzamithatsz() {
                 width: 32,
               }}
             >
-              {s.n}.
+              {idx + 1}.
             </span>
             <div className="flex flex-col gap-1">
               <h4
@@ -389,13 +382,14 @@ function MireSzamithatsz() {
 }
 
 function AltContact() {
+  const t = useT();
   return (
     <div
       className="flex flex-col gap-3.5 pt-6"
       style={{ borderTop: "1px solid rgba(250,250,247,0.10)" }}
     >
       <PixelLabel size={11} color={Z.lime}>
-        VAGY KÖZVETLENÜL
+        {t.cta.direct.label}
       </PixelLabel>
       <a
         href="mailto:hello@zentopia.io"

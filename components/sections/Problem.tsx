@@ -1,6 +1,7 @@
 "use client";
 
 import { Z } from "@/lib/tokens";
+import { useT } from "@/lib/i18n";
 import { PixelGrid } from "@/components/ui/PixelGrid";
 import { PixelLabel } from "@/components/ui/PixelLabel";
 import { Typewriter } from "@/components/ui/Typewriter";
@@ -15,13 +16,16 @@ type Problem = {
   sub: string;
 };
 
-const PROBLEMS: Problem[] = [
-  { n: "01", color: Z.ember,  symbol: "?", q: ["Használnád az AI-t,", "de nem tudod,", "pontosan mire?"], sub: "Sok eszköz, sok hype, sok ígéret. De konkrétan?" },
-  { n: "02", color: Z.sky,    symbol: "$", q: ["Melyik eszköz hozna", "tényleg bevételt?"],                sub: "Nem trend, nem demo — valódi üzleti hatás." },
-  { n: "03", color: Z.violet, symbol: "⚙", q: ["Hogy tudnál kiváltani", "emberi munkaerőt?"],              sub: "Vagy felgyorsítani azt, ami már működik." },
-];
-
 export function Problem() {
+  const t = useT();
+  const COLORS = [Z.ember, Z.sky, Z.violet];
+  const PROBLEMS: Problem[] = t.problem.items.map((p, i) => ({
+    n: String(i + 1).padStart(2, "0"),
+    color: COLORS[i],
+    symbol: p.symbol,
+    q: p.lines,
+    sub: p.sub,
+  }));
   return (
     <section
       id="kerdes"
@@ -31,7 +35,7 @@ export function Problem() {
       <div className="relative z-[1] px-5 pt-8 pb-14 md:px-14 md:pt-14 md:pb-28">
         <Reveal className="flex flex-col gap-3.5 mb-7 md:mb-12 max-w-[760px]">
           <PixelLabel size={10} className="md:text-[11px]">
-            [ 03 ] A KÉRDÉS
+            {t.problem.label}
           </PixelLabel>
           <h2
             className="m-0 font-sans font-bold"
@@ -42,7 +46,7 @@ export function Problem() {
               lineHeight: 0.98,
             }}
           >
-            Ismerős?
+            {t.problem.h2}
           </h2>
         </Reveal>
 
@@ -63,6 +67,7 @@ export function Problem() {
 }
 
 function ProblemCard({ p, idx }: { p: Problem; idx: number }) {
+  const t = useT();
   return (
     <div
       className="group zen-card-lift flex flex-col overflow-hidden h-full"
@@ -83,7 +88,7 @@ function ProblemCard({ p, idx }: { p: Problem; idx: number }) {
               letterSpacing: "0.08em",
             }}
           >
-            // kérdés {p.n}
+            {t.problem.monoPrefix} {p.n}
           </span>
         </div>
         <div
@@ -129,6 +134,7 @@ function ProblemCard({ p, idx }: { p: Problem; idx: number }) {
 }
 
 function ProblemBridge() {
+  const t = useT();
   return (
     <div
       className="relative overflow-hidden mt-7 md:mt-14"
@@ -150,7 +156,7 @@ function ProblemBridge() {
               letterSpacing: "-0.01em",
             }}
           >
-            Ismerős kérdések?
+            {t.problem.bridge.eyebrow}
           </span>
           <span
             className="font-bold"
@@ -162,15 +168,13 @@ function ProblemBridge() {
               maxWidth: 720,
             }}
           >
-            Akkor jó helyen jársz.{" "}
-            <span style={{ color: Z.lime }}>
-              Megmutatjuk, hogyan találunk rájuk választ →
-            </span>
+            {t.problem.bridge.leadLine}{" "}
+            <span style={{ color: Z.lime }}>{t.problem.bridge.highlight}</span>
           </span>
         </div>
         <a href="#folyamat" className="shrink-0">
           <CTAPrimary size="md" dark className="md:[--cta-size:lg]">
-            Mutasd a folyamatot →
+            {t.problem.bridge.cta}
           </CTAPrimary>
         </a>
       </div>
