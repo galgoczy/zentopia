@@ -128,10 +128,10 @@ function BonsaiPanel({ className = "" }: { className?: string }) {
       />
       <div className="relative p-2 md:p-6">
         <div className="md:hidden">
-          <BreathingBonsai size={200} base="forest" />
+          <BreathingBonsai size={200} base="forest" glitchCycle={5} />
         </div>
         <div className="hidden md:block">
-          <BreathingBonsai size={460} base="forest" />
+          <BreathingBonsai size={460} base="forest" glitchCycle={5} />
         </div>
       </div>
       <span

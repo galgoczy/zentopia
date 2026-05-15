@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { Z } from "@/lib/tokens";
 import { PixelGrid } from "@/components/ui/PixelGrid";
 import { PixelLabel } from "@/components/ui/PixelLabel";
@@ -209,6 +210,7 @@ function StatRow() {
 function CaseCard({ c }: { c: Case }) {
   const muted = "rgba(250,250,247,0.62)";
   const border = "rgba(250,250,247,0.10)";
+  const [showComing, setShowComing] = useState(false);
   return (
     <div
       className="group zen-card-lift relative overflow-hidden flex flex-col flex-1 h-full"
@@ -288,21 +290,42 @@ function CaseCard({ c }: { c: Case }) {
         ))}
       </div>
 
-      <a
-        href="#"
-        className="zen-arrow-host inline-flex items-center gap-1.5 font-sans mt-1"
-        style={{
-          fontSize: 14,
-          fontWeight: 600,
-          color: Z.offwhite,
-          textDecoration: "none",
-        }}
-      >
-        Olvasd el a teljes történetet{" "}
-        <span className="zen-arrow-nudge" style={{ color: c.color }}>
-          →
+      <div className="flex items-center flex-wrap gap-3 mt-1">
+        <button
+          type="button"
+          onClick={(e) => {
+            e.preventDefault();
+            setShowComing(true);
+          }}
+          className="zen-arrow-host inline-flex items-center gap-1.5 font-sans cursor-pointer bg-transparent border-0 p-0"
+          style={{
+            fontSize: 14,
+            fontWeight: 600,
+            color: Z.offwhite,
+            letterSpacing: "-0.01em",
+          }}
+        >
+          Olvasd el a teljes történetet{" "}
+          <span className="zen-arrow-nudge" style={{ color: c.color }}>
+            →
+          </span>
+        </button>
+        <span
+          aria-live="polite"
+          className="font-mono transition-all duration-300 ease-out"
+          style={{
+            fontSize: 11,
+            color: c.color,
+            letterSpacing: "0.08em",
+            textTransform: "uppercase",
+            opacity: showComing ? 1 : 0,
+            transform: showComing ? "translateX(0)" : "translateX(-6px)",
+            pointerEvents: "none",
+          }}
+        >
+          // részletek hamarosan
         </span>
-      </a>
+      </div>
     </div>
   );
 }
