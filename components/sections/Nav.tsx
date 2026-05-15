@@ -19,6 +19,7 @@ export function Nav() {
 
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+  const [labsHinted, setLabsHinted] = useState(false);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 12);
@@ -77,24 +78,42 @@ export function Nav() {
                 {l.label}
               </a>
             ))}
-            <a
-              href="https://labs.zentopia.io"
-              className="zen-link-underline group inline-flex items-center gap-1 font-sans"
-              style={{
-                fontSize: 14,
-                fontWeight: 500,
-                color: Z.slate,
-                textDecoration: "none",
-              }}
-            >
-              {t.nav.links.labs}{" "}
-              <span
-                className="zen-arrow-nudge transition-transform"
-                style={{ fontSize: 10 }}
+            <span className="inline-flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => setLabsHinted(true)}
+                className="zen-link-underline group inline-flex items-center gap-1 font-sans bg-transparent border-0 p-0 cursor-pointer"
+                style={{
+                  fontSize: 14,
+                  fontWeight: 500,
+                  color: Z.slate,
+                  letterSpacing: "-0.01em",
+                }}
               >
-                ↗
+                {t.nav.links.labs}{" "}
+                <span
+                  className="zen-arrow-nudge transition-transform"
+                  style={{ fontSize: 10 }}
+                >
+                  ↗
+                </span>
+              </button>
+              <span
+                aria-live="polite"
+                className="font-mono transition-all duration-300 ease-out"
+                style={{
+                  fontSize: 10,
+                  color: Z.ember,
+                  letterSpacing: "0.06em",
+                  textTransform: "uppercase",
+                  opacity: labsHinted ? 1 : 0,
+                  transform: labsHinted ? "translateX(0)" : "translateX(-6px)",
+                  pointerEvents: "none",
+                }}
+              >
+                {t.nav.labsComing}
               </span>
-            </a>
+            </span>
           </div>
 
           <div className="flex items-center gap-[10px] md:gap-[14px]">
@@ -167,13 +186,31 @@ export function Nav() {
                 {l.label}
               </a>
             ))}
-            <a
-              href="https://labs.zentopia.io"
-              className="zen-link-underline inline-flex items-center gap-1 font-sans py-1.5"
-              style={{ fontSize: 16, fontWeight: 500, color: Z.slate, textDecoration: "none" }}
-            >
-              {t.nav.links.labs} <span style={{ fontSize: 11 }}>↗</span>
-            </a>
+            <span className="inline-flex items-center gap-2 py-1.5">
+              <button
+                type="button"
+                onClick={() => setLabsHinted(true)}
+                className="zen-link-underline inline-flex items-center gap-1 font-sans bg-transparent border-0 p-0 cursor-pointer"
+                style={{ fontSize: 16, fontWeight: 500, color: Z.slate }}
+              >
+                {t.nav.links.labs} <span style={{ fontSize: 11 }}>↗</span>
+              </button>
+              <span
+                aria-live="polite"
+                className="font-mono transition-all duration-300 ease-out"
+                style={{
+                  fontSize: 10,
+                  color: Z.ember,
+                  letterSpacing: "0.06em",
+                  textTransform: "uppercase",
+                  opacity: labsHinted ? 1 : 0,
+                  transform: labsHinted ? "translateX(0)" : "translateX(-6px)",
+                  pointerEvents: "none",
+                }}
+              >
+                {t.nav.labsComing}
+              </span>
+            </span>
           </div>
         </div>
       </nav>

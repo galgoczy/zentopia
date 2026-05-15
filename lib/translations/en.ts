@@ -13,6 +13,7 @@ export const en: Dict = {
     ctaShort: "Book →",
     ctaLong: "Book a session →",
     menuLabel: "Menu",
+    labsComing: "// coming soon",
   },
 
   hero: {

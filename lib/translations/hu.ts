@@ -13,6 +13,7 @@ export const hu = {
     ctaShort: "Foglalj →",
     ctaLong: "Foglalj időpontot →",
     menuLabel: "Menü",
+    labsComing: "// hamarosan",
   },
 
   hero: {

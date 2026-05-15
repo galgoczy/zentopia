@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
 
+type Lang = "hu" | "en";
+
 type ContactPayload = {
   name?: string;
   email?: string;
@@ -7,6 +9,7 @@ type ContactPayload = {
   company?: string;
   industry?: string;
   challenge?: string;
+  lang?: string;
 };
 
 type FormData = {
@@ -16,6 +19,54 @@ type FormData = {
   company: string;
   industry: string;
   challenge: string;
+  lang: Lang;
+};
+
+const VISITOR_COPY: Record<Lang, {
+  subject: string;
+  greetingPrefix: string;
+  greetingSuffix: string;
+  intro: (boldPromise: string) => { html: string; text: string };
+  promiseBold: string;
+  recorded: string;
+  challengeLabel: string;
+  signoff: string;
+  team: string;
+  visualLabel: string;
+  fieldLabels: { name: string; email: string; phone: string; company: string; industry: string };
+}> = {
+  hu: {
+    subject: "Köszi, megkaptuk az üzeneted — Zentopia",
+    greetingPrefix: "Helló ",
+    greetingSuffix: ", köszi az üzenetedet!",
+    intro: (bold) => ({
+      html: `Megkaptuk a megkeresésedet a zentopia.io-n. <strong>${bold}</strong> egy konkrét időpont-javaslattal a 30 perces AI-konzultációra.`,
+      text: `Megkaptuk a megkeresésedet a zentopia.io-n. ${bold} egy konkrét időpont-javaslattal a 30 perces AI-konzultációra.`,
+    }),
+    promiseBold: "24 órán belül visszajelzünk",
+    recorded: "Az alábbi adatokat rögzítettük:",
+    challengeLabel: "A kihívásod",
+    signoff: "Üdv,",
+    team: "Zentopia csapat",
+    visualLabel: "// VISSZAIGAZOLÁS",
+    fieldLabels: { name: "Név", email: "Email", phone: "Telefon", company: "Cég", industry: "Iparág" },
+  },
+  en: {
+    subject: "Thanks, we got your message — Zentopia",
+    greetingPrefix: "Hi ",
+    greetingSuffix: ", thanks for reaching out!",
+    intro: (bold) => ({
+      html: `We received your inquiry on zentopia.io. <strong>${bold}</strong> with a concrete time slot for the 30-minute AI session.`,
+      text: `We received your inquiry on zentopia.io. ${bold} with a concrete time slot for the 30-minute AI session.`,
+    }),
+    promiseBold: "We'll get back to you within 24 hours",
+    recorded: "We've recorded the following details:",
+    challengeLabel: "Your challenge",
+    signoff: "Cheers,",
+    team: "The Zentopia team",
+    visualLabel: "// CONFIRMATION",
+    fieldLabels: { name: "Name", email: "Email", phone: "Phone", company: "Company", industry: "Industry" },
+  },
 };
 
 type ChannelResult =
@@ -65,6 +116,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ ok: false, error: "invalid_json" }, { status: 400 });
     }
 
+    const lang: Lang = body.lang === "en" ? "en" : "hu";
     const data: FormData = {
       name: (body.name || "").trim(),
       email: (body.email || "").trim(),
@@ -72,6 +124,7 @@ export async function POST(req: Request) {
       company: (body.company || "").trim(),
       industry: (body.industry || "").trim(),
       challenge: (body.challenge || "").trim(),
+      lang,
     };
 
     if (!data.name || !data.email || !data.challenge) {
@@ -205,6 +258,7 @@ async function sendTeamNotification(d: FormData): Promise<ChannelResult> {
     ["Telefon", d.phone || "—"],
     ["Cég", d.company || "—"],
     ["Iparág", d.industry || "—"],
+    ["Nyelv", d.lang.toUpperCase()],
   ];
 
   const html = `<!doctype html><html lang="hu"><body style="margin:0;padding:32px;background:#FAFAF7;color:#0F1F1A;font-family:Arial,sans-serif">
@@ -239,50 +293,51 @@ ${d.challenge}
 }
 
 async function sendVisitorConfirmation(d: FormData): Promise<ChannelResult> {
-  const subject = "Köszi, megkaptuk az üzeneted — Zentopia";
+  const c = VISITOR_COPY[d.lang];
 
   const rows: [string, string][] = [
-    ["Név", d.name],
-    ["Email", d.email],
+    [c.fieldLabels.name, d.name],
+    [c.fieldLabels.email, d.email],
   ];
-  if (d.phone) rows.push(["Telefon", d.phone]);
-  if (d.company) rows.push(["Cég", d.company]);
-  if (d.industry) rows.push(["Iparág", d.industry]);
+  if (d.phone) rows.push([c.fieldLabels.phone, d.phone]);
+  if (d.company) rows.push([c.fieldLabels.company, d.company]);
+  if (d.industry) rows.push([c.fieldLabels.industry, d.industry]);
 
-  const html = `<!doctype html><html lang="hu"><body style="margin:0;padding:32px;background:#FAFAF7;color:#0F1F1A;font-family:Arial,sans-serif">
+  const introBoth = c.intro(c.promiseBold);
+
+  const html = `<!doctype html><html lang="${d.lang}"><body style="margin:0;padding:32px;background:#FAFAF7;color:#0F1F1A;font-family:Arial,sans-serif">
   <div style="max-width:560px;margin:0 auto;background:#FFFFFF;border:1px solid #E8E4D8;border-radius:12px;padding:32px">
-    <div style="font-family:'Courier New',monospace;font-size:12px;color:#F08947;letter-spacing:0.08em;margin-bottom:8px">// VISSZAIGAZOLÁS</div>
-    <h1 style="margin:0 0 16px;font-size:24px;line-height:1.3;letter-spacing:-0.02em">Helló ${escapeHtml(d.name)}, köszi az üzenetedet!</h1>
-    <p style="margin:0 0 16px;font-size:15px;line-height:1.6;color:#0F1F1A">Megkaptuk a megkeresésedet a zentopia.io-n. <strong>24 órán belül visszajelzünk</strong> egy konkrét időpont-javaslattal a 30 perces AI-konzultációra.</p>
-    <p style="margin:0 0 24px;font-size:15px;line-height:1.6;color:#5A6F66">Az alábbi adatokat rögzítettük:</p>
+    <div style="font-family:'Courier New',monospace;font-size:12px;color:#F08947;letter-spacing:0.08em;margin-bottom:8px">${c.visualLabel}</div>
+    <h1 style="margin:0 0 16px;font-size:24px;line-height:1.3;letter-spacing:-0.02em">${escapeHtml(c.greetingPrefix)}${escapeHtml(d.name)}${escapeHtml(c.greetingSuffix)}</h1>
+    <p style="margin:0 0 16px;font-size:15px;line-height:1.6;color:#0F1F1A">${introBoth.html}</p>
+    <p style="margin:0 0 24px;font-size:15px;line-height:1.6;color:#5A6F66">${escapeHtml(c.recorded)}</p>
     <table style="border-collapse:collapse;width:100%">${summaryRowsHtml(rows)}</table>
     <div style="margin-top:20px;padding-top:20px;border-top:1px solid #E8E4D8">
-      <div style="font-family:'Courier New',monospace;font-size:11px;color:#5A6F66;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:10px">A kihívásod</div>
+      <div style="font-family:'Courier New',monospace;font-size:11px;color:#5A6F66;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:10px">${escapeHtml(c.challengeLabel)}</div>
       <div style="font-size:15px;line-height:1.55;color:#0F1F1A;white-space:pre-wrap">${escapeHtml(d.challenge)}</div>
     </div>
-    <p style="margin:28px 0 0;font-size:15px;line-height:1.6;color:#0F1F1A">Üdv,<br/><strong>Zentopia csapat</strong></p>
+    <p style="margin:28px 0 0;font-size:15px;line-height:1.6;color:#0F1F1A">${escapeHtml(c.signoff)}<br/><strong>${escapeHtml(c.team)}</strong></p>
     <div style="margin-top:24px;padding-top:20px;border-top:1px solid #E8E4D8;font-family:'Courier New',monospace;font-size:11px;color:#5A6F66;letter-spacing:0.04em">[ team@zentopia.io · Budapest, HU ]</div>
   </div>
 </body></html>`;
 
-  const text = `Helló ${d.name},
+  const text = `${c.greetingPrefix}${d.name}${c.greetingSuffix}
 
-Köszi az üzenetedet — megkaptuk a megkeresésedet a zentopia.io-n.
-24 órán belül visszajelzünk egy konkrét időpont-javaslattal a 30 perces AI-konzultációra.
+${introBoth.text}
 
-Az alábbi adatokat rögzítettük:
+${c.recorded}
 ${rows.map(([k, v]) => `  ${k}: ${v}`).join("\n")}
 
-A kihívásod:
+${c.challengeLabel}:
 ${d.challenge}
 
-Üdv,
-Zentopia csapat
+${c.signoff}
+${c.team}
 team@zentopia.io · Budapest, HU`;
 
   return sendResendEmail({
     to: d.email,
-    subject,
+    subject: c.subject,
     html,
     text,
   });
@@ -305,6 +360,7 @@ async function sendTelegramNotification(d: FormData): Promise<ChannelResult> {
   if (d.phone) lines.push(`<b>Telefon:</b> ${escapeHtml(d.phone)}`);
   if (d.company) lines.push(`<b>Cég:</b> ${escapeHtml(d.company)}`);
   if (d.industry) lines.push(`<b>Iparág:</b> ${escapeHtml(d.industry)}`);
+  lines.push(`<b>Nyelv:</b> ${d.lang.toUpperCase()}`);
   lines.push("", "<b>Mi a kihívás?</b>", escapeHtml(d.challenge));
 
   const res = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {

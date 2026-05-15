@@ -2,7 +2,7 @@
 
 import { useId, useState } from "react";
 import { Z } from "@/lib/tokens";
-import { useT } from "@/lib/i18n";
+import { useT, useLang } from "@/lib/i18n";
 import { PixelGrid } from "@/components/ui/PixelGrid";
 import { PixelLabel } from "@/components/ui/PixelLabel";
 import { CTAPrimary } from "@/components/ui/CTA";
@@ -76,6 +76,7 @@ export function Cta() {
 
 function ContactForm() {
   const t = useT();
+  const lang = useLang();
   const [state, setState] = useState<
     | { status: "idle" | "loading" }
     | { status: "success" }
@@ -87,7 +88,7 @@ function ContactForm() {
     if (state.status === "loading") return;
     const form = e.currentTarget;
     const fd = new FormData(form);
-    const payload = Object.fromEntries(fd.entries());
+    const payload = { ...Object.fromEntries(fd.entries()), lang };
     setState({ status: "loading" });
     try {
       const res = await fetch("/api/contact", {

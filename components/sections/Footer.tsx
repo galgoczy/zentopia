@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { Z } from "@/lib/tokens";
 import { useT } from "@/lib/i18n";
 import { PixelGrid } from "@/components/ui/PixelGrid";
@@ -134,28 +135,66 @@ export function Footer() {
 }
 
 function FooterLinkCol({ col }: { col: Col }) {
+  const t = useT();
+  const [labsHinted, setLabsHinted] = useState(false);
   return (
     <div className="flex flex-col gap-3.5">
       <PixelLabel size={10} color={Z.lime}>
         {col.label}
       </PixelLabel>
       <div className="flex flex-col gap-2.5">
-        {col.links.map((l) => (
-          <a
-            key={l.label}
-            href={l.href}
-            className="zen-link-underline font-sans w-fit"
-            style={{
-              fontSize: 14,
-              fontWeight: 500,
-              color: "rgba(250,250,247,0.85)",
-              textDecoration: "none",
-              letterSpacing: "-0.01em",
-            }}
-          >
-            {l.label}
-          </a>
-        ))}
+        {col.links.map((l) => {
+          if (l.href.includes("labs.zentopia.io")) {
+            return (
+              <span key={l.label} className="inline-flex items-center gap-2 flex-wrap">
+                <button
+                  type="button"
+                  onClick={() => setLabsHinted(true)}
+                  className="zen-link-underline font-sans w-fit bg-transparent border-0 p-0 cursor-pointer text-left"
+                  style={{
+                    fontSize: 14,
+                    fontWeight: 500,
+                    color: "rgba(250,250,247,0.85)",
+                    letterSpacing: "-0.01em",
+                  }}
+                >
+                  {l.label}
+                </button>
+                <span
+                  aria-live="polite"
+                  className="font-mono transition-all duration-300 ease-out"
+                  style={{
+                    fontSize: 10,
+                    color: Z.lime,
+                    letterSpacing: "0.06em",
+                    textTransform: "uppercase",
+                    opacity: labsHinted ? 1 : 0,
+                    transform: labsHinted ? "translateX(0)" : "translateX(-6px)",
+                    pointerEvents: "none",
+                  }}
+                >
+                  {t.nav.labsComing}
+                </span>
+              </span>
+            );
+          }
+          return (
+            <a
+              key={l.label}
+              href={l.href}
+              className="zen-link-underline font-sans w-fit"
+              style={{
+                fontSize: 14,
+                fontWeight: 500,
+                color: "rgba(250,250,247,0.85)",
+                textDecoration: "none",
+                letterSpacing: "-0.01em",
+              }}
+            >
+              {l.label}
+            </a>
+          );
+        })}
       </div>
     </div>
   );
