@@ -77,7 +77,7 @@ function ProblemCard({ p, idx }: { p: Problem; idx: number }) {
       <div className="flex flex-col flex-1 gap-5 md:gap-[18px] px-6 pt-7 pb-8 md:px-8 md:pt-9 md:pb-10">
         <div className="flex items-baseline justify-between">
           <span
-            className="font-mono uppercase text-[16px] md:text-[11px]"
+            className="font-mono uppercase text-[14px] md:text-[11px]"
             style={{
               color: Z.slate,
               letterSpacing: "0.08em",
@@ -87,7 +87,7 @@ function ProblemCard({ p, idx }: { p: Problem; idx: number }) {
           </span>
         </div>
         <div
-          className="font-sans font-bold transition-transform duration-500 group-hover:scale-[1.04] origin-bottom-left text-[90px] md:text-[104px]"
+          className="font-sans font-bold transition-transform duration-500 group-hover:scale-[1.04] origin-bottom-left text-[72px] md:text-[84px]"
           style={{
             color: p.color,
             letterSpacing: "-0.06em",
@@ -99,7 +99,7 @@ function ProblemCard({ p, idx }: { p: Problem; idx: number }) {
           {p.symbol}
         </div>
         <h3
-          className="m-0 font-sans font-bold text-[33px] md:text-[30px]"
+          className="m-0 font-sans font-bold text-[28px] md:text-[30px]"
           style={{
             letterSpacing: "-0.03em",
             color: Z.forest,
@@ -116,7 +116,7 @@ function ProblemCard({ p, idx }: { p: Problem; idx: number }) {
           />
         </h3>
         <p
-          className="m-0 italic leading-[1.5] mt-auto text-[21px] md:text-[15px]"
+          className="m-0 italic leading-[1.5] mt-auto text-[18px] md:text-[15px]"
           style={{
             color: Z.slate,
           }}
