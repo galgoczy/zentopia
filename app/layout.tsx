@@ -37,9 +37,6 @@ export const metadata: Metadata = {
     locale: "hu_HU",
     type: "website",
   },
-  icons: {
-    icon: "/assets/logo-forest.png",
-  },
 };
 
 export default function RootLayout({
