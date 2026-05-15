@@ -15,7 +15,7 @@ export function Hero() {
     <section className="relative overflow-hidden" id="manifesto">
       <PixelGrid />
 
-      <div className="relative z-[1] px-5 pt-9 pb-7 md:px-14 md:pt-[88px] md:pb-16 flex flex-col md:flex-row md:items-center justify-between gap-8 md:gap-10">
+      <div className="relative z-[1] px-5 pt-4 pb-7 md:px-14 md:pt-12 md:pb-16 flex flex-col md:flex-row md:items-center justify-between gap-8 md:gap-10">
         {/* Bonsai shows above text on mobile, right side on desktop */}
         <BonsaiPanel className="order-1 md:order-2 mx-auto md:mx-0" />
 

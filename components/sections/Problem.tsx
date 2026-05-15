@@ -28,7 +28,7 @@ export function Problem() {
       className="relative overflow-hidden bg-offwhite"
     >
       <PixelGrid />
-      <div className="relative z-[1] px-5 py-12 md:px-14 md:py-24">
+      <div className="relative z-[1] px-5 pt-8 pb-14 md:px-14 md:pt-14 md:pb-28">
         <Reveal className="flex flex-col gap-3.5 mb-7 md:mb-12 max-w-[760px]">
           <PixelLabel size={10} className="md:text-[11px]">
             [ 03 ] A KÉRDÉS

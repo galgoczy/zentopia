@@ -111,7 +111,7 @@ export function Process() {
       className="relative overflow-hidden bg-offwhite"
     >
       <PixelGrid />
-      <div className="relative z-[1] px-5 py-12 md:px-14 md:py-24">
+      <div className="relative z-[1] px-5 pt-8 pb-14 md:px-14 md:pt-14 md:pb-28">
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8 md:mb-14">
           <Reveal className="flex flex-col gap-3.5 max-w-[720px]">
             <PixelLabel size={10} className="md:text-[11px]">
