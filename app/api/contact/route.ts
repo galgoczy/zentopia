@@ -18,6 +18,11 @@ type FormData = {
   challenge: string;
 };
 
+type ChannelResult =
+  | { status: "sent" }
+  | { status: "skipped"; reason: string }
+  | { status: "failed"; error: string };
+
 function isEmail(v: string) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
 }
@@ -32,6 +37,24 @@ function escapeHtml(s: string) {
 
 const TEAM_EMAIL = process.env.CONTACT_TO || "team@zentopia.io";
 const FROM_EMAIL = process.env.CONTACT_FROM || "Zentopia <team@zentopia.io>";
+
+// GET — config health check. Doesn't reveal secret values, just whether each
+// channel is configured. Call this from the browser to verify deploy env.
+export async function GET() {
+  return NextResponse.json({
+    ok: true,
+    env: {
+      resend_api_key: !!process.env.RESEND_API_KEY,
+      telegram_bot_token: !!process.env.TELEGRAM_BOT_TOKEN,
+    },
+    config: {
+      contact_to: TEAM_EMAIL,
+      contact_from: FROM_EMAIL,
+      telegram_chat_id: process.env.TELEGRAM_CHAT_ID || "5275561903",
+    },
+    runtime: process.env.NEXT_RUNTIME || "nodejs",
+  });
+}
 
 export async function POST(req: Request) {
   try {
@@ -58,30 +81,57 @@ export async function POST(req: Request) {
       return NextResponse.json({ ok: false, error: "invalid_email" }, { status: 400 });
     }
 
-    // Fan-out: team email, visitor confirmation, Telegram. Failures on any one
-    // channel are tolerated so the visitor's submission isn't lost. If every
-    // configured external send fails, log loudly and surface 502.
-    const results = await Promise.allSettled([
-      sendTeamNotification(data),
-      sendVisitorConfirmation(data),
-      sendTelegramNotification(data),
+    const [team, visitor, telegram] = await Promise.all([
+      runChannel("team", () => sendTeamNotification(data)),
+      runChannel("visitor", () => sendVisitorConfirmation(data)),
+      runChannel("telegram", () => sendTelegramNotification(data)),
     ]);
 
-    const failures = results.filter((r) => r.status === "rejected");
-    if (failures.length === results.length) {
-      for (const f of failures) {
-        console.error("[contact] all channels failed:", (f as PromiseRejectedResult).reason);
-      }
-      return NextResponse.json({ ok: false, error: "send_failed" }, { status: 502 });
-    }
-    for (const f of failures) {
-      console.warn("[contact] channel failure:", (f as PromiseRejectedResult).reason);
+    const channels = { team, visitor, telegram };
+    const anySent = Object.values(channels).some((c) => c.status === "sent");
+    const anyFailed = Object.values(channels).some((c) => c.status === "failed");
+    const allSkipped = Object.values(channels).every((c) => c.status === "skipped");
+
+    if (allSkipped) {
+      console.error(
+        "[contact] all channels skipped — no env keys set. Configure RESEND_API_KEY and TELEGRAM_BOT_TOKEN."
+      );
+      return NextResponse.json(
+        { ok: false, error: "not_configured", channels },
+        { status: 500 }
+      );
     }
 
-    return NextResponse.json({ ok: true });
+    if (!anySent) {
+      return NextResponse.json(
+        { ok: false, error: "send_failed", channels },
+        { status: 502 }
+      );
+    }
+
+    // At least one channel got through. Surface partial failures in the
+    // response (the UI shows the friendly message; the network panel and
+    // server logs carry the diagnostics).
+    if (anyFailed) {
+      console.warn("[contact] partial failure:", JSON.stringify(channels));
+    }
+    return NextResponse.json({ ok: true, channels });
   } catch (err) {
     console.error("[contact] unhandled error:", err);
     return NextResponse.json({ ok: false, error: "server_error" }, { status: 500 });
+  }
+}
+
+async function runChannel(
+  name: string,
+  fn: () => Promise<ChannelResult>
+): Promise<ChannelResult> {
+  try {
+    return await fn();
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err);
+    console.error(`[contact] channel "${name}" failed:`, msg);
+    return { status: "failed", error: msg };
   }
 }
 
@@ -97,12 +147,11 @@ async function sendResendEmail({
   html: string;
   text: string;
   replyTo?: string;
-}) {
+}): Promise<ChannelResult> {
   const key = process.env.RESEND_API_KEY;
   if (!key) {
-    // Local dev fallback — log and treat as success so the UI flow stays end-to-end.
-    console.log("[contact] (no RESEND_API_KEY) email skipped:", { to, subject });
-    return;
+    console.warn(`[contact] RESEND_API_KEY missing — email to ${to} not sent`);
+    return { status: "skipped", reason: "RESEND_API_KEY not set" };
   }
   const payload: Record<string, unknown> = {
     from: FROM_EMAIL,
@@ -121,10 +170,15 @@ async function sendResendEmail({
     },
     body: JSON.stringify(payload),
   });
+  const responseBody = await res.text().catch(() => "");
   if (!res.ok) {
-    const detail = await res.text().catch(() => "");
-    throw new Error(`resend ${res.status}: ${detail.slice(0, 240)}`);
+    // Include status + Resend body so the user can see e.g. domain-not-verified errors.
+    throw new Error(
+      `Resend ${res.status} sending to ${to}: ${responseBody.slice(0, 400)}`
+    );
   }
+  console.log(`[contact] Resend ok → ${to} (${responseBody.slice(0, 80)})`);
+  return { status: "sent" };
 }
 
 function summaryRowsHtml(rows: [string, string][]) {
@@ -140,7 +194,7 @@ function summaryRowsHtml(rows: [string, string][]) {
     .join("");
 }
 
-async function sendTeamNotification(d: FormData) {
+async function sendTeamNotification(d: FormData): Promise<ChannelResult> {
   const subjectCompany = d.company || d.name;
   const subjectIndustry = d.industry || "—";
   const subject = `🌿 Új megkeresés: ${subjectCompany} · ${subjectIndustry}`;
@@ -175,7 +229,7 @@ ${d.challenge}
 
 // Jelentkezzünk 24 órán belül.`;
 
-  await sendResendEmail({
+  return sendResendEmail({
     to: TEAM_EMAIL,
     subject,
     html,
@@ -184,7 +238,7 @@ ${d.challenge}
   });
 }
 
-async function sendVisitorConfirmation(d: FormData) {
+async function sendVisitorConfirmation(d: FormData): Promise<ChannelResult> {
   const subject = "Köszi, megkaptuk az üzeneted — Zentopia";
 
   const rows: [string, string][] = [
@@ -226,7 +280,7 @@ ${d.challenge}
 Zentopia csapat
 team@zentopia.io · Budapest, HU`;
 
-  await sendResendEmail({
+  return sendResendEmail({
     to: d.email,
     subject,
     html,
@@ -234,12 +288,12 @@ team@zentopia.io · Budapest, HU`;
   });
 }
 
-async function sendTelegramNotification(d: FormData) {
+async function sendTelegramNotification(d: FormData): Promise<ChannelResult> {
   const token = process.env.TELEGRAM_BOT_TOKEN;
   const chatId = process.env.TELEGRAM_CHAT_ID || "5275561903";
   if (!token) {
-    console.log("[contact] (no TELEGRAM_BOT_TOKEN) telegram skipped");
-    return;
+    console.warn("[contact] TELEGRAM_BOT_TOKEN missing — telegram not sent");
+    return { status: "skipped", reason: "TELEGRAM_BOT_TOKEN not set" };
   }
 
   const lines = [
@@ -263,8 +317,10 @@ async function sendTelegramNotification(d: FormData) {
       disable_web_page_preview: true,
     }),
   });
+  const responseBody = await res.text().catch(() => "");
   if (!res.ok) {
-    const detail = await res.text().catch(() => "");
-    throw new Error(`telegram ${res.status}: ${detail.slice(0, 240)}`);
+    throw new Error(`Telegram ${res.status}: ${responseBody.slice(0, 400)}`);
   }
+  console.log("[contact] Telegram ok");
+  return { status: "sent" };
 }

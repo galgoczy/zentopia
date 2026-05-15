@@ -118,6 +118,8 @@ function ContactForm() {
               ? "Tölts ki minden kötelező mezőt."
               : json?.error === "invalid_email"
               ? "Adj meg egy érvényes email címet."
+              : json?.error === "not_configured"
+              ? "A küldés még nincs beüzemelve. Írj a team@zentopia.io-ra."
               : "Hiba történt. Próbáld újra, vagy írj a team@zentopia.io-ra.",
         });
       }
