@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { LangProvider } from "@/lib/i18n";
 import { en } from "@/lib/translations/en";
+import { combinedGraph } from "@/lib/structured-data";
 import { Nav } from "@/components/sections/Nav";
 import { Hero } from "@/components/sections/Hero";
 import { Services } from "@/components/sections/Services";
@@ -31,12 +32,32 @@ export const metadata: Metadata = {
     locale: "en_US",
     alternateLocale: ["hu_HU"],
     type: "website",
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "Zentopia — AI agency that builds working systems",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: en.meta.title,
+    description: en.meta.ogDescription,
+    images: ["/og-image.png"],
   },
 };
 
 export default function HomePageEN() {
   return (
     <LangProvider lang="en">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(combinedGraph(en, "en")),
+        }}
+      />
       <main className="bg-offwhite">
         <Nav />
         <Hero />
