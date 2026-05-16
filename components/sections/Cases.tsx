@@ -197,10 +197,9 @@ function CaseCard({ c }: { c: Case }) {
           </span>
         </div>
         <h3
-          className="m-0 font-sans font-bold transition-colors duration-300 group-hover:!text-[color:var(--accent)]"
+          className="m-0 font-sans font-bold transition-colors duration-300 group-hover:!text-[color:var(--accent)] text-[28px] md:text-[30px]"
           style={
             {
-              fontSize: 22,
               letterSpacing: "-0.03em",
               color: Z.offwhite,
               lineHeight: 1.05,

@@ -92,8 +92,9 @@ function ProblemCard({ p, idx }: { p: Problem; idx: number }) {
           </span>
         </div>
         <div
-          className="font-sans font-bold transition-transform duration-500 group-hover:scale-[1.04] origin-bottom-left text-[72px] md:text-[84px]"
+          className="font-sans font-bold transition-transform duration-500 group-hover:scale-[1.04] origin-bottom-left"
           style={{
+            fontSize: 52,
             color: p.color,
             letterSpacing: "-0.06em",
             lineHeight: 0.85,

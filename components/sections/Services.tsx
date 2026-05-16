@@ -147,9 +147,8 @@ function ServiceCard({
       />
 
       <h3
-        className="m-0 font-sans font-bold"
+        className="m-0 font-sans font-bold text-[28px] md:text-[30px]"
         style={{
-          fontSize: big ? 28 : 20,
           letterSpacing: "-0.03em",
           color: Z.forest,
           lineHeight: 1.05,
