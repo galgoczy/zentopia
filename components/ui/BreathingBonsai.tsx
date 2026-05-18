@@ -20,6 +20,7 @@ export function BreathingBonsai({
   glitch = true,
   glitchCycle = 9,
   kickoffAt = 1,
+  introS = 1.5,
 }: {
   size?: number;
   base?: Base;
@@ -27,18 +28,26 @@ export function BreathingBonsai({
   sweepSeconds?: number;
   glitch?: boolean;
   glitchCycle?: number;
-  /** Seconds after mount to fire the first glitch. Set 0 to disable. */
+  /** Seconds after intro completes before the first glitch fires. */
   kickoffAt?: number;
+  /** Length of the chunky pixel-build intro animation on mount. 0 = disabled. */
+  introS?: number;
 }) {
   const raw = useId();
   const id = "bb-" + raw.replace(/[^a-z0-9]/gi, "");
   const baseSrc = SRC[base];
 
   // Pre-roll the cycle so the first glitch (which fires at 90.4% of the loop)
-  // lands `kickoffAt` seconds after mount. Negative delay = start mid-cycle.
+  // lands `introS + kickoffAt` seconds after mount — i.e. wait for the intro
+  // build to finish, then count `kickoffAt` more seconds. Negative delay =
+  // start mid-cycle.
   const glitchStartFrac = 0.904;
+  const firstGlitchAt = introS + kickoffAt;
   const kickoffDelay =
-    kickoffAt > 0 ? -(glitchCycle * glitchStartFrac - kickoffAt) : 0;
+    kickoffAt > 0 ? -(glitchCycle * glitchStartFrac - firstGlitchAt) : 0;
+  // Sweep + breath wait for the intro to finish so the lime energy doesn't
+  // bleed through during the build animation.
+  const postIntroDelay = introS;
 
   const debris = useMemo(() => {
     let s = (id.charCodeAt(2) || 11) * 9301 + 49297;
@@ -105,7 +114,28 @@ export function BreathingBonsai({
           91.2%              { opacity: 0.55; transform: scale(1.15); }
           91.8%              { opacity: 0;    transform: scale(0.7); }
         }
-        .${id}-breath { animation: ${id}-breath ${sweepSeconds * 1.2}s ease-in-out infinite; }
+        ${introS > 0 ? `
+          /* Chunky 8-bit boot sequence: bonsai grows out of the bowl in
+             stepped reveals, with an overexposed wash that resolves to neutral. */
+          @keyframes ${id}-build {
+            0%   { clip-path: inset(100% 0 0 0); filter: brightness(2) contrast(0.5); }
+            30%  { filter: brightness(1.6) contrast(0.7); }
+            70%  { filter: brightness(1.2) contrast(0.9); }
+            100% { clip-path: inset(0); filter: none; }
+          }
+          @keyframes ${id}-intro-spark {
+            0%   { opacity: 0;   transform: scale(0.4); }
+            20%  { opacity: 1;   transform: scale(1.2); }
+            55%  { opacity: 0.6; transform: scale(1); }
+            100% { opacity: 0;   transform: scale(0.5); }
+          }
+          .${id}-build { animation: ${id}-build ${introS}s steps(8, end) 0s 1 forwards; }
+          .${id}-intro-spark { animation: ${id}-intro-spark ${introS}s ease-out 0s 1 forwards; }
+          @media (prefers-reduced-motion: reduce) {
+            .${id}-build, .${id}-intro-spark { animation: none !important; }
+          }
+        ` : ''}
+        .${id}-breath { animation: ${id}-breath ${sweepSeconds * 1.2}s ease-in-out ${postIntroDelay}s infinite; }
         .${id}-pixelate { animation: ${id}-pixelate ${glitchCycle}s steps(1,end) ${kickoffDelay}s infinite; }
         .${id}-overlay {
           -webkit-mask-image: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 30%, rgba(0,0,0,1) 55%, rgba(0,0,0,0) 85%);
@@ -114,7 +144,7 @@ export function BreathingBonsai({
                   mask-size: 100% 220%;
           -webkit-mask-repeat: no-repeat;
                   mask-repeat: no-repeat;
-          animation: ${id}-sweep ${sweepSeconds}s ease-in-out infinite;
+          animation: ${id}-sweep ${sweepSeconds}s ease-in-out ${postIntroDelay}s infinite;
         }
         ${glitch ? `
           .${id}-shake   { animation: ${id}-shake   ${glitchCycle}s steps(1,end) ${kickoffDelay}s infinite; transform-origin: 50% 50%; }
@@ -130,19 +160,43 @@ export function BreathingBonsai({
       `}</style>
 
       <div className={glitch ? `${id}-shake absolute inset-0` : "absolute inset-0"}>
-        <img
-          src={baseSrc}
-          className={`${id}-breath ${glitch ? `${id}-pixelate` : ""} absolute inset-0 w-full h-full object-contain`}
-          alt=""
-        />
-        {glowLime && (
+        {/* The build wrapper handles clip-path + brightness/contrast for the
+            intro. Inner imgs keep their own filter/transform animations so
+            they don't clash with the intro's filter. */}
+        <div className={`${introS > 0 ? `${id}-build` : ""} absolute inset-0`}>
           <img
-            src="/assets/logo-lime.png"
-            className={`${id}-overlay absolute inset-0 w-full h-full object-contain`}
+            src={baseSrc}
+            className={`${id}-breath ${glitch ? `${id}-pixelate` : ""} absolute inset-0 w-full h-full object-contain`}
             alt=""
           />
-        )}
+          {glowLime && (
+            <img
+              src="/assets/logo-lime.png"
+              className={`${id}-overlay absolute inset-0 w-full h-full object-contain`}
+              alt=""
+            />
+          )}
+        </div>
       </div>
+
+      {introS > 0 && (
+        <div className={`${id}-intro-spark absolute inset-0 pointer-events-none`} aria-hidden="true">
+          {debris.map((d, i) => (
+            <span
+              key={`spark-${i}`}
+              className="absolute"
+              style={{
+                left: `${d.x}%`,
+                top: `${d.y}%`,
+                width: `${(d.w / 100) * size * 1.4}px`,
+                height: `${(d.w / 100) * size * 1.4}px`,
+                background: Z.lime,
+                boxShadow: `0 0 6px ${Z.lime}`,
+              }}
+            />
+          ))}
+        </div>
+      )}
 
       {glitch && (
         <>
