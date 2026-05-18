@@ -149,13 +149,15 @@ function ServiceCard({
         </span>
       </div>
 
-      <RasterIcon
-        src={ICON_SRC[s.icon]}
-        alt={s.title}
-        color={s.color}
-        size={120}
-        glitchDelay={idx * 1.8}
-      />
+      <div style={big ? undefined : { marginTop: -16, marginBottom: -16 }}>
+        <RasterIcon
+          src={ICON_SRC[s.icon]}
+          alt={s.title}
+          color={s.color}
+          size={120}
+          glitchDelay={idx * 1.8}
+        />
+      </div>
 
       <h3
         className="m-0 font-sans font-bold text-[28px] md:text-[30px]"
