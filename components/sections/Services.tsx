@@ -21,7 +21,7 @@ type Service = {
 
 const ICON_SRC: Record<Kind, string> = {
   content: "/assets/icon_content.png",
-  agents: "/assets/icon_agent.png",
+  agents: "/assets/icon_agents.png",
   flow: "/assets/icon_automation.png",
   webapp: "/assets/icon_app.png",
   consult: "/assets/icon_consulting.png",
