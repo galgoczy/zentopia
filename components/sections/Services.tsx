@@ -4,9 +4,11 @@ import { Z } from "@/lib/tokens";
 import { useT } from "@/lib/i18n";
 import { PixelGrid } from "@/components/ui/PixelGrid";
 import { PixelLabel } from "@/components/ui/PixelLabel";
-import { CircuitIcon } from "@/components/ui/CircuitIcon";
+import { RasterIcon } from "@/components/ui/RasterIcon";
 import { PixelCluster } from "@/components/ui/PixelCluster";
 import { Reveal } from "@/components/ui/Reveal";
+
+type Kind = "content" | "agents" | "flow" | "webapp" | "consult";
 
 type Service = {
   n: string;
@@ -14,7 +16,15 @@ type Service = {
   title: string;
   sub: string;
   body: string;
-  icon: "content" | "agents" | "flow" | "webapp" | "consult";
+  icon: Kind;
+};
+
+const ICON_SRC: Record<Kind, string> = {
+  content: "/assets/icon_content.png",
+  agents: "/assets/icon_agent.png",
+  flow: "/assets/icon_automation.png",
+  webapp: "/assets/icon_app.png",
+  consult: "/assets/icon_consulting.png",
 };
 
 export function Services() {
@@ -139,8 +149,9 @@ function ServiceCard({
         </span>
       </div>
 
-      <CircuitIcon
-        kind={s.icon}
+      <RasterIcon
+        src={ICON_SRC[s.icon]}
+        alt={s.title}
         color={s.color}
         size={big ? 80 : 52}
         glitchDelay={idx * 1.8}
