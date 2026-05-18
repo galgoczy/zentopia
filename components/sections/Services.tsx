@@ -153,7 +153,7 @@ function ServiceCard({
         src={ICON_SRC[s.icon]}
         alt={s.title}
         color={s.color}
-        size={big ? 80 : 52}
+        size={big ? 120 : 64}
         glitchDelay={idx * 1.8}
       />
 
