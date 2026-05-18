@@ -14,6 +14,7 @@ export function RasterIcon({
   glitch = true,
   glitchDelay = 0,
   glitchCycle = 9,
+  pixelated = false,
 }: {
   src: string;
   alt?: string;
@@ -23,6 +24,8 @@ export function RasterIcon({
   glitch?: boolean;
   glitchDelay?: number;
   glitchCycle?: number;
+  /** Keep hard pixel edges when scaling — for 8-bit pixel-art sources. */
+  pixelated?: boolean;
 }) {
   const raw = useId();
   const id = "ri-" + raw.replace(/[^a-z0-9]/gi, "");
@@ -44,7 +47,10 @@ export function RasterIcon({
       width={size}
       height={size}
       className="block"
-      style={{ objectFit: "contain" }}
+      style={{
+        objectFit: "contain",
+        imageRendering: pixelated ? "pixelated" : undefined,
+      }}
       draggable={false}
     />
   );

@@ -5,16 +5,26 @@ import { useT } from "@/lib/i18n";
 import { PixelGrid } from "@/components/ui/PixelGrid";
 import { PixelLabel } from "@/components/ui/PixelLabel";
 import { Typewriter } from "@/components/ui/Typewriter";
+import { RasterIcon } from "@/components/ui/RasterIcon";
 import { CTAPrimary } from "@/components/ui/CTA";
 import { Reveal } from "@/components/ui/Reveal";
 
 type Problem = {
   n: string;
   color: string;
-  symbol: string;
+  iconSrc: string;
+  iconAlt: string;
   q: string[];
   sub: string;
 };
+
+// 8-bit pixel-art icons in each card's accent color — ember/sky/violet.
+const ICON_SRC = [
+  "/assets/icon_questionmark.png",
+  "/assets/icon_dollarsign.png",
+  "/assets/icon_workwheel.png",
+];
+const ICON_ALT = ["?", "$", "⚙"];
 
 export function Problem() {
   const t = useT();
@@ -22,7 +32,8 @@ export function Problem() {
   const PROBLEMS: Problem[] = t.problem.items.map((p, i) => ({
     n: String(i + 1).padStart(2, "0"),
     color: COLORS[i],
-    symbol: p.symbol,
+    iconSrc: ICON_SRC[i],
+    iconAlt: ICON_ALT[i],
     q: p.lines,
     sub: p.sub,
   }));
@@ -91,18 +102,15 @@ function ProblemCard({ p, idx }: { p: Problem; idx: number }) {
             {t.problem.monoPrefix} {p.n}
           </span>
         </div>
-        <div
-          className="font-sans font-bold transition-transform duration-500 group-hover:scale-[1.04] origin-bottom-left"
-          style={{
-            fontSize: 52,
-            color: p.color,
-            letterSpacing: "-0.06em",
-            lineHeight: 0.85,
-            display: "flex",
-            alignItems: "flex-start",
-          }}
-        >
-          {p.symbol}
+        <div className="transition-transform duration-500 group-hover:scale-[1.04] origin-bottom-left flex items-start">
+          <RasterIcon
+            src={p.iconSrc}
+            alt={p.iconAlt}
+            color={p.color}
+            size={72}
+            glitchDelay={idx * 1.8}
+            pixelated
+          />
         </div>
         <h3
           className="m-0 font-sans font-bold text-[28px] md:text-[30px]"
