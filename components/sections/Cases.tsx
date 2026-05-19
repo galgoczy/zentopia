@@ -17,10 +17,19 @@ type Case = {
   stats: [string, string][];
   color: string;
   visual: "photo" | "ledger" | "agent" | "shop";
+  href?: string;
 };
 
 const CASE_COLORS = [Z.coral, Z.sunshine, Z.sky, Z.violet];
 const CASE_VISUALS: Case["visual"][] = ["photo", "ledger", "agent", "shop"];
+// Optional outbound URL per case. If set, the "Olvasd el…" link navigates;
+// if undefined, the link reveals an inline "// részletek hamarosan" notice.
+const CASE_HREFS: (string | undefined)[] = [
+  "https://ai.elmeny.hu",  // Selfiemata
+  undefined,               // Pepper House
+  undefined,               // Alfie
+  "https://nolaandco.hu",  // Nola and Co
+];
 
 export function Cases() {
   const t = useT();
@@ -32,6 +41,7 @@ export function Cases() {
     stats: c.stats,
     color: CASE_COLORS[i],
     visual: CASE_VISUALS[i],
+    href: CASE_HREFS[i],
   }));
   const TOTAL_STATS = t.cases.statRow;
   return (
@@ -247,25 +257,46 @@ function CaseCard({ c }: { c: Case }) {
       </div>
 
       <div className="flex items-center flex-wrap gap-3 mt-1">
-        <button
-          type="button"
-          onClick={(e) => {
-            e.preventDefault();
-            setShowComing(true);
-          }}
-          className="zen-arrow-host inline-flex items-center gap-1.5 font-sans cursor-pointer bg-transparent border-0 p-0"
-          style={{
-            fontSize: 14,
-            fontWeight: 600,
-            color: Z.offwhite,
-            letterSpacing: "-0.01em",
-          }}
-        >
-          {t.cases.cardLink}{" "}
-          <span className="zen-arrow-nudge" style={{ color: c.color }}>
-            →
-          </span>
-        </button>
+        {c.href ? (
+          <a
+            href={c.href}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="zen-arrow-host inline-flex items-center gap-1.5 font-sans zen-link-underline"
+            style={{
+              fontSize: 14,
+              fontWeight: 600,
+              color: Z.offwhite,
+              letterSpacing: "-0.01em",
+              textDecoration: "none",
+            }}
+          >
+            {t.cases.cardLink}{" "}
+            <span className="zen-arrow-nudge" style={{ color: c.color }}>
+              ↗
+            </span>
+          </a>
+        ) : (
+          <button
+            type="button"
+            onClick={(e) => {
+              e.preventDefault();
+              setShowComing(true);
+            }}
+            className="zen-arrow-host inline-flex items-center gap-1.5 font-sans cursor-pointer bg-transparent border-0 p-0"
+            style={{
+              fontSize: 14,
+              fontWeight: 600,
+              color: Z.offwhite,
+              letterSpacing: "-0.01em",
+            }}
+          >
+            {t.cases.cardLink}{" "}
+            <span className="zen-arrow-nudge" style={{ color: c.color }}>
+              →
+            </span>
+          </button>
+        )}
         <span
           aria-live="polite"
           className="font-mono transition-all duration-300 ease-out"
@@ -274,8 +305,8 @@ function CaseCard({ c }: { c: Case }) {
             color: c.color,
             letterSpacing: "0.08em",
             textTransform: "uppercase",
-            opacity: showComing ? 1 : 0,
-            transform: showComing ? "translateX(0)" : "translateX(-6px)",
+            opacity: !c.href && showComing ? 1 : 0,
+            transform: !c.href && showComing ? "translateX(0)" : "translateX(-6px)",
             pointerEvents: "none",
           }}
         >
@@ -304,7 +335,7 @@ function CaseVisual({
     <div
       className="relative w-full overflow-hidden transition-transform duration-500 group-hover:scale-[1.015]"
       style={{
-        height: 160,
+        height: 184,
         borderRadius: 8,
         background: `${color}1a`,
         border: `1px solid ${color}40`,
