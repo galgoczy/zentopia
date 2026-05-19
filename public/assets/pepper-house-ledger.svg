@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Zentopia · Pepper House — case study visual.
+  Ledger lines of decreasing length suggesting rows in a financial report.
+  Sunshine stroke on transparent background. ViewBox 200×160.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 160" width="400" height="320">
+  <g fill="none" stroke="#FFC83A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <line x1="20" y1="44" x2="180" y2="44"/>
+    <line x1="20" y1="64" x2="180" y2="64"/>
+    <line x1="20" y1="84" x2="140" y2="84"/>
+    <line x1="20" y1="104" x2="160" y2="104"/>
+    <line x1="20" y1="124" x2="100" y2="124"/>
+    <!-- Terminal dots at line ends -->
+    <circle cx="180" cy="44" r="2.5" fill="#FFC83A" stroke="none"/>
+    <circle cx="180" cy="64" r="2.5" fill="#FFC83A" stroke="none"/>
+    <circle cx="140" cy="84" r="2.5" fill="#FFC83A" stroke="none"/>
+    <circle cx="160" cy="104" r="2.5" fill="#FFC83A" stroke="none"/>
+    <circle cx="100" cy="124" r="2.5" fill="#FFC83A" stroke="none"/>
+  </g>
+</svg>

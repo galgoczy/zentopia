@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Zentopia · Élménypont AI Selfiemata — case study visual.
+  Camera-style framing with lens + viewfinder hashes.
+  Coral stroke on transparent background. ViewBox matches the in-app card visual (200×160).
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 160" width="400" height="320">
+  <g fill="none" stroke="#FF6F8C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <!-- Camera body -->
+    <rect x="20" y="34" width="160" height="92" rx="3"/>
+    <!-- Lens (outer) -->
+    <circle cx="100" cy="80" r="22" stroke-width="2"/>
+    <!-- Lens (inner) -->
+    <circle cx="100" cy="80" r="10"/>
+    <!-- Top viewfinder ticks -->
+    <line x1="40" y1="46" x2="62" y2="46"/>
+    <line x1="158" y1="46" x2="168" y2="46"/>
+    <!-- Terminal dots -->
+    <circle cx="40" cy="46" r="2" fill="#FF6F8C" stroke="none"/>
+    <circle cx="168" cy="46" r="2" fill="#FF6F8C" stroke="none"/>
+  </g>
+</svg>
