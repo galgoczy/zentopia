@@ -353,7 +353,9 @@ function CaseVisual({
         src={ICON_SRC[kind]}
         alt=""
         aria-hidden="true"
-        className="absolute inset-0 w-full h-full object-contain p-4 transition-transform duration-700 group-hover:rotate-[-1deg]"
+        className={`absolute inset-0 w-full h-full object-contain transition-transform duration-700 group-hover:rotate-[-1deg] ${
+          kind === "photo" ? "p-2" : "p-4"
+        }`}
         draggable={false}
       />
       <div
