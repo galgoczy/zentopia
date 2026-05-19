@@ -1,6 +1,6 @@
 "use client";
 
-import Image from "next/image";
+import { useId } from "react";
 import { Z } from "@/lib/tokens";
 import { useT } from "@/lib/i18n";
 import { PixelGrid } from "@/components/ui/PixelGrid";
@@ -143,6 +143,8 @@ export function Founder() {
 
 function PortraitCard() {
   const t = useT();
+  const raw = useId();
+  const id = "fp-" + raw.replace(/[^a-z0-9]/gi, "");
   return (
     <div
       className="group relative overflow-hidden flex flex-col gap-3 shrink-0 zen-card-lift"
@@ -163,16 +165,97 @@ function PortraitCard() {
           border: `1px solid ${accent}40`,
         }}
       >
+        <style>{`
+          /* 5s cycle: ~3.9s original, ~0.1s glitch in, ~0.9s alt (cyborg),
+             ~0.1s glitch out. steps(1, end) → instant snaps, no smooth fade. */
+          @keyframes ${id}-orig {
+            0%, 78%   { opacity: 1; }
+            80%, 98%  { opacity: 0; }
+            100%      { opacity: 1; }
+          }
+          @keyframes ${id}-alt {
+            0%, 78%   { opacity: 0; }
+            80%, 98%  { opacity: 1; }
+            100%      { opacity: 0; }
+          }
+          @keyframes ${id}-shake {
+            0%, 78%, 82%, 98%, 100% { transform: translate(0, 0) scale(1); }
+            78.5%  { transform: translate(2px, -2px) scale(1.02); }
+            79%    { transform: translate(-3px, 1px) scale(0.98); }
+            79.5%  { transform: translate(1px, 0) scale(1.01); }
+            98.5%  { transform: translate(-2px, 2px) scale(1.02); }
+            99%    { transform: translate(3px, -1px) scale(0.98); }
+            99.5%  { transform: translate(-1px, 0) scale(1.01); }
+          }
+          @keyframes ${id}-tear-top {
+            0%, 78%, 82%, 98%, 100% { opacity: 0; transform: translate(0); }
+            78.5%  { opacity: 0.85; transform: translate(7px, 0); }
+            79%    { opacity: 0.6;  transform: translate(-5px, 0); }
+            98.5%  { opacity: 0.85; transform: translate(-7px, 0); }
+            99%    { opacity: 0.6;  transform: translate(5px, 0); }
+          }
+          @keyframes ${id}-tear-bot {
+            0%, 78%, 82%, 98%, 100% { opacity: 0; transform: translate(0); }
+            78.5%  { opacity: 0.7;  transform: translate(-6px, 0); }
+            79.5%  { opacity: 0.5;  transform: translate(4px, 0); }
+            98.5%  { opacity: 0.7;  transform: translate(6px, 0); }
+            99.5%  { opacity: 0.5;  transform: translate(-4px, 0); }
+          }
+          .${id}-orig  { animation: ${id}-orig  5s steps(1, end) infinite; }
+          .${id}-alt   { animation: ${id}-alt   5s steps(1, end) infinite; }
+          .${id}-shake { animation: ${id}-shake 5s steps(1, end) infinite; }
+          .${id}-tear-top { animation: ${id}-tear-top 5s steps(1, end) infinite; clip-path: polygon(0 18%, 100% 18%, 100% 42%, 0 42%); }
+          .${id}-tear-bot { animation: ${id}-tear-bot 5s steps(1, end) infinite; clip-path: polygon(0 60%, 100% 60%, 100% 82%, 0 82%); }
+          @media (prefers-reduced-motion: reduce) {
+            .${id}-orig, .${id}-alt, .${id}-shake, .${id}-tear-top, .${id}-tear-bot { animation: none !important; }
+            .${id}-alt { opacity: 0 !important; }
+          }
+        `}</style>
+
+        <div className={`${id}-shake absolute inset-0 transition-transform duration-700 group-hover:scale-[1.04]`}>
+          <picture>
+            <source srcSet="/assets/founder.avif" type="image/avif" />
+            <source srcSet="/assets/founder.webp" type="image/webp" />
+            <img
+              src="/assets/founder.jpg"
+              alt={t.founder.photoAlt}
+              className={`${id}-orig absolute inset-0 w-full h-full object-cover`}
+            />
+          </picture>
+          <picture>
+            <source srcSet="/assets/founder-alt.avif" type="image/avif" />
+            <source srcSet="/assets/founder-alt.webp" type="image/webp" />
+            <img
+              src="/assets/founder-alt.jpg"
+              alt=""
+              aria-hidden="true"
+              className={`${id}-alt absolute inset-0 w-full h-full object-cover`}
+            />
+          </picture>
+        </div>
+
+        {/* CRT-tear bands — show the OTHER image clipped into a horizontal band
+            for ~100ms at each swap moment. Top band shows alt (during orig→alt
+            transition this gives a "preview" of the cyborg), bottom band shows
+            orig (during alt→orig transition). */}
+        <picture>
+          <source srcSet="/assets/founder-alt.avif" type="image/avif" />
+          <source srcSet="/assets/founder-alt.webp" type="image/webp" />
+          <img
+            src="/assets/founder-alt.jpg"
+            alt=""
+            aria-hidden="true"
+            className={`${id}-tear-top absolute inset-0 w-full h-full object-cover pointer-events-none`}
+          />
+        </picture>
         <picture>
           <source srcSet="/assets/founder.avif" type="image/avif" />
           <source srcSet="/assets/founder.webp" type="image/webp" />
-          <Image
+          <img
             src="/assets/founder.jpg"
-            alt={t.founder.photoAlt}
-            width={800}
-            height={800}
-            priority={false}
-            className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.04]"
+            alt=""
+            aria-hidden="true"
+            className={`${id}-tear-bot absolute inset-0 w-full h-full object-cover pointer-events-none`}
           />
         </picture>
         {/* warm ember tint overlay on hover, very subtle */}
