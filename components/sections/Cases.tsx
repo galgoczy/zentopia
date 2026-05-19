@@ -354,7 +354,7 @@ function CaseVisual({
         alt=""
         aria-hidden="true"
         className={`absolute inset-0 w-full h-full object-contain transition-transform duration-700 group-hover:rotate-[-1deg] ${
-          kind === "photo" ? "p-5" : "p-4"
+          kind === "photo" ? "p-6" : "p-4"
         }`}
         draggable={false}
       />
