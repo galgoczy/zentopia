@@ -166,46 +166,50 @@ function PortraitCard() {
         }}
       >
         <style>{`
-          /* 5s cycle: ~3.9s original, ~0.1s glitch in, ~0.9s alt (cyborg),
-             ~0.1s glitch out. steps(1, end) → instant snaps, no smooth fade. */
+          /* 4s cycle: ~2.8s original, ~0.2s glitch in, ~0.8s alt (cyborg),
+             ~0.2s glitch out. Bigger amplitude than the 5s pass —
+             chunkier shake, wider tear translations, contrast spike. */
           @keyframes ${id}-orig {
-            0%, 78%   { opacity: 1; }
-            80%, 98%  { opacity: 0; }
+            0%, 70%   { opacity: 1; }
+            72%, 95%  { opacity: 0; }
             100%      { opacity: 1; }
           }
           @keyframes ${id}-alt {
-            0%, 78%   { opacity: 0; }
-            80%, 98%  { opacity: 1; }
+            0%, 70%   { opacity: 0; }
+            72%, 95%  { opacity: 1; }
             100%      { opacity: 0; }
           }
           @keyframes ${id}-shake {
-            0%, 78%, 82%, 98%, 100% { transform: translate(0, 0) scale(1); }
-            78.5%  { transform: translate(2px, -2px) scale(1.02); }
-            79%    { transform: translate(-3px, 1px) scale(0.98); }
-            79.5%  { transform: translate(1px, 0) scale(1.01); }
-            98.5%  { transform: translate(-2px, 2px) scale(1.02); }
-            99%    { transform: translate(3px, -1px) scale(0.98); }
-            99.5%  { transform: translate(-1px, 0) scale(1.01); }
+            0%, 68%, 76%, 93%, 100% { transform: translate(0, 0) scale(1); filter: none; }
+            69%   { transform: translate(5px, -3px) scale(1.04); filter: contrast(1.4) brightness(1.2); }
+            70%   { transform: translate(-7px, 2px) scale(0.96); filter: contrast(1.6) hue-rotate(-8deg); }
+            71%   { transform: translate(4px, 0) scale(1.03); filter: contrast(1.2) brightness(1.1); }
+            72%   { transform: translate(-2px, 1px) scale(1.01); filter: none; }
+            94%   { transform: translate(-5px, 3px) scale(1.04); filter: contrast(1.4) brightness(1.2); }
+            95%   { transform: translate(7px, -2px) scale(0.96); filter: contrast(1.6) hue-rotate(8deg); }
+            96%   { transform: translate(-4px, 0) scale(1.03); filter: contrast(1.2) brightness(1.1); }
           }
           @keyframes ${id}-tear-top {
-            0%, 78%, 82%, 98%, 100% { opacity: 0; transform: translate(0); }
-            78.5%  { opacity: 0.85; transform: translate(7px, 0); }
-            79%    { opacity: 0.6;  transform: translate(-5px, 0); }
-            98.5%  { opacity: 0.85; transform: translate(-7px, 0); }
-            99%    { opacity: 0.6;  transform: translate(5px, 0); }
+            0%, 68%, 76%, 93%, 100% { opacity: 0; transform: translate(0); }
+            69%   { opacity: 0.95; transform: translate(14px, 0); }
+            70%   { opacity: 0.8;  transform: translate(-10px, 0); }
+            71%   { opacity: 0.5;  transform: translate(6px, 0); }
+            94%   { opacity: 0.95; transform: translate(-14px, 0); }
+            95%   { opacity: 0.8;  transform: translate(10px, 0); }
+            96%   { opacity: 0.5;  transform: translate(-6px, 0); }
           }
           @keyframes ${id}-tear-bot {
-            0%, 78%, 82%, 98%, 100% { opacity: 0; transform: translate(0); }
-            78.5%  { opacity: 0.7;  transform: translate(-6px, 0); }
-            79.5%  { opacity: 0.5;  transform: translate(4px, 0); }
-            98.5%  { opacity: 0.7;  transform: translate(6px, 0); }
-            99.5%  { opacity: 0.5;  transform: translate(-4px, 0); }
+            0%, 68%, 76%, 93%, 100% { opacity: 0; transform: translate(0); }
+            69.5% { opacity: 0.85; transform: translate(-12px, 0); }
+            70.5% { opacity: 0.7;  transform: translate(8px, 0); }
+            94.5% { opacity: 0.85; transform: translate(12px, 0); }
+            95.5% { opacity: 0.7;  transform: translate(-8px, 0); }
           }
-          .${id}-orig  { animation: ${id}-orig  5s steps(1, end) infinite; }
-          .${id}-alt   { animation: ${id}-alt   5s steps(1, end) infinite; }
-          .${id}-shake { animation: ${id}-shake 5s steps(1, end) infinite; }
-          .${id}-tear-top { animation: ${id}-tear-top 5s steps(1, end) infinite; clip-path: polygon(0 18%, 100% 18%, 100% 42%, 0 42%); }
-          .${id}-tear-bot { animation: ${id}-tear-bot 5s steps(1, end) infinite; clip-path: polygon(0 60%, 100% 60%, 100% 82%, 0 82%); }
+          .${id}-orig  { animation: ${id}-orig  4s steps(1, end) infinite; }
+          .${id}-alt   { animation: ${id}-alt   4s steps(1, end) infinite; }
+          .${id}-shake { animation: ${id}-shake 4s steps(1, end) infinite; }
+          .${id}-tear-top { animation: ${id}-tear-top 4s steps(1, end) infinite; clip-path: polygon(0 14%, 100% 14%, 100% 44%, 0 44%); }
+          .${id}-tear-bot { animation: ${id}-tear-bot 4s steps(1, end) infinite; clip-path: polygon(0 56%, 100% 56%, 100% 84%, 0 84%); }
           @media (prefers-reduced-motion: reduce) {
             .${id}-orig, .${id}-alt, .${id}-shake, .${id}-tear-top, .${id}-tear-bot { animation: none !important; }
             .${id}-alt { opacity: 0 !important; }
