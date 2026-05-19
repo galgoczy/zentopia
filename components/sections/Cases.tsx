@@ -293,70 +293,12 @@ function CaseVisual({
   kind: Case["visual"];
   color: string;
 }) {
-  const stroke = {
-    strokeWidth: 1.5,
-    stroke: color,
-    fill: "none" as const,
-    strokeLinecap: "round" as const,
-    strokeLinejoin: "round" as const,
+  const ICON_SRC: Record<Case["visual"], string> = {
+    photo: "/assets/case-photo.png",
+    ledger: "/assets/case-ledger.png",
+    agent: "/assets/case-agent.png",
+    shop: "/assets/case-shop.png",
   };
-
-  const inner = (() => {
-    if (kind === "photo")
-      return (
-        <g>
-          <rect x="20" y="34" width="160" height="92" rx="3" {...stroke} />
-          <circle cx="100" cy="80" r="22" {...stroke} strokeWidth={2} />
-          <circle cx="100" cy="80" r="10" {...stroke} />
-          <line x1="40" y1="46" x2="62" y2="46" {...stroke} />
-          <line x1="158" y1="46" x2="168" y2="46" {...stroke} />
-          <circle cx="40" cy="46" r="2" fill={color} />
-          <circle cx="168" cy="46" r="2" fill={color} />
-        </g>
-      );
-    if (kind === "ledger")
-      return (
-        <g>
-          <line x1="20" y1="44" x2="180" y2="44" {...stroke} />
-          <line x1="20" y1="64" x2="180" y2="64" {...stroke} />
-          <line x1="20" y1="84" x2="140" y2="84" {...stroke} />
-          <line x1="20" y1="104" x2="160" y2="104" {...stroke} />
-          <line x1="20" y1="124" x2="100" y2="124" {...stroke} />
-          <circle cx="180" cy="44" r="2.5" fill={color} />
-          <circle cx="180" cy="64" r="2.5" fill={color} />
-          <circle cx="140" cy="84" r="2.5" fill={color} />
-          <circle cx="160" cy="104" r="2.5" fill={color} />
-          <circle cx="100" cy="124" r="2.5" fill={color} />
-        </g>
-      );
-    if (kind === "agent")
-      return (
-        <g>
-          <rect x="78" y="36" width="44" height="44" rx="2" {...stroke} strokeWidth={2} />
-          <circle cx="90" cy="52" r="2" fill={color} />
-          <circle cx="102" cy="52" r="2" fill={color} />
-          <line x1="86" y1="64" x2="114" y2="64" {...stroke} />
-          <line x1="100" y1="80" x2="100" y2="100" {...stroke} />
-          <line x1="60" y1="116" x2="140" y2="116" {...stroke} />
-          <circle cx="60" cy="116" r="3" fill={color} />
-          <circle cx="140" cy="116" r="3" fill={color} />
-          <circle cx="100" cy="100" r="3" fill={color} />
-        </g>
-      );
-    return (
-      <g>
-        <polyline points="40,40 60,40 70,108 160,108" {...stroke} strokeWidth={2} />
-        <circle cx="86" cy="124" r="6" {...stroke} />
-        <circle cx="146" cy="124" r="6" {...stroke} />
-        <rect x="70" y="56" width="100" height="42" {...stroke} />
-        <line x1="80" y1="72" x2="120" y2="72" {...stroke} />
-        <line x1="80" y1="84" x2="140" y2="84" {...stroke} />
-        <circle cx="160" cy="56" r="3" fill={color} />
-        <circle cx="120" cy="72" r="2" fill={color} />
-        <circle cx="140" cy="84" r="2" fill={color} />
-      </g>
-    );
-  })();
 
   return (
     <div
@@ -376,13 +318,13 @@ function CaseVisual({
           backgroundSize: "12px 12px",
         }}
       />
-      <svg
-        viewBox="0 0 200 160"
-        preserveAspectRatio="xMidYMid meet"
-        className="absolute inset-0 w-full h-full transition-transform duration-700 group-hover:rotate-[-1deg]"
-      >
-        {inner}
-      </svg>
+      <img
+        src={ICON_SRC[kind]}
+        alt=""
+        aria-hidden="true"
+        className="absolute inset-0 w-full h-full object-contain p-4 transition-transform duration-700 group-hover:rotate-[-1deg]"
+        draggable={false}
+      />
       <div
         aria-hidden="true"
         className="absolute top-2.5 right-2.5"
