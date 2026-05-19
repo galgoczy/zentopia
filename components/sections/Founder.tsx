@@ -166,9 +166,9 @@ function PortraitCard() {
         }}
       >
         <style>{`
-          /* 4s cycle: ~2.8s original, ~0.2s glitch in, ~0.8s alt (cyborg),
-             ~0.2s glitch out. Bigger amplitude than the 5s pass —
-             chunkier shake, wider tear translations, contrast spike. */
+          /* 5s cycle: ~3.5s original, ~0.1s glitch in, ~1.15s alt (cyborg),
+             ~0.25s glitch out. Big-amplitude shake/tear translations,
+             contrast + hue spike at the swap moments. */
           @keyframes ${id}-orig {
             0%, 70%   { opacity: 1; }
             72%, 95%  { opacity: 0; }
@@ -205,11 +205,11 @@ function PortraitCard() {
             94.5% { opacity: 0.85; transform: translate(12px, 0); }
             95.5% { opacity: 0.7;  transform: translate(-8px, 0); }
           }
-          .${id}-orig  { animation: ${id}-orig  4s steps(1, end) infinite; }
-          .${id}-alt   { animation: ${id}-alt   4s steps(1, end) infinite; }
-          .${id}-shake { animation: ${id}-shake 4s steps(1, end) infinite; }
-          .${id}-tear-top { animation: ${id}-tear-top 4s steps(1, end) infinite; clip-path: polygon(0 14%, 100% 14%, 100% 44%, 0 44%); }
-          .${id}-tear-bot { animation: ${id}-tear-bot 4s steps(1, end) infinite; clip-path: polygon(0 56%, 100% 56%, 100% 84%, 0 84%); }
+          .${id}-orig  { animation: ${id}-orig  5s steps(1, end) infinite; }
+          .${id}-alt   { animation: ${id}-alt   5s steps(1, end) infinite; }
+          .${id}-shake { animation: ${id}-shake 5s steps(1, end) infinite; }
+          .${id}-tear-top { animation: ${id}-tear-top 5s steps(1, end) infinite; clip-path: polygon(0 14%, 100% 14%, 100% 44%, 0 44%); }
+          .${id}-tear-bot { animation: ${id}-tear-bot 5s steps(1, end) infinite; clip-path: polygon(0 56%, 100% 56%, 100% 84%, 0 84%); }
           @media (prefers-reduced-motion: reduce) {
             .${id}-orig, .${id}-alt, .${id}-shake, .${id}-tear-top, .${id}-tear-bot { animation: none !important; }
             .${id}-alt { opacity: 0 !important; }

@@ -332,33 +332,15 @@ function CaseVisual({
     if (kind === "agent")
       return (
         <g>
-          {/* Back-most head — faintest, smallest. Drawn first so it sits behind. */}
-          <ellipse cx="148" cy="84" rx="20" ry="26" {...stroke} opacity={0.32} />
-          <path d="M 168 79 L 174 84 L 168 89" {...stroke} opacity={0.32} />
-          <circle cx="148" cy="113" r="2" fill={color} opacity={0.32} />
-
-          {/* Middle head */}
-          <ellipse cx="103" cy="82" rx="22" ry="28" {...stroke} opacity={0.55} />
-          <path d="M 125 77 L 131 82 L 125 87" {...stroke} opacity={0.55} />
-          <circle cx="103" cy="112" r="2.4" fill={color} opacity={0.55} />
-
-          {/* Front head — biggest, with brain detail + headset arc */}
-          <ellipse cx="55" cy="80" rx="26" ry="32" {...stroke} strokeWidth={2} />
-          <path d="M 81 75 L 87 80 L 81 85" {...stroke} strokeWidth={2} />
-          {/* Mouth indent */}
-          <line x1="74" y1="92" x2="78" y2="92" {...stroke} />
-          {/* Headset arc + earpiece terminal */}
-          <path d="M 32 68 Q 55 46 80 68" {...stroke} strokeWidth={2} />
-          <circle cx="32" cy="68" r="3" fill={color} />
-          {/* Brain pixel detail inside the front head */}
-          <rect x="44" y="68" width="22" height="16" rx="1" {...stroke} />
-          <circle cx="49" cy="72" r="1.2" fill={color} />
-          <circle cx="55" cy="71" r="1.2" fill={color} />
-          <circle cx="60" cy="75" r="1.2" fill={color} />
-          <circle cx="62" cy="80" r="1.2" fill={color} />
-          <circle cx="52" cy="79" r="1.2" fill={color} />
-          {/* Terminal dot at the chin */}
-          <circle cx="55" cy="113" r="3" fill={color} />
+          <rect x="78" y="36" width="44" height="44" rx="2" {...stroke} strokeWidth={2} />
+          <circle cx="90" cy="52" r="2" fill={color} />
+          <circle cx="102" cy="52" r="2" fill={color} />
+          <line x1="86" y1="64" x2="114" y2="64" {...stroke} />
+          <line x1="100" y1="80" x2="100" y2="100" {...stroke} />
+          <line x1="60" y1="116" x2="140" y2="116" {...stroke} />
+          <circle cx="60" cy="116" r="3" fill={color} />
+          <circle cx="140" cy="116" r="3" fill={color} />
+          <circle cx="100" cy="100" r="3" fill={color} />
         </g>
       );
     return (
