@@ -1,0 +1,11 @@
+BEGIN:VCARD
+VERSION:3.0
+FN:Galgóczy Gergely
+N:Galgóczy;Gergely;;;
+ORG:Zentopia
+TITLE:Founder · AI strategist
+EMAIL;TYPE=INTERNET,PREF:gergo@zentopia.io
+TEL;TYPE=CELL,VOICE:+36204680489
+URL:https://zentopia.io
+ADR;TYPE=WORK:;;Budapest;;;;HU
+END:VCARD
