@@ -62,22 +62,22 @@ export default function ContactCard() {
           }}
         />
 
-        <div className={`${id}-shake relative flex-1 flex flex-col px-6 pt-10 pb-8`}>
-          {/* Header — wordmark + tagline */}
-          <div className="flex items-center gap-3 mb-1">
+        <div className={`${id}-shake relative flex-1 flex flex-col px-6 pt-8 pb-8`}>
+          {/* Header — wordmark */}
+          <div className="flex items-center gap-3 mb-7">
             <Image
               src="/assets/logo-lime.png"
               alt=""
-              width={48}
-              height={48}
+              width={40}
+              height={40}
               priority
-              className="w-12 h-12 object-contain"
+              className="w-10 h-10 object-contain"
             />
             <span
               className="font-sans tracking-wordmark"
               style={{
                 fontWeight: 500,
-                fontSize: 32,
+                fontSize: 26,
                 color: Z.offwhite,
                 lineHeight: 1,
               }}
@@ -86,31 +86,55 @@ export default function ContactCard() {
             </span>
           </div>
 
-          {/* Name */}
-          <h1
-            className="m-0 font-sans font-bold mt-10"
-            style={{
-              fontSize: "clamp(36px, 9vw, 52px)",
-              letterSpacing: "-0.035em",
-              color: Z.offwhite,
-              lineHeight: 1,
-            }}
-          >
-            Gergely
-            <br />
-            Galgóczy
-          </h1>
+          {/* Avatar + name row */}
+          <div className="flex items-center gap-4">
+            <picture
+              className="shrink-0 block relative overflow-hidden"
+              style={{
+                width: 92,
+                height: 92,
+                borderRadius: "50%",
+                border: `2px solid ${Z.lime}`,
+                boxShadow: `0 0 0 4px ${Z.forestDeep}, 0 0 24px rgba(200,255,107,0.25)`,
+              }}
+            >
+              <source srcSet="/assets/founder.avif" type="image/avif" />
+              <source srcSet="/assets/founder.webp" type="image/webp" />
+              <img
+                src="/assets/founder.jpg"
+                alt="Gergely Galgóczy"
+                className="block w-full h-full object-cover"
+                style={{ objectPosition: "center 28%" }}
+              />
+            </picture>
 
-          <div className="mt-4 flex flex-col gap-1.5">
+            <h1
+              className="m-0 font-sans font-bold flex-1 min-w-0"
+              style={{
+                fontSize: "clamp(32px, 8.5vw, 44px)",
+                letterSpacing: "-0.035em",
+                color: Z.offwhite,
+                lineHeight: 0.98,
+              }}
+            >
+              Gergely
+              <br />
+              Galgóczy
+            </h1>
+          </div>
+
+          {/* Two-row info block underneath the avatar/name */}
+          <div className="mt-5 flex flex-col gap-1.5">
             <span
               className="font-mono"
               style={{
                 fontSize: 14,
-                color: "rgba(250,250,247,0.6)",
+                color: "rgba(250,250,247,0.65)",
                 letterSpacing: "0.04em",
               }}
             >
-              // founder · AI strategist
+              <span style={{ color: Z.ember }}>{"//"}</span>{" "}
+              founder · AI strategist
             </span>
             <span
               className="font-mono inline-flex items-center flex-wrap gap-2"
@@ -128,7 +152,7 @@ export default function ContactCard() {
           </div>
 
           {/* QR plinth — white card with brand corner brackets */}
-          <div className="relative mt-8 self-center">
+          <div className="relative mt-7 self-center">
             <span
               className="absolute w-3 h-3"
               style={{
@@ -178,7 +202,7 @@ export default function ContactCard() {
                 src="/assets/qr-gergo.svg"
                 alt="QR — zentopia.io/gergo"
                 className="block"
-                style={{ width: 240, height: 240, imageRendering: "pixelated" }}
+                style={{ width: 220, height: 220, imageRendering: "pixelated" }}
               />
             </a>
             {/* Tear strip — short glitch flash that re-renders the QR shifted.
@@ -196,7 +220,7 @@ export default function ContactCard() {
                   alt=""
                   aria-hidden="true"
                   className="block"
-                  style={{ width: 240, height: 240, imageRendering: "pixelated" }}
+                  style={{ width: 220, height: 220, imageRendering: "pixelated" }}
                 />
               </div>
             </div>
