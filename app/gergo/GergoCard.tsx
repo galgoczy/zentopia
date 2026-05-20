@@ -127,22 +127,44 @@ export default function GergoCard() {
           [ 00 ] NÉVJEGY
         </span>
 
-        {/* Name */}
-        <h1
-          className="m-0 font-sans font-bold mt-3"
-          style={{
-            fontSize: "clamp(44px, 11vw, 84px)",
-            letterSpacing: "-0.04em",
-            color: Z.forest,
-            lineHeight: 0.96,
-          }}
-        >
-          <GlitchText cycle={12}>Galgóczy</GlitchText>
-          <br />
-          Gergely
-        </h1>
+        {/* Avatar + name row */}
+        <div className="mt-3 flex items-center gap-5">
+          <picture
+            className="shrink-0 block relative overflow-hidden"
+            style={{
+              width: 108,
+              height: 108,
+              borderRadius: "50%",
+              border: `2px solid ${Z.ember}`,
+              boxShadow: `0 0 0 4px ${Z.offwhite}, 0 6px 32px -8px rgba(15,31,26,0.18)`,
+            }}
+          >
+            <source srcSet="/assets/founder.avif" type="image/avif" />
+            <source srcSet="/assets/founder.webp" type="image/webp" />
+            <img
+              src="/assets/founder.jpg"
+              alt="Galgóczy Gergely"
+              className="block w-full h-full object-cover"
+              style={{ objectPosition: "center 28%" }}
+            />
+          </picture>
 
-        <div className="mt-4 flex flex-col gap-1.5">
+          <h1
+            className="m-0 font-sans font-bold flex-1 min-w-0"
+            style={{
+              fontSize: "clamp(36px, 9vw, 72px)",
+              letterSpacing: "-0.04em",
+              color: Z.forest,
+              lineHeight: 0.96,
+            }}
+          >
+            <GlitchText cycle={12}>Galgóczy</GlitchText>
+            <br />
+            Gergely
+          </h1>
+        </div>
+
+        <div className="mt-5 flex flex-col gap-1.5">
           <span
             className="font-mono"
             style={{
@@ -181,8 +203,8 @@ export default function GergoCard() {
           Mentsd el a névjegyem (vCard)
         </a>
 
-        {/* Link list */}
-        <ul className="mt-10 flex flex-col gap-3">
+        {/* Link list — single column on mobile, two columns from md: up */}
+        <ul className="mt-10 grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
           {LINKS.map((l) => (
             <li key={l.href}>
               <a

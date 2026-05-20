@@ -16,12 +16,12 @@ export default function ContactCard() {
 
   return (
     <div
-      className="min-h-screen w-full flex items-stretch justify-center"
+      className="min-h-screen w-full flex items-stretch justify-center overflow-x-hidden"
       style={{ background: Z.forestDeep }}
     >
       {/* Rotated wrapper — the whole card is upside-down. */}
       <div
-        className="relative w-full max-w-[480px] flex flex-col"
+        className="relative w-full max-w-[480px] flex flex-col overflow-x-hidden"
         style={{ transform: "rotate(180deg)" }}
       >
         <style>{`
