@@ -165,8 +165,10 @@ export default function ContactCard() {
                 borderRight: `2px solid ${Z.lime}`,
               }}
             />
-            <div
-              className="p-4"
+            <a
+              href="/gergo"
+              aria-label="zentopia.io/gergo — kapcsolat"
+              className="block p-4 transition-transform duration-200 active:scale-[0.97]"
               style={{
                 background: Z.offwhite,
                 borderRadius: 8,
@@ -178,7 +180,7 @@ export default function ContactCard() {
                 className="block"
                 style={{ width: 240, height: 240, imageRendering: "pixelated" }}
               />
-            </div>
+            </a>
             {/* Tear strip — short glitch flash that re-renders the QR shifted.
                 Light enough to never break the actual scan. */}
             <div className={`${id}-tear absolute inset-0 pointer-events-none`}>
