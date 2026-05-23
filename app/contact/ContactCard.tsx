@@ -151,8 +151,11 @@ export default function ContactCard() {
             </span>
           </div>
 
-          {/* QR plinth — white card with brand corner brackets */}
-          <div className="relative mt-7 self-center">
+          {/* QR block — fills the space between the info and footer and
+              centers vertically within it. */}
+          <div className="flex-1 flex flex-col items-center justify-center">
+            {/* QR plinth — white card with brand corner brackets */}
+            <div className="relative">
             <span
               className="absolute w-3 h-3"
               style={{
@@ -226,30 +229,29 @@ export default function ContactCard() {
             </div>
           </div>
 
-          <div className="mt-5 self-center flex flex-col items-center gap-1">
-            <span
-              className="font-pixel uppercase"
-              style={{
-                fontSize: 11,
-                color: Z.lime,
-                letterSpacing: "0.08em",
-              }}
-            >
-              [ Scan me · Szkenneld be ]
-            </span>
-            <span
-              className="font-mono"
-              style={{
-                fontSize: 12,
-                color: "rgba(250,250,247,0.55)",
-                letterSpacing: "0.04em",
-              }}
-            >
-              zentopia.io/gergo
-            </span>
+            <div className="mt-5 flex flex-col items-center gap-1">
+              <span
+                className="font-pixel uppercase"
+                style={{
+                  fontSize: 11,
+                  color: Z.lime,
+                  letterSpacing: "0.08em",
+                }}
+              >
+                [ Scan me · Szkenneld be ]
+              </span>
+              <span
+                className="font-mono"
+                style={{
+                  fontSize: 12,
+                  color: "rgba(250,250,247,0.55)",
+                  letterSpacing: "0.04em",
+                }}
+              >
+                zentopia.io/gergo
+              </span>
+            </div>
           </div>
-
-          <div className="flex-1" />
 
           {/* Footer — Budapest pixel pattern */}
           <div className="mt-10 flex items-center justify-between">
