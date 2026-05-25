@@ -1,70 +1,113 @@
 "use client";
 
-import { useId } from "react";
+import { useId, useState } from "react";
 import Image from "next/image";
 import { Z } from "@/lib/tokens";
 import { PixelGrid } from "@/components/ui/PixelGrid";
 import { GlitchTE } from "@/components/ui/GlitchTE";
 import { GlitchText } from "@/components/ui/GlitchText";
 
-type Link = {
-  label: string;
-  sub?: string;
-  href: string;
-  mono: string; // mono-style display value (the actual email / URL)
-  accent: string;
-  external?: boolean;
-};
+type Lang = "hu" | "en";
 
-const LINKS: Link[] = [
-  {
-    label: "Email",
-    href: "mailto:gergo@zentopia.io",
-    mono: "gergo@zentopia.io",
-    accent: Z.ember,
+const COPY: Record<Lang, {
+  eyebrow: string;
+  roles: string;
+  taglineBefore: string;
+  highlight: string;
+  taglineAfter: string;
+  vcard: string;
+  primaryLabel: string;
+  projectsLabel: string;
+  fields: { phone: string; email: string; web: string };
+  projects: { selfiemata: string; youtube: string; alfie: string };
+}> = {
+  hu: {
+    eyebrow: "[ 00 ] NÉVJEGY",
+    roles: "// alapító · AI stratéga · zentopia",
+    taglineBefore: "AI a",
+    highlight: "TE",
+    taglineAfter: "vállalkozásodnak",
+    vcard: "Mentsd el a névjegyem (vCard)",
+    primaryLabel: "ELÉRHETŐSÉG",
+    projectsLabel: "Pár nyilvános projekt",
+    fields: { phone: "Telefon", email: "Email", web: "Web" },
+    projects: {
+      selfiemata: "élménypont · AI fotóbox",
+      youtube: "AI tartalmak",
+      alfie: "iroda · AI munkatárs",
+    },
   },
-  {
-    label: "Telefon",
-    href: "tel:+36204680489",
-    mono: "+36 20 468 0489",
-    accent: Z.sky,
+  en: {
+    eyebrow: "[ 00 ] CONTACT CARD",
+    roles: "// founder · AI strategist · zentopia",
+    taglineBefore: "AI for",
+    highlight: "YOUR",
+    taglineAfter: "business",
+    vcard: "Save my contact (vCard)",
+    primaryLabel: "GET IN TOUCH",
+    projectsLabel: "A few public projects",
+    fields: { phone: "Phone", email: "Email", web: "Web" },
+    projects: {
+      selfiemata: "experience point · AI photobooth",
+      youtube: "AI content",
+      alfie: "office · AI coworker",
+    },
   },
-  {
-    label: "Zentopia",
-    sub: "AI ügynökség",
-    href: "https://zentopia.io",
-    mono: "zentopia.io",
-    accent: Z.lime,
-    external: true,
-  },
-  {
-    label: "AI Selfiemata",
-    sub: "élménypont · AI fotóbox",
-    href: "https://ai.elmeny.hu",
-    mono: "ai.elmeny.hu",
-    accent: Z.coral,
-    external: true,
-  },
-  {
-    label: "YouTube · ChillGuide",
-    sub: "AI tartalmak",
-    href: "https://youtube.com/@chillguide",
-    mono: "youtube.com/@chillguide",
-    accent: Z.violet,
-    external: true,
-  },
-  {
-    label: "Alfie the Agent",
-    sub: "iroda · AI munkatárs",
-    href: "mailto:team@zentopia.io",
-    mono: "team@zentopia.io",
-    accent: Z.sunshine,
-  },
-];
+};
 
 export default function GergoCard() {
   const raw = useId();
   const id = "gc-" + raw.replace(/[^a-z0-9]/gi, "");
+  const [lang, setLang] = useState<Lang>("hu");
+  const t = COPY[lang];
+
+  const primary = [
+    {
+      label: t.fields.phone,
+      href: "tel:+36204680489",
+      value: "+36 20 468 0489",
+      accent: Z.sky,
+      external: false,
+    },
+    {
+      label: t.fields.email,
+      href: "mailto:gergo@zentopia.io",
+      value: "gergo@zentopia.io",
+      accent: Z.ember,
+      external: false,
+    },
+    {
+      label: t.fields.web,
+      href: "https://zentopia.io",
+      value: "zentopia.io",
+      accent: Z.lime,
+      external: true,
+    },
+  ];
+
+  const projects = [
+    {
+      label: "AI Selfiemata",
+      sub: t.projects.selfiemata,
+      href: "https://ai.elmeny.hu",
+      value: "ai.elmeny.hu",
+      accent: Z.coral,
+    },
+    {
+      label: "YouTube · ChillGuide",
+      sub: t.projects.youtube,
+      href: "https://youtube.com/@chillguide",
+      value: "youtube.com/@chillguide",
+      accent: Z.violet,
+    },
+    {
+      label: "Alfie the Agent",
+      sub: t.projects.alfie,
+      href: "mailto:team@zentopia.io",
+      value: "team@zentopia.io",
+      accent: Z.sunshine,
+    },
+  ];
 
   return (
     <div
@@ -74,57 +117,79 @@ export default function GergoCard() {
       <PixelGrid />
 
       <style>{`
-        /* 10s subtle glitch on the wrapper — once in a while, never disruptive. */
         @keyframes ${id}-shake {
           0%, 92%, 96%, 100% { transform: translate(0,0); filter: none; }
           93%   { transform: translate(2px, -1px); filter: contrast(1.2); }
           93.5% { transform: translate(-3px, 1px); filter: contrast(1.4) hue-rotate(-6deg); }
           94%   { transform: translate(1px, 0); filter: contrast(1.1); }
         }
-        @keyframes ${id}-card-pulse {
-          0%, 100% { transform: translateY(0); }
-          50%      { transform: translateY(-2px); }
-        }
         .${id}-shake { animation: ${id}-shake 10s steps(1, end) infinite; }
-        .${id}-link:hover .${id}-arrow { transform: translateX(4px); }
+        .${id}-row:hover .${id}-arrow { transform: translateX(4px); }
         @media (prefers-reduced-motion: reduce) {
           .${id}-shake { animation: none !important; }
         }
       `}</style>
 
-      <div className={`${id}-shake relative max-w-[720px] mx-auto px-5 pt-10 pb-16 md:px-8 md:pt-16 md:pb-24`}>
-        {/* Header */}
-        <div className="flex items-center gap-3 mb-2">
-          <Image
-            src="/assets/logo-forest.png"
-            alt=""
-            width={40}
-            height={40}
-            priority
-            className="w-10 h-10 object-contain"
-          />
-          <span
-            className="font-sans tracking-wordmark"
-            style={{
-              fontWeight: 500,
-              fontSize: 22,
-              color: Z.forest,
-              lineHeight: 1,
-            }}
-          >
-            zentopia
-          </span>
+      <div className={`${id}-shake relative max-w-[720px] mx-auto px-5 pt-6 pb-16 md:px-8 md:pt-10 md:pb-24`}>
+        {/* Top bar — wordmark + language switch */}
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <Image
+              src="/assets/logo-forest.png"
+              alt=""
+              width={36}
+              height={36}
+              priority
+              className="w-9 h-9 object-contain"
+            />
+            <span
+              className="font-sans tracking-wordmark"
+              style={{ fontWeight: 500, fontSize: 22, color: Z.forest, lineHeight: 1 }}
+            >
+              zentopia
+            </span>
+          </div>
+
+          <div className="inline-flex items-center gap-[2px]">
+            {(["hu", "en"] as Lang[]).map((code, i) => (
+              <span key={code} className="inline-flex items-center">
+                {i === 1 && (
+                  <span
+                    className="font-mono"
+                    style={{ color: "rgba(15,31,26,0.4)", fontSize: 11, opacity: 0.7, padding: "0 2px" }}
+                  >
+                    ·
+                  </span>
+                )}
+                <button
+                  type="button"
+                  onClick={() => setLang(code)}
+                  aria-pressed={lang === code}
+                  className="transition-colors duration-200"
+                  style={{
+                    padding: "2px 3px",
+                    background: "transparent",
+                    border: "none",
+                    color: lang === code ? Z.forest : "rgba(15,31,26,0.4)",
+                    fontWeight: lang === code ? 700 : 500,
+                    fontFamily: "var(--font-mono), ui-monospace, monospace",
+                    fontSize: 12,
+                    letterSpacing: "0.08em",
+                    cursor: "pointer",
+                  }}
+                >
+                  {code.toUpperCase()}
+                </button>
+              </span>
+            ))}
+          </div>
         </div>
 
         <span
-          className="font-mono inline-block mt-3"
-          style={{
-            fontSize: 12,
-            color: Z.ember,
-            letterSpacing: "0.06em",
-          }}
+          className="font-mono inline-block mt-6"
+          style={{ fontSize: 12, color: Z.ember, letterSpacing: "0.06em" }}
         >
-          [ 00 ] NÉVJEGY
+          {t.eyebrow}
         </span>
 
         {/* Avatar + name row */}
@@ -167,26 +232,18 @@ export default function GergoCard() {
         <div className="mt-5 flex flex-col gap-1.5">
           <span
             className="font-mono"
-            style={{
-              fontSize: 14,
-              color: Z.slate,
-              letterSpacing: "0.04em",
-            }}
+            style={{ fontSize: 14, color: Z.slate, letterSpacing: "0.04em" }}
           >
-            // alapító · AI stratéga · zentopia
+            {t.roles}
           </span>
           <span
             className="font-mono inline-flex items-center flex-wrap gap-2"
-            style={{
-              fontSize: 14,
-              color: Z.forest,
-              letterSpacing: "0.04em",
-            }}
+            style={{ fontSize: 14, color: Z.forest, letterSpacing: "0.04em" }}
           >
             <span style={{ color: Z.ember }}>{"//"}</span>
-            <span>AI a</span>
-            <GlitchTE>TE</GlitchTE>
-            <span>vállalkozásodnak</span>
+            <span>{t.taglineBefore}</span>
+            <GlitchTE>{t.highlight}</GlitchTE>
+            <span>{t.taglineAfter}</span>
           </span>
         </div>
 
@@ -200,18 +257,84 @@ export default function GergoCard() {
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
             <path d="M8 2v9m0 0l-3-3m3 3l3-3M3 13h10" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
-          Mentsd el a névjegyem (vCard)
+          {t.vcard}
         </a>
 
-        {/* Link list — single column on mobile, two columns from md: up */}
-        <ul className="mt-10 grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
-          {LINKS.map((l) => (
+        {/* Primary contact block — phone / email / web in one card */}
+        <div className="mt-9">
+          <span
+            className="font-pixel uppercase"
+            style={{ fontSize: 10, color: Z.ember, letterSpacing: "0.08em" }}
+          >
+            {t.primaryLabel}
+          </span>
+          <div
+            className="mt-4 overflow-hidden"
+            style={{
+              background: Z.white,
+              border: `1px solid ${Z.hairline}`,
+              borderRadius: 14,
+            }}
+          >
+            {primary.map((p, i) => (
+              <a
+                key={p.href}
+                href={p.href}
+                target={p.external ? "_blank" : undefined}
+                rel={p.external ? "noopener noreferrer" : undefined}
+                className={`${id}-row group relative flex items-center gap-4 px-5 py-4 transition-colors duration-200 hover:bg-[rgba(15,31,26,0.025)]`}
+                style={{
+                  textDecoration: "none",
+                  color: Z.forest,
+                  borderTop: i > 0 ? `1px solid ${Z.hairline}` : "none",
+                }}
+              >
+                <span
+                  aria-hidden="true"
+                  className="shrink-0 rounded-full"
+                  style={{ width: 10, height: 10, background: p.accent }}
+                />
+                <div className="flex flex-col min-w-0 flex-1">
+                  <span
+                    className="font-mono uppercase"
+                    style={{ fontSize: 11, color: p.accent, letterSpacing: "0.08em" }}
+                  >
+                    {p.label}
+                  </span>
+                  <span
+                    className="font-sans font-bold truncate"
+                    style={{ fontSize: 19, color: Z.forest, letterSpacing: "-0.02em" }}
+                  >
+                    {p.value}
+                  </span>
+                </div>
+                <span
+                  className={`${id}-arrow transition-transform duration-200`}
+                  style={{ color: p.accent, fontSize: 22 }}
+                  aria-hidden="true"
+                >
+                  {p.external ? "↗" : "→"}
+                </span>
+              </a>
+            ))}
+          </div>
+        </div>
+
+        {/* Projects section */}
+        <h2
+          className="m-0 mt-11 font-sans font-bold"
+          style={{ fontSize: "clamp(24px, 5vw, 32px)", letterSpacing: "-0.03em", color: Z.forest, lineHeight: 1 }}
+        >
+          {t.projectsLabel}
+        </h2>
+        <ul className="mt-5 grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
+          {projects.map((l) => (
             <li key={l.href}>
               <a
                 href={l.href}
-                target={l.external ? "_blank" : undefined}
-                rel={l.external ? "noopener noreferrer" : undefined}
-                className={`${id}-link zen-card-lift relative flex items-center gap-4 px-5 py-4 group`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={`${id}-row zen-card-lift relative flex items-center gap-4 px-5 py-4 group h-full`}
                 style={{
                   background: Z.white,
                   border: `1px solid ${Z.hairline}`,
@@ -220,7 +343,6 @@ export default function GergoCard() {
                   color: Z.forest,
                 }}
               >
-                {/* Accent stripe on the left */}
                 <span
                   aria-hidden="true"
                   className="absolute left-0 top-0 bottom-0 w-1 rounded-l-xl"
@@ -229,29 +351,19 @@ export default function GergoCard() {
                 <div className="flex flex-col min-w-0 flex-1 pl-2">
                   <span
                     className="font-mono uppercase"
-                    style={{
-                      fontSize: 11,
-                      color: l.accent,
-                      letterSpacing: "0.08em",
-                    }}
+                    style={{ fontSize: 11, color: l.accent, letterSpacing: "0.08em" }}
                   >
                     {l.label}
-                    {l.sub && (
-                      <span style={{ color: Z.slate, fontWeight: 400, textTransform: "none", letterSpacing: 0 }}>
-                        {" · "}
-                        {l.sub}
-                      </span>
-                    )}
+                    <span style={{ color: Z.slate, fontWeight: 400, textTransform: "none", letterSpacing: 0 }}>
+                      {" · "}
+                      {l.sub}
+                    </span>
                   </span>
                   <span
                     className="font-sans font-bold truncate"
-                    style={{
-                      fontSize: 18,
-                      color: Z.forest,
-                      letterSpacing: "-0.02em",
-                    }}
+                    style={{ fontSize: 18, color: Z.forest, letterSpacing: "-0.02em" }}
                   >
-                    {l.mono}
+                    {l.value}
                   </span>
                 </div>
                 <span
@@ -259,7 +371,7 @@ export default function GergoCard() {
                   style={{ color: l.accent, fontSize: 22 }}
                   aria-hidden="true"
                 >
-                  {l.external ? "↗" : "→"}
+                  ↗
                 </span>
               </a>
             </li>
@@ -270,21 +382,13 @@ export default function GergoCard() {
         <div className="mt-12 flex items-center justify-between flex-wrap gap-3">
           <span
             className="font-pixel uppercase"
-            style={{
-              fontSize: 10,
-              color: "rgba(15,31,26,0.45)",
-              letterSpacing: "0.08em",
-            }}
+            style={{ fontSize: 10, color: "rgba(15,31,26,0.45)", letterSpacing: "0.08em" }}
           >
             [ MADE WITH 8-BIT LOVE ]
           </span>
           <span
             className="font-pixel uppercase"
-            style={{
-              fontSize: 10,
-              color: Z.forest,
-              letterSpacing: "0.08em",
-            }}
+            style={{ fontSize: 10, color: Z.forest, letterSpacing: "0.08em" }}
           >
             [ Budapest · HU ]
           </span>
