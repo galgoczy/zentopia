@@ -252,7 +252,7 @@ export default function GergoCard() {
         <a
           href="/galgoczy.vcf"
           download
-          className="zen-cta-primary group inline-flex items-center gap-2 mt-8 rounded-lg font-sans font-bold leading-none tracking-[-0.01em] py-[15px] px-[22px] text-[15px]"
+          className="zen-cta-primary group inline-flex items-center gap-2 mt-7 rounded-lg font-sans font-bold leading-none tracking-[-0.01em] py-[15px] px-[22px] text-[15px]"
           style={{ background: Z.lime, color: Z.forest }}
         >
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
@@ -262,7 +262,7 @@ export default function GergoCard() {
         </a>
 
         {/* Primary contact block — phone / email / web in one card */}
-        <div className="mt-9">
+        <div className="mt-7">
           <span
             className="font-pixel uppercase"
             style={{ fontSize: 10, color: Z.ember, letterSpacing: "0.08em" }}
@@ -323,13 +323,15 @@ export default function GergoCard() {
         </div>
 
         {/* Projects section */}
-        <h2
-          className="m-0 mt-11 font-sans font-bold"
-          style={{ fontSize: "clamp(24px, 5vw, 32px)", letterSpacing: "-0.03em", color: Z.forest, lineHeight: 1 }}
-        >
-          {t.projectsLabel}
-        </h2>
-        <ul className="mt-5 grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
+        <div className="mt-8">
+          <span
+            className="font-pixel uppercase"
+            style={{ fontSize: 10, color: Z.ember, letterSpacing: "0.08em" }}
+          >
+            {t.projectsLabel}
+          </span>
+        </div>
+        <ul className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
           {projects.map((l) => (
             <li key={l.href}>
               <a
