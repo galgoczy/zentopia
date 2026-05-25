@@ -1,6 +1,6 @@
 "use client";
 
-import { useId, useState } from "react";
+import { useEffect, useId, useState } from "react";
 import Image from "next/image";
 import { Z } from "@/lib/tokens";
 import { PixelGrid } from "@/components/ui/PixelGrid";
@@ -58,31 +58,32 @@ const COPY: Record<Lang, {
 export default function GergoCard() {
   const raw = useId();
   const id = "gc-" + raw.replace(/[^a-z0-9]/gi, "");
-  const [lang, setLang] = useState<Lang>("hu");
+  // Default to EN (covers the "no info" case); switch to HU only when the
+  // browser/system language is Hungarian. The user can still toggle manually.
+  const [lang, setLang] = useState<Lang>("en");
+  const [userPicked, setUserPicked] = useState(false);
+
+  useEffect(() => {
+    if (userPicked) return;
+    const langs =
+      typeof navigator !== "undefined"
+        ? [navigator.language, ...(navigator.languages || [])]
+        : [];
+    const isHu = langs.some((l) => l?.toLowerCase().startsWith("hu"));
+    setLang(isHu ? "hu" : "en");
+  }, [userPicked]);
+
+  const pick = (code: Lang) => {
+    setUserPicked(true);
+    setLang(code);
+  };
+
   const t = COPY[lang];
 
   const primary = [
-    {
-      label: t.fields.phone,
-      href: "tel:+36204680489",
-      value: "+36 20 468 0489",
-      accent: Z.sky,
-      external: false,
-    },
-    {
-      label: t.fields.email,
-      href: "mailto:gergo@zentopia.io",
-      value: "gergo@zentopia.io",
-      accent: Z.ember,
-      external: false,
-    },
-    {
-      label: t.fields.web,
-      href: "https://zentopia.io",
-      value: "zentopia.io",
-      accent: Z.lime,
-      external: true,
-    },
+    { label: t.fields.phone, href: "tel:+36204680489", value: "+36 20 468 0489", external: false },
+    { label: t.fields.email, href: "mailto:gergo@zentopia.io", value: "gergo@zentopia.io", external: false },
+    { label: t.fields.web, href: "https://zentopia.io", value: "zentopia.io", external: true },
   ];
 
   const projects = [
@@ -163,7 +164,7 @@ export default function GergoCard() {
                 )}
                 <button
                   type="button"
-                  onClick={() => setLang(code)}
+                  onClick={() => pick(code)}
                   aria-pressed={lang === code}
                   className="transition-colors duration-200"
                   style={{
@@ -269,13 +270,19 @@ export default function GergoCard() {
             {t.primaryLabel}
           </span>
           <div
-            className="mt-4 overflow-hidden"
+            className="mt-4 overflow-hidden relative"
             style={{
               background: Z.white,
               border: `1px solid ${Z.hairline}`,
               borderRadius: 14,
             }}
           >
+            {/* Single lime accent stripe — one unifying color for the whole block */}
+            <span
+              aria-hidden="true"
+              className="absolute left-0 top-0 bottom-0 w-1"
+              style={{ background: Z.lime }}
+            />
             {primary.map((p, i) => (
               <a
                 key={p.href}
@@ -289,15 +296,10 @@ export default function GergoCard() {
                   borderTop: i > 0 ? `1px solid ${Z.hairline}` : "none",
                 }}
               >
-                <span
-                  aria-hidden="true"
-                  className="shrink-0 rounded-full"
-                  style={{ width: 10, height: 10, background: p.accent }}
-                />
                 <div className="flex flex-col min-w-0 flex-1">
                   <span
                     className="font-mono uppercase"
-                    style={{ fontSize: 11, color: p.accent, letterSpacing: "0.08em" }}
+                    style={{ fontSize: 11, color: Z.slate, letterSpacing: "0.08em" }}
                   >
                     {p.label}
                   </span>
@@ -310,7 +312,7 @@ export default function GergoCard() {
                 </div>
                 <span
                   className={`${id}-arrow transition-transform duration-200`}
-                  style={{ color: p.accent, fontSize: 22 }}
+                  style={{ color: Z.slate, fontSize: 22 }}
                   aria-hidden="true"
                 >
                   {p.external ? "↗" : "→"}
