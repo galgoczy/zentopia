@@ -337,6 +337,66 @@ export default function GergoCard() {
           </div>
         </div>
 
+        {/* Projects section */}
+        <div className="mt-8">
+          <span
+            className="font-pixel uppercase"
+            style={{ fontSize: 10, color: Z.ember, letterSpacing: "0.08em" }}
+          >
+            {t.projectsLabel}
+          </span>
+        </div>
+        <ul className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
+          {projects.map((l) => (
+            <li key={l.href}>
+              <a
+                href={l.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={`${id}-row zen-card-lift relative flex items-center gap-4 px-5 py-4 group h-full`}
+                style={{
+                  background: Z.white,
+                  border: `1px solid ${Z.hairline}`,
+                  borderRadius: 12,
+                  textDecoration: "none",
+                  color: Z.forest,
+                }}
+              >
+                <span
+                  aria-hidden="true"
+                  className="absolute left-0 top-0 bottom-0 w-1 rounded-l-xl"
+                  style={{ background: l.accent }}
+                />
+                <div className="flex flex-col min-w-0 flex-1 pl-2">
+                  <span
+                    className="font-mono uppercase"
+                    style={{ fontSize: 11, color: l.accent, letterSpacing: "0.08em" }}
+                  >
+                    {l.label}
+                    <span style={{ color: Z.slate, fontWeight: 400, textTransform: "none", letterSpacing: 0 }}>
+                      {" · "}
+                      {l.sub}
+                    </span>
+                  </span>
+                  <span
+                    className="font-sans font-bold truncate"
+                    style={{ fontSize: 18, color: Z.forest, letterSpacing: "-0.02em" }}
+                  >
+                    {l.value}
+                  </span>
+                </div>
+                <span
+                  className={`${id}-arrow transition-transform duration-200`}
+                  style={{ color: l.accent, fontSize: 22 }}
+                  aria-hidden="true"
+                >
+                  ↗
+                </span>
+              </a>
+            </li>
+          ))}
+        </ul>
+
         {/* CV / Resume block — view online + download PDF */}
         <div className="mt-8">
           <span
@@ -421,66 +481,6 @@ export default function GergoCard() {
             </a>
           </div>
         </div>
-
-        {/* Projects section */}
-        <div className="mt-8">
-          <span
-            className="font-pixel uppercase"
-            style={{ fontSize: 10, color: Z.ember, letterSpacing: "0.08em" }}
-          >
-            {t.projectsLabel}
-          </span>
-        </div>
-        <ul className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
-          {projects.map((l) => (
-            <li key={l.href}>
-              <a
-                href={l.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={`${id}-row zen-card-lift relative flex items-center gap-4 px-5 py-4 group h-full`}
-                style={{
-                  background: Z.white,
-                  border: `1px solid ${Z.hairline}`,
-                  borderRadius: 12,
-                  textDecoration: "none",
-                  color: Z.forest,
-                }}
-              >
-                <span
-                  aria-hidden="true"
-                  className="absolute left-0 top-0 bottom-0 w-1 rounded-l-xl"
-                  style={{ background: l.accent }}
-                />
-                <div className="flex flex-col min-w-0 flex-1 pl-2">
-                  <span
-                    className="font-mono uppercase"
-                    style={{ fontSize: 11, color: l.accent, letterSpacing: "0.08em" }}
-                  >
-                    {l.label}
-                    <span style={{ color: Z.slate, fontWeight: 400, textTransform: "none", letterSpacing: 0 }}>
-                      {" · "}
-                      {l.sub}
-                    </span>
-                  </span>
-                  <span
-                    className="font-sans font-bold truncate"
-                    style={{ fontSize: 18, color: Z.forest, letterSpacing: "-0.02em" }}
-                  >
-                    {l.value}
-                  </span>
-                </div>
-                <span
-                  className={`${id}-arrow transition-transform duration-200`}
-                  style={{ color: l.accent, fontSize: 22 }}
-                  aria-hidden="true"
-                >
-                  ↗
-                </span>
-              </a>
-            </li>
-          ))}
-        </ul>
 
         {/* Footer */}
         <div className="mt-12 flex items-center justify-between flex-wrap gap-3">
