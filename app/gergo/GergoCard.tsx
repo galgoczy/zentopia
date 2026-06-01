@@ -17,6 +17,11 @@ const COPY: Record<Lang, {
   taglineAfter: string;
   vcard: string;
   primaryLabel: string;
+  cvLabel: string;
+  cvView: string;
+  cvViewSub: string;
+  cvDownload: string;
+  cvDownloadSub: string;
   projectsLabel: string;
   fields: { phone: string; email: string; web: string };
   projects: { selfiemata: string; youtube: string; alfie: string };
@@ -29,6 +34,11 @@ const COPY: Record<Lang, {
     taglineAfter: "vállalkozásodnak",
     vcard: "Mentsd el a névjegyem (vCard)",
     primaryLabel: "ELÉRHETŐSÉG",
+    cvLabel: "CV / ÖNÉLETRAJZ",
+    cvView: "Megnézem online",
+    cvViewSub: "reszponzív · HTML",
+    cvDownload: "Letöltés PDF-ben",
+    cvDownloadSub: "A4 · nyomtatható",
     projectsLabel: "Pár nyilvános projekt",
     fields: { phone: "Telefon", email: "Email", web: "Web" },
     projects: {
@@ -45,6 +55,11 @@ const COPY: Record<Lang, {
     taglineAfter: "business",
     vcard: "Save my contact (vCard)",
     primaryLabel: "GET IN TOUCH",
+    cvLabel: "CV / RESUME",
+    cvView: "View online",
+    cvViewSub: "responsive · HTML",
+    cvDownload: "Download as PDF",
+    cvDownloadSub: "A4 · print-ready",
     projectsLabel: "A few public projects",
     fields: { phone: "Phone", email: "Email", web: "Web" },
     projects: {
@@ -319,6 +334,91 @@ export default function GergoCard() {
                 </span>
               </a>
             ))}
+          </div>
+        </div>
+
+        {/* CV / Resume block — view online + download PDF */}
+        <div className="mt-8">
+          <span
+            className="font-pixel uppercase"
+            style={{ fontSize: 10, color: Z.ember, letterSpacing: "0.08em" }}
+          >
+            {t.cvLabel}
+          </span>
+          <div
+            className="mt-4 overflow-hidden relative"
+            style={{
+              background: Z.white,
+              border: `1px solid ${Z.hairline}`,
+              borderRadius: 14,
+            }}
+          >
+            <span
+              aria-hidden="true"
+              className="absolute left-0 top-0 bottom-0 w-1"
+              style={{ background: Z.sky }}
+            />
+            <a
+              href="/cv"
+              target="_blank"
+              rel="noopener noreferrer"
+              className={`${id}-row group relative flex items-center gap-4 px-5 py-4 transition-colors duration-200 hover:bg-[rgba(15,31,26,0.025)]`}
+              style={{ textDecoration: "none", color: Z.forest }}
+            >
+              <div className="flex flex-col min-w-0 flex-1">
+                <span
+                  className="font-mono uppercase"
+                  style={{ fontSize: 11, color: Z.slate, letterSpacing: "0.08em" }}
+                >
+                  {t.cvViewSub}
+                </span>
+                <span
+                  className="font-sans font-bold truncate"
+                  style={{ fontSize: 19, color: Z.forest, letterSpacing: "-0.02em" }}
+                >
+                  {t.cvView}
+                </span>
+              </div>
+              <span
+                className={`${id}-arrow transition-transform duration-200`}
+                style={{ color: Z.slate, fontSize: 22 }}
+                aria-hidden="true"
+              >
+                ↗
+              </span>
+            </a>
+            <a
+              href="/cv/galgoczy-gergely-cv.pdf"
+              download
+              className={`${id}-row group relative flex items-center gap-4 px-5 py-4 transition-colors duration-200 hover:bg-[rgba(15,31,26,0.025)]`}
+              style={{
+                textDecoration: "none",
+                color: Z.forest,
+                borderTop: `1px solid ${Z.hairline}`,
+              }}
+            >
+              <div className="flex flex-col min-w-0 flex-1">
+                <span
+                  className="font-mono uppercase"
+                  style={{ fontSize: 11, color: Z.slate, letterSpacing: "0.08em" }}
+                >
+                  {t.cvDownloadSub}
+                </span>
+                <span
+                  className="font-sans font-bold truncate"
+                  style={{ fontSize: 19, color: Z.forest, letterSpacing: "-0.02em" }}
+                >
+                  {t.cvDownload}
+                </span>
+              </div>
+              <span
+                className={`${id}-arrow transition-transform duration-200`}
+                style={{ color: Z.slate, fontSize: 22 }}
+                aria-hidden="true"
+              >
+                ↓
+              </span>
+            </a>
           </div>
         </div>
 
