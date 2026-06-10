@@ -46,7 +46,8 @@ export function PixelReveal({
       .to(state, {
         p: 1,
         duration: 1.45,
-        ease: "power1.inOut",
+        // fast through the first coarse frames, easing off as it sharpens
+        ease: "power2.out",
         onUpdate: () => draw(snap(state.p)),
       })
       .set(art, { opacity: 1 })
