@@ -38,6 +38,16 @@ export default function RootLayout({
       lang="hu"
       className={`${spaceGrotesk.variable} ${jetbrainsMono.variable} ${pressStart.variable}`}
     >
+      <head>
+        {/* Pre-hydration cover so the hero never flashes before the boot
+            intro mounts. BootSequence lifts the class once its own overlay
+            is up; the timeout is a failsafe if hydration dies. */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{if(sessionStorage.getItem('zen-booted'))return;if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;var p=location.pathname;if(p!=='/'&&p!=='/en'&&p!=='/en/')return;document.documentElement.classList.add('zen-booting');setTimeout(function(){document.documentElement.classList.remove('zen-booting')},5000);}catch(e){}})();`,
+          }}
+        />
+      </head>
       <body className="bg-offwhite font-sans text-forest antialiased">
         {children}
         <MotionRoot />

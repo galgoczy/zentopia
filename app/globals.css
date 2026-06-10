@@ -155,6 +155,16 @@ html.lenis body {
   overflow: hidden;
 }
 
+/* Instant page cover while the boot intro is due (class set by an inline
+   head script before first paint, lifted by BootSequence) */
+html.zen-booting body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 199;
+  background: #081310;
+}
+
 /* Pixel-crosshair cursor (activated on fine pointers via MotionRoot) */
 html.zen-cursor,
 html.zen-cursor * {

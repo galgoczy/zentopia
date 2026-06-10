@@ -1,6 +1,6 @@
 "use client";
 
-import { useLayoutEffect, useRef } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { Z } from "@/lib/tokens";
 import { gsap, prefersReducedMotion } from "./gsap";
 
@@ -9,52 +9,75 @@ type Spec = {
   top: string;
   size: number;
   color: string;
-  drift: number; // px of parallax travel over the full page scroll
+  driftX: number; // px of parallax travel over the full page scroll
+  driftY: number;
+  lag: number; // scrub smoothing — different per pixel, so they trail apart
 };
 
-const PIXELS: Spec[] = [
-  { left: "7%", top: "24%", size: 5, color: Z.lime, drift: -260 },
-  { left: "93%", top: "16%", size: 4, color: Z.ember, drift: -180 },
-  { left: "85%", top: "64%", size: 6, color: Z.sky, drift: -340 },
-  { left: "12%", top: "78%", size: 4, color: Z.violet, drift: -150 },
-  { left: "48%", top: "8%", size: 3, color: Z.coral, drift: -220 },
-  { left: "68%", top: "88%", size: 5, color: Z.lime, drift: -300 },
-];
+const COLORS = [Z.lime, Z.lime, Z.ember, Z.sky, Z.violet, Z.coral, Z.sunshine];
+const COUNT = 12;
 
-// A handful of stray pixels living between the content and the HUD frame:
-// they drift upward with the scroll at different speeds and occasionally
-// glitch-jump sideways.
+function makeSpecs(): Spec[] {
+  const rnd = (a: number, b: number) => a + Math.random() * (b - a);
+  return Array.from({ length: COUNT }, () => ({
+    left: `${rnd(3, 97).toFixed(1)}%`,
+    top: `${rnd(4, 94).toFixed(1)}%`,
+    size: Math.round(rnd(3, 7)),
+    color: COLORS[Math.floor(Math.random() * COLORS.length)],
+    driftX: rnd(-160, 160),
+    driftY: rnd(-420, 420),
+    lag: rnd(0.5, 2.2),
+  }));
+}
+
+// A loose swarm of stray pixels living between the content and the HUD
+// frame: each one parallaxes in its own direction at its own pace as you
+// scroll, and occasionally glitch-jumps with a flicker.
 export function GlitchPixels() {
   const rootRef = useRef<HTMLDivElement | null>(null);
+  // Specs are random, so generate them client-side only to keep SSR markup stable.
+  const [specs, setSpecs] = useState<Spec[] | null>(null);
+
+  useEffect(() => {
+    setSpecs(makeSpecs());
+  }, []);
 
   useLayoutEffect(() => {
     const root = rootRef.current;
-    if (!root || prefersReducedMotion()) return;
+    if (!root || !specs || prefersReducedMotion()) return;
 
     const ctx = gsap.context(() => {
       const els = gsap.utils.toArray<HTMLElement>("[data-px]");
       els.forEach((el, i) => {
+        const s = specs[i];
         gsap.to(el, {
-          y: PIXELS[i].drift,
+          x: s.driftX,
+          y: s.driftY,
           ease: "none",
-          scrollTrigger: { start: 0, end: "max", scrub: 1.2 },
+          scrollTrigger: { start: 0, end: "max", scrub: s.lag },
         });
-        // glitch-jump loop: sudden sideways teleports with a flicker
+        // glitch-jump loop: sudden teleports with a flicker
         const jump = gsap.timeline({
           repeat: -1,
-          repeatDelay: gsap.utils.random(1.8, 4.2),
+          repeatDelay: gsap.utils.random(1.6, 4.5),
           delay: gsap.utils.random(0, 3),
         });
         jump
-          .set(el, { x: () => gsap.utils.random(-26, 26), opacity: 0.25 })
-          .set(el, { opacity: 0.7 }, "+=0.07")
-          .set(el, { x: () => gsap.utils.random(-10, 10) }, "+=0.12")
+          .set(el, {
+            xPercent: () => gsap.utils.random(-500, 500),
+            yPercent: () => gsap.utils.random(-300, 300),
+            opacity: 0.2,
+          })
+          .set(el, { opacity: 0.65 }, "+=0.07")
+          .set(el, { xPercent: 0, yPercent: 0 }, "+=0.14")
           .set(el, { opacity: 0.5 }, "+=0.05");
       });
     }, root);
 
     return () => ctx.revert();
-  }, []);
+  }, [specs]);
+
+  if (!specs) return null;
 
   return (
     <div
@@ -62,7 +85,7 @@ export function GlitchPixels() {
       aria-hidden="true"
       className="pointer-events-none fixed inset-0 z-[115] hidden md:block"
     >
-      {PIXELS.map((p, i) => (
+      {specs.map((p, i) => (
         <span
           key={i}
           data-px

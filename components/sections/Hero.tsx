@@ -13,7 +13,7 @@ import { BreathingBonsai } from "@/components/ui/BreathingBonsai";
 import { TechStackStrip } from "@/components/ui/TechStackStrip";
 import { Reveal } from "@/components/ui/Reveal";
 import { MaskLine } from "@/components/motion/MaskLine";
-import { ParticleAssemble } from "@/components/motion/ParticleAssemble";
+import { PixelReveal } from "@/components/motion/PixelReveal";
 
 export function Hero() {
   const t = useT();
@@ -192,14 +192,14 @@ function BonsaiPanel() {
         }}
       />
       <div className="relative p-2 md:p-6">
-        <ParticleAssemble>
+        <PixelReveal src="/assets/logo-forest.png" size={460}>
           <div className="md:hidden">
             <BreathingBonsai size={200} base="forest" glitchCycle={5} />
           </div>
           <div className="hidden md:block">
             <BreathingBonsai size={460} base="forest" glitchCycle={5} />
           </div>
-        </ParticleAssemble>
+        </PixelReveal>
       </div>
       <span
         className="absolute font-mono"

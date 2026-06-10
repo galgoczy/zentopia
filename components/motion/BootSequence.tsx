@@ -15,12 +15,20 @@ export function BootSequence() {
   const rootRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
-    if (bootPending()) setShow(true);
+    if (bootPending()) {
+      setShow(true);
+    } else {
+      // Returning visitor or reduced motion: make sure the cover is gone.
+      document.documentElement.classList.remove("zen-booting");
+    }
   }, []);
 
   useEffect(() => {
     const root = rootRef.current;
     if (!show || !root) return;
+
+    // Our opaque overlay is up — lift the pre-hydration CSS cover.
+    document.documentElement.classList.remove("zen-booting");
 
     const q = gsap.utils.selector(root);
     const pct = root.querySelector<HTMLElement>("[data-pct]");
