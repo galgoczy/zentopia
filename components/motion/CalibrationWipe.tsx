@@ -67,7 +67,7 @@ export function CalibrationWipe() {
     <section
       ref={sectionRef}
       aria-hidden="true"
-      className="relative overflow-hidden flex items-center justify-center h-[72vh] md:h-screen"
+      className="relative overflow-hidden flex items-center justify-center h-svh md:h-screen"
       style={{ background: Z.forestDeep }}
     >
       {/* dashed measurement grid */}
@@ -103,7 +103,7 @@ export function CalibrationWipe() {
             ref={canvasRef}
             width={ART_SIZE}
             height={ART_SIZE}
-            className="block w-[150px] md:w-[240px] h-auto"
+            className="block w-[210px] md:w-[240px] h-auto"
             style={{ imageRendering: "pixelated" }}
           />
         </div>

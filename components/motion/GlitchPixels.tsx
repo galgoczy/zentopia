@@ -15,17 +15,18 @@ type Spec = {
 };
 
 const COLORS = [Z.lime, Z.lime, Z.ember, Z.sky, Z.violet, Z.coral, Z.sunshine];
-const COUNT = 12;
 
 function makeSpecs(): Spec[] {
+  const mobile = window.innerWidth < 768;
+  const count = mobile ? 8 : 12;
   const rnd = (a: number, b: number) => a + Math.random() * (b - a);
-  return Array.from({ length: COUNT }, () => ({
+  return Array.from({ length: count }, () => ({
     left: `${rnd(3, 97).toFixed(1)}%`,
     top: `${rnd(4, 94).toFixed(1)}%`,
     size: Math.round(rnd(3, 7)),
     color: COLORS[Math.floor(Math.random() * COLORS.length)],
-    driftX: rnd(-160, 160),
-    driftY: rnd(-420, 420),
+    driftX: mobile ? rnd(-70, 70) : rnd(-160, 160),
+    driftY: mobile ? rnd(-260, 260) : rnd(-420, 420),
     lag: rnd(0.5, 2.2),
   }));
 }
@@ -83,7 +84,7 @@ export function GlitchPixels() {
     <div
       ref={rootRef}
       aria-hidden="true"
-      className="pointer-events-none fixed inset-0 z-[115] hidden md:block"
+      className="pointer-events-none fixed inset-0 z-[115]"
     >
       {specs.map((p, i) => (
         <span

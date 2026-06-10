@@ -38,13 +38,16 @@ export function PixelReveal({
     if (img.complete) draw(0);
 
     const state = { p: 0 };
+    // Quantising the progress makes the resolve read as distinct 8-bit
+    // "frames"; the longer duration lets each stage register.
+    const snap = gsap.utils.snap(1 / 24);
     const tl = gsap.timeline({ delay: bootPending() ? 1.35 : 0.25 });
     tl.fromTo(canvas, { opacity: 0 }, { opacity: 1, duration: 0.18 })
       .to(state, {
         p: 1,
-        duration: 1.15,
-        ease: "power2.inOut",
-        onUpdate: () => draw(state.p),
+        duration: 1.45,
+        ease: "power1.inOut",
+        onUpdate: () => draw(snap(state.p)),
       })
       .set(art, { opacity: 1 })
       .set(canvas, { opacity: 0 });
