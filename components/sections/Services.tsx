@@ -8,6 +8,7 @@ import { RasterIcon } from "@/components/ui/RasterIcon";
 import { PixelCluster } from "@/components/ui/PixelCluster";
 import { Reveal } from "@/components/ui/Reveal";
 import { SplitHeading } from "@/components/motion/SplitHeading";
+import { ThrowIn } from "@/components/motion/ThrowIn";
 
 type Kind = "content" | "agents" | "flow" | "webapp" | "consult";
 
@@ -82,17 +83,17 @@ export function Services() {
 
         {/* mobile: stack big featured + 4 small */}
         <div className="flex flex-col gap-3.5 md:hidden">
-          <Reveal delay={60}>
+          <ThrowIn index={0}>
             <ServiceCard s={featured} big idx={0} />
-          </Reveal>
+          </ThrowIn>
           {others.map((s, i) => (
-            <Reveal key={s.n} delay={120 + i * 70}>
+            <ThrowIn key={s.n} index={i + 1}>
               <ServiceCard s={s} idx={i + 1} />
-            </Reveal>
+            </ThrowIn>
           ))}
         </div>
 
-        {/* desktop: bento grid */}
+        {/* desktop: bento grid — cards get flung in and settle */}
         <div
           className="hidden md:grid"
           style={{
@@ -101,13 +102,13 @@ export function Services() {
             gap: 16,
           }}
         >
-          <Reveal className="row-span-2 col-span-2">
+          <ThrowIn index={0} className="row-span-2 col-span-2 h-full">
             <ServiceCard s={featured} big idx={0} />
-          </Reveal>
+          </ThrowIn>
           {others.map((s, i) => (
-            <Reveal key={s.n} delay={80 + i * 80}>
+            <ThrowIn key={s.n} index={i + 1} className="h-full">
               <ServiceCard s={s} idx={i + 1} />
-            </Reveal>
+            </ThrowIn>
           ))}
         </div>
       </div>

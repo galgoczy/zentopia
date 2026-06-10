@@ -10,6 +10,7 @@ import { CTAPrimary } from "@/components/ui/CTA";
 import { Reveal } from "@/components/ui/Reveal";
 import { CountUp } from "@/components/ui/CountUp";
 import { SplitHeading } from "@/components/motion/SplitHeading";
+import { ThrowIn } from "@/components/motion/ThrowIn";
 
 type Case = {
   n: string;
@@ -100,16 +101,14 @@ export function Cases() {
         <CasesHeader />
         <StatRow />
         <div className="h-7 md:h-12" />
-        {/* Mobile: stacked cards */}
-        <div className="grid grid-cols-1 gap-3.5 md:hidden">
+        {/* tiles drop into the grid as they scroll in */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5 md:gap-5">
           {CASES.map((c, i) => (
-            <Reveal key={c.n} delay={i * 80}>
+            <ThrowIn key={c.n} mode="drop" index={i}>
               <CaseCard c={c} />
-            </Reveal>
+            </ThrowIn>
           ))}
         </div>
-        {/* Desktop: pinned horizontal rail */}
-        <HorizontalRail cases={CASES} />
         <div className="flex justify-start md:justify-end mt-8 md:mt-12">
           <a href="#beszeljunk">
             <CTAPrimary size="md" dark className="md:[--cta-size:lg]">
@@ -119,79 +118,6 @@ export function Cases() {
         </div>
       </div>
     </section>
-  );
-}
-
-// Desktop-only: the card row pins to the viewport and the vertical scroll
-// drives it sideways (Volta-style "foundry rail"), with a lime progress
-// line underneath. Falls back to nothing below md — the mobile grid covers it.
-function HorizontalRail({ cases }: { cases: Case[] }) {
-  const wrapRef = useRef<HTMLDivElement | null>(null);
-  const trackRef = useRef<HTMLDivElement | null>(null);
-  const barRef = useRef<HTMLDivElement | null>(null);
-
-  useLayoutEffect(() => {
-    const wrap = wrapRef.current;
-    const track = trackRef.current;
-    const bar = barRef.current;
-    if (!wrap || !track || !bar) return;
-
-    const mm = gsap.matchMedia();
-    mm.add(
-      "(min-width: 768px) and (prefers-reduced-motion: no-preference)",
-      () => {
-        const dist = () => track.scrollWidth - wrap.clientWidth;
-        gsap.to(track, {
-          x: () => -dist(),
-          ease: "none",
-          scrollTrigger: {
-            trigger: wrap,
-            start: "center 55%",
-            end: () => "+=" + dist(),
-            pin: true,
-            scrub: 0.7,
-            invalidateOnRefresh: true,
-          },
-        });
-        gsap.fromTo(
-          bar,
-          { scaleX: 0 },
-          {
-            scaleX: 1,
-            ease: "none",
-            scrollTrigger: {
-              trigger: wrap,
-              start: "center 55%",
-              end: () => "+=" + dist(),
-              scrub: 0.7,
-            },
-          }
-        );
-      }
-    );
-    return () => mm.revert();
-  }, []);
-
-  return (
-    <div ref={wrapRef} className="hidden md:block">
-      <div ref={trackRef} className="flex w-max items-stretch gap-5 will-change-transform">
-        {cases.map((c) => (
-          <div key={c.n} className="w-[42vw] max-w-[600px] shrink-0 flex">
-            <CaseCard c={c} />
-          </div>
-        ))}
-      </div>
-      <div
-        className="mt-6"
-        style={{ height: 2, background: "rgba(250,250,247,0.12)" }}
-      >
-        <div
-          ref={barRef}
-          className="h-full origin-left"
-          style={{ background: Z.lime, transform: "scaleX(0)" }}
-        />
-      </div>
-    </div>
   );
 }
 

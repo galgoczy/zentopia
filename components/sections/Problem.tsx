@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { Z } from "@/lib/tokens";
 import { useT } from "@/lib/i18n";
 import { PixelGrid } from "@/components/ui/PixelGrid";
@@ -26,8 +27,23 @@ const ICON_SRC = [
 ];
 const ICON_ALT = ["?", "$", "⚙"];
 
+function useIsMobile() {
+  const [m, setM] = useState(false);
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 767px)");
+    const onChange = () => setM(mq.matches);
+    onChange();
+    mq.addEventListener("change", onChange);
+    return () => mq.removeEventListener("change", onChange);
+  }, []);
+  return m;
+}
+
+const TYPE_SPEED = 42;
+
 export function Problem() {
   const t = useT();
+  const isMobile = useIsMobile();
   const COLORS = [Z.ember, Z.sky, Z.violet];
   const PROBLEMS: Problem[] = t.problem.items.map((p, i) => ({
     n: String(i + 1).padStart(2, "0"),
@@ -37,6 +53,17 @@ export function Problem() {
     q: p.lines,
     sub: p.sub,
   }));
+
+  // Desktop: the three cards are visible together, so the typewriters chain —
+  // each one starts when the previous is two-thirds through its text.
+  // Mobile: cards stack, so each simply starts as it scrolls into view.
+  const chainDelays: number[] = [];
+  let acc = 150;
+  for (const p of PROBLEMS) {
+    chainDelays.push(acc);
+    acc += Math.round(p.q.join("\n").length * TYPE_SPEED * (2 / 3));
+  }
+
   return (
     <section
       id="kerdes"
@@ -64,7 +91,7 @@ export function Problem() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4">
           {PROBLEMS.map((p, i) => (
             <Reveal key={p.n} delay={i * 100}>
-              <ProblemCard p={p} idx={i} />
+              <ProblemCard p={p} idx={i} typeDelay={isMobile ? 120 : chainDelays[i]} />
             </Reveal>
           ))}
         </div>
@@ -77,7 +104,15 @@ export function Problem() {
   );
 }
 
-function ProblemCard({ p, idx }: { p: Problem; idx: number }) {
+function ProblemCard({
+  p,
+  idx,
+  typeDelay,
+}: {
+  p: Problem;
+  idx: number;
+  typeDelay: number;
+}) {
   const t = useT();
   return (
     <div
@@ -124,8 +159,8 @@ function ProblemCard({ p, idx }: { p: Problem; idx: number }) {
         >
           <Typewriter
             text={p.q.join("\n")}
-            delay={200 + idx * 1800}
-            speed={42}
+            delay={typeDelay}
+            speed={TYPE_SPEED}
             cursorColor={p.color}
           />
         </h3>

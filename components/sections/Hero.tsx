@@ -13,19 +13,38 @@ import { BreathingBonsai } from "@/components/ui/BreathingBonsai";
 import { TechStackStrip } from "@/components/ui/TechStackStrip";
 import { Reveal } from "@/components/ui/Reveal";
 import { MaskLine } from "@/components/motion/MaskLine";
+import { ParticleAssemble } from "@/components/motion/ParticleAssemble";
 
 export function Hero() {
   const t = useT();
   const sectionRef = useRef<HTMLElement | null>(null);
   const textRef = useRef<HTMLDivElement | null>(null);
   const bonsaiRef = useRef<HTMLDivElement | null>(null);
+  const magnetRef = useRef<HTMLDivElement | null>(null);
 
   // Depth on exit: text and bonsai leave the viewport at different speeds.
+  // Plus a gentle magnetic pull: the bonsai leans a few percent toward the
+  // pointer as it moves.
   useLayoutEffect(() => {
     const mm = gsap.matchMedia();
     mm.add(
       "(min-width: 768px) and (prefers-reduced-motion: no-preference)",
       () => {
+        const xTo = gsap.quickTo(magnetRef.current, "x", {
+          duration: 0.7,
+          ease: "power3.out",
+        });
+        const yTo = gsap.quickTo(magnetRef.current, "y", {
+          duration: 0.7,
+          ease: "power3.out",
+        });
+        const onMove = (e: PointerEvent) => {
+          const nx = e.clientX / window.innerWidth - 0.5;
+          const ny = e.clientY / window.innerHeight - 0.5;
+          xTo(nx * 26);
+          yTo(ny * 18);
+        };
+        window.addEventListener("pointermove", onMove, { passive: true });
         gsap.to(textRef.current, {
           yPercent: -12,
           ease: "none",
@@ -46,6 +65,7 @@ export function Hero() {
             scrub: true,
           },
         });
+        return () => window.removeEventListener("pointermove", onMove);
       }
     );
     return () => mm.revert();
@@ -58,7 +78,9 @@ export function Hero() {
       <div className="relative z-[1] px-5 pt-4 pb-7 md:px-14 md:pt-12 md:pb-16 flex flex-col md:flex-row md:items-center justify-between gap-8 md:gap-10">
         {/* Bonsai shows above text on mobile, right side on desktop */}
         <div ref={bonsaiRef} className="order-1 md:order-2 mx-auto md:mx-0 will-change-transform">
-          <BonsaiPanel />
+          <div ref={magnetRef} className="will-change-transform">
+            <BonsaiPanel />
+          </div>
         </div>
 
         <div
@@ -170,12 +192,14 @@ function BonsaiPanel() {
         }}
       />
       <div className="relative p-2 md:p-6">
-        <div className="md:hidden">
-          <BreathingBonsai size={200} base="forest" glitchCycle={5} />
-        </div>
-        <div className="hidden md:block">
-          <BreathingBonsai size={460} base="forest" glitchCycle={5} />
-        </div>
+        <ParticleAssemble>
+          <div className="md:hidden">
+            <BreathingBonsai size={200} base="forest" glitchCycle={5} />
+          </div>
+          <div className="hidden md:block">
+            <BreathingBonsai size={460} base="forest" glitchCycle={5} />
+          </div>
+        </ParticleAssemble>
       </div>
       <span
         className="absolute font-mono"

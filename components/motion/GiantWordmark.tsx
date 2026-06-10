@@ -44,7 +44,7 @@ export function GiantWordmark() {
         ref={lineRef}
         className="flex w-max items-baseline whitespace-nowrap font-sans font-bold uppercase will-change-transform"
         style={{
-          fontSize: "clamp(110px, 22vw, 360px)",
+          fontSize: "clamp(94px, 18.7vw, 306px)",
           lineHeight: 0.9,
           letterSpacing: "-0.05em",
           color: Z.forest,

@@ -66,8 +66,8 @@ export function Process() {
     return () => io.disconnect();
   }, [isMobile]);
 
-  // Desktop: scroll-driven — the visitor's hand walks the timeline as the
-  // section traverses the viewport. Reduced motion just lights everything up.
+  // Desktop: once the timeline scrolls into view, the line draws itself
+  // through the four stations in sequence — one pass, then it stays lit.
   useEffect(() => {
     if (isMobile) return;
     const sectionEl = sectionRef.current;
@@ -79,19 +79,29 @@ export function Process() {
       return;
     }
 
+    let timer: ReturnType<typeof setTimeout>;
+    let cancelled = false;
     const st = ScrollTrigger.create({
       trigger: sectionEl,
       start: "top 60%",
-      end: "bottom 85%",
-      onUpdate: (self) => {
-        const idx = Math.min(
-          stepsLen - 1,
-          Math.floor(self.progress * (stepsLen + 1)) - 1
-        );
-        setActiveIdx((cur) => (cur === idx ? cur : idx));
+      once: true,
+      onEnter: () => {
+        let i = -1;
+        const tick = () => {
+          if (cancelled) return;
+          i++;
+          if (i >= stepsLen) return;
+          setActiveIdx(i);
+          timer = setTimeout(tick, 950);
+        };
+        tick();
       },
     });
-    return () => st.kill();
+    return () => {
+      cancelled = true;
+      clearTimeout(timer);
+      st.kill();
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isMobile]);
 
