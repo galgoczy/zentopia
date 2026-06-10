@@ -14,6 +14,9 @@ export function GiantWordmark() {
     const wrap = wrapRef.current;
     const line = lineRef.current;
     if (!wrap || !line || prefersReducedMotion()) return;
+    // Promote and paint the huge text layer up front — rasterising it
+    // lazily mid-scroll causes a visible hitch around the FAQ section.
+    gsap.set(line, { xPercent: 2, force3D: true });
     const tween = gsap.fromTo(
       line,
       { xPercent: 2 },
@@ -39,12 +42,13 @@ export function GiantWordmark() {
       ref={wrapRef}
       aria-hidden="true"
       className="relative overflow-hidden bg-offwhite py-6 md:py-10 select-none"
+      style={{ contain: "layout paint style" }}
     >
       <div
         ref={lineRef}
         className="flex w-max items-baseline whitespace-nowrap font-sans font-bold uppercase will-change-transform"
         style={{
-          fontSize: "clamp(94px, 18.7vw, 306px)",
+          fontSize: "clamp(85px, 16.8vw, 275px)",
           lineHeight: 0.9,
           letterSpacing: "-0.05em",
           color: Z.forest,
@@ -54,7 +58,7 @@ export function GiantWordmark() {
         <span
           className="ml-[0.18em]"
           style={{
-            WebkitTextStroke: `2px ${Z.forest}`,
+            WebkitTextStroke: `1.5px ${Z.forest}`,
             color: "transparent",
           }}
         >
