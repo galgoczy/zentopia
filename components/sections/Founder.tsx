@@ -109,7 +109,7 @@ export function Founder() {
             ))}
 
             <a
-              href="https://www.linkedin.com/"
+              href="https://www.linkedin.com/in/gergely-galgoczy/"
               target="_blank"
               rel="noopener noreferrer"
               className="zen-arrow-host inline-flex items-center gap-1.5 font-sans w-fit"
