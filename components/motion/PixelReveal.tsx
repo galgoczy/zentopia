@@ -43,11 +43,18 @@ export function PixelReveal({
     const snap = gsap.utils.snap(1 / 24);
     const tl = gsap.timeline({ delay: bootPending() ? 1.35 : 0.25 });
     tl.fromTo(canvas, { opacity: 0 }, { opacity: 1, duration: 0.18 })
+      // flick quickly past the very first coarse frame…
+      .to(state, {
+        p: 0.12,
+        duration: 0.12,
+        ease: "none",
+        onUpdate: () => draw(snap(state.p)),
+      })
+      // …then resolve at the original easy pace
       .to(state, {
         p: 1,
-        duration: 1.45,
-        // fast through the first coarse frames, easing off as it sharpens
-        ease: "power2.out",
+        duration: 1.33,
+        ease: "power1.inOut",
         onUpdate: () => draw(snap(state.p)),
       })
       .set(art, { opacity: 1 })
