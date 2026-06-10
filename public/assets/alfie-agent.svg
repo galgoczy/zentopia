@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Zentopia · Alfie the Agent — case study visual.
+  Sky blue stroke on transparent background. ViewBox matches the in-app
+  card visual (200×160). Edit in Figma / Illustrator / Inkscape, then
+  drop the path/group data back into components/sections/Cases.tsx
+  (kind === "agent" branch) or save next to it.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 160" width="400" height="320">
+  <g fill="none" stroke="#5B92FF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <!-- Head -->
+    <rect x="78" y="36" width="44" height="44" rx="2" stroke-width="2"/>
+    <!-- Eyes -->
+    <circle cx="90" cy="52" r="2" fill="#5B92FF" stroke="none"/>
+    <circle cx="102" cy="52" r="2" fill="#5B92FF" stroke="none"/>
+    <!-- Mouth -->
+    <line x1="86" y1="64" x2="114" y2="64"/>
+    <!-- Neck -->
+    <line x1="100" y1="80" x2="100" y2="100"/>
+    <!-- Shoulders / arms -->
+    <line x1="60" y1="116" x2="140" y2="116"/>
+    <!-- Terminal dots -->
+    <circle cx="60" cy="116" r="3" fill="#5B92FF" stroke="none"/>
+    <circle cx="140" cy="116" r="3" fill="#5B92FF" stroke="none"/>
+    <circle cx="100" cy="100" r="3" fill="#5B92FF" stroke="none"/>
+  </g>
+</svg>
