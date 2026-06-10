@@ -42,6 +42,17 @@ export const hu = {
     label: "// eszközök",
   },
 
+  marquee: {
+    items: [
+      "AI agentek",
+      "Automatizálás",
+      "AI tartalom",
+      "Webappok",
+      "Működő rendszerek",
+      "Jövő-technológia. Ma.",
+    ],
+  },
+
   services: {
     label: "[ 02 ] SZOLGÁLTATÁSOK",
     h2: "Amit a Zentopia épít.",

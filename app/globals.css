@@ -140,6 +140,44 @@ html {
   animation: zen-pixel-jitter 320ms steps(1, end);
 }
 
+/* Lenis smooth scroll (classes are applied to <html> by Lenis itself) */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+/* Pixel-crosshair cursor (activated on fine pointers via MotionRoot) */
+html.zen-cursor,
+html.zen-cursor * {
+  cursor: none !important;
+}
+.zen-cursor-root .zc-bracket {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 9px;
+  height: 9px;
+  color: #fafaf7;
+  transition: transform 280ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.zc-tl { transform: translate(-13px, -13px); border-top: 2px solid currentColor; border-left: 2px solid currentColor; }
+.zc-tr { transform: translate(4px, -13px); border-top: 2px solid currentColor; border-right: 2px solid currentColor; }
+.zc-bl { transform: translate(-13px, 4px); border-bottom: 2px solid currentColor; border-left: 2px solid currentColor; }
+.zc-br { transform: translate(4px, 4px); border-bottom: 2px solid currentColor; border-right: 2px solid currentColor; }
+.zen-cursor-root.is-active .zc-tl { transform: translate(-22px, -22px); }
+.zen-cursor-root.is-active .zc-tr { transform: translate(13px, -22px); }
+.zen-cursor-root.is-active .zc-bl { transform: translate(-22px, 13px); }
+.zen-cursor-root.is-active .zc-br { transform: translate(13px, 13px); }
+
 @media (prefers-reduced-motion: reduce) {
   .zen-reveal {
     opacity: 1 !important;

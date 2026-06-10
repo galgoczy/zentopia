@@ -8,6 +8,7 @@ import { PixelLabel } from "@/components/ui/PixelLabel";
 import { CTAPrimary } from "@/components/ui/CTA";
 import { Reveal } from "@/components/ui/Reveal";
 import { CountUp } from "@/components/ui/CountUp";
+import { SplitHeading } from "@/components/motion/SplitHeading";
 
 type Case = {
   n: string;
@@ -93,11 +94,13 @@ function CasesHeader() {
   const t = useT();
   return (
     <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-7 md:mb-10">
-      <Reveal className="flex flex-col gap-3.5 max-w-[760px]">
-        <PixelLabel size={10} color={Z.lime} className="md:text-[11px]">
-          {t.cases.label}
-        </PixelLabel>
-        <h2
+      <div className="flex flex-col gap-3.5 max-w-[760px]">
+        <Reveal>
+          <PixelLabel size={10} color={Z.lime} className="md:text-[11px]">
+            {t.cases.label}
+          </PixelLabel>
+        </Reveal>
+        <SplitHeading
           className="m-0 font-sans font-bold"
           style={{
             fontSize: "clamp(44px, 7vw, 80px)",
@@ -107,8 +110,8 @@ function CasesHeader() {
           }}
         >
           {t.cases.h2}
-        </h2>
-      </Reveal>
+        </SplitHeading>
+      </div>
       <Reveal delay={80} className="md:max-w-[340px]">
         <p
           className="m-0 leading-[1.5] md:text-right"

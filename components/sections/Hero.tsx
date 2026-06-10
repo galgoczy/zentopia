@@ -10,6 +10,7 @@ import { CTAPrimary, CTASecondary } from "@/components/ui/CTA";
 import { BreathingBonsai } from "@/components/ui/BreathingBonsai";
 import { TechStackStrip } from "@/components/ui/TechStackStrip";
 import { Reveal } from "@/components/ui/Reveal";
+import { MaskLine } from "@/components/motion/MaskLine";
 
 export function Hero() {
   const t = useT();
@@ -28,26 +29,24 @@ export function Hero() {
             </PixelLabel>
           </Reveal>
 
-          <Reveal delay={60}>
-            <h1
-              className="font-sans font-bold m-0"
-              style={{
-                fontSize: "clamp(40px, 8vw, 84px)",
-                lineHeight: 0.98,
-                letterSpacing: "-0.035em",
-                color: Z.forest,
-                textWrap: "balance" as any,
-              }}
-            >
-              {t.hero.h1.lineA}
-              <br />
+          <h1
+            className="font-sans font-bold m-0"
+            style={{
+              fontSize: "clamp(40px, 8vw, 84px)",
+              lineHeight: 0.98,
+              letterSpacing: "-0.035em",
+              color: Z.forest,
+              textWrap: "balance" as any,
+            }}
+          >
+            <MaskLine delay={0.05}>{t.hero.h1.lineA}</MaskLine>
+            <MaskLine delay={0.14}>
               {t.hero.h1.lineB_before}
               <GlitchTE>{t.hero.h1.lineB_highlight}</GlitchTE>
               {t.hero.h1.lineB_after}
-              <br />
-              {t.hero.h1.lineC}
-            </h1>
-          </Reveal>
+            </MaskLine>
+            <MaskLine delay={0.23}>{t.hero.h1.lineC}</MaskLine>
+          </h1>
 
           <Reveal delay={140}>
             <div

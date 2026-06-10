@@ -39,6 +39,17 @@ export const en: Dict = {
     label: "// tools",
   },
 
+  marquee: {
+    items: [
+      "AI agents",
+      "Automation",
+      "AI content",
+      "Web apps",
+      "Working systems",
+      "Future tech. Today.",
+    ],
+  },
+
   services: {
     label: "[ 02 ] SERVICES",
     h2: "What Zentopia builds.",

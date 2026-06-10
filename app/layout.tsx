@@ -1,5 +1,6 @@
 import Script from "next/script";
 import { Space_Grotesk, JetBrains_Mono, Press_Start_2P } from "next/font/google";
+import { MotionRoot } from "@/components/motion/MotionRoot";
 import "./globals.css";
 
 const GA_ID = "G-HYZN0FJ0T4";
@@ -39,6 +40,7 @@ export default function RootLayout({
     >
       <body className="bg-offwhite font-sans text-forest antialiased">
         {children}
+        <MotionRoot />
         <Script
           src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}
           strategy="afterInteractive"

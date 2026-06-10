@@ -9,6 +9,7 @@ import { PixelLabel } from "@/components/ui/PixelLabel";
 import { CTAPrimary } from "@/components/ui/CTA";
 import { GlitchText } from "@/components/ui/GlitchText";
 import { Reveal } from "@/components/ui/Reveal";
+import { SplitHeading } from "@/components/motion/SplitHeading";
 
 type Step = { n: string; color: string; title: string; time: string; body: string };
 
@@ -122,11 +123,13 @@ export function Process() {
       <PixelGrid />
       <div className="relative z-[1] px-5 pt-8 pb-14 md:px-14 md:pt-14 md:pb-28">
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8 md:mb-14">
-          <Reveal className="flex flex-col gap-3.5 max-w-[720px]">
-            <PixelLabel size={10} className="md:text-[11px]">
-              {t.process.label}
-            </PixelLabel>
-            <h2
+          <div className="flex flex-col gap-3.5 max-w-[720px]">
+            <Reveal>
+              <PixelLabel size={10} className="md:text-[11px]">
+                {t.process.label}
+              </PixelLabel>
+            </Reveal>
+            <SplitHeading
               className="m-0 font-sans font-bold"
               style={{
                 fontSize: "clamp(44px, 6vw, 72px)",
@@ -136,8 +139,8 @@ export function Process() {
               }}
             >
               {t.process.h2}
-            </h2>
-          </Reveal>
+            </SplitHeading>
+          </div>
           <Reveal delay={80} className="md:max-w-[340px]">
             <p
               className="m-0 leading-[1.5] md:text-right"

@@ -7,6 +7,7 @@ import { PixelLabel } from "@/components/ui/PixelLabel";
 import { RasterIcon } from "@/components/ui/RasterIcon";
 import { PixelCluster } from "@/components/ui/PixelCluster";
 import { Reveal } from "@/components/ui/Reveal";
+import { SplitHeading } from "@/components/motion/SplitHeading";
 
 type Kind = "content" | "agents" | "flow" | "webapp" | "consult";
 
@@ -48,11 +49,13 @@ export function Services() {
       <PixelGrid />
       <div className="relative z-[1] px-5 py-12 md:px-14 md:py-24">
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-7 md:mb-12">
-          <Reveal className="flex flex-col gap-3.5 max-w-[760px]">
-            <PixelLabel size={10} className="md:text-[11px]">
-              {t.services.label}
-            </PixelLabel>
-            <h2
+          <div className="flex flex-col gap-3.5 max-w-[760px]">
+            <Reveal>
+              <PixelLabel size={10} className="md:text-[11px]">
+                {t.services.label}
+              </PixelLabel>
+            </Reveal>
+            <SplitHeading
               className="m-0 font-sans font-bold"
               style={{
                 fontSize: "clamp(36px, 6vw, 64px)",
@@ -62,8 +65,8 @@ export function Services() {
               }}
             >
               {t.services.h2}
-            </h2>
-          </Reveal>
+            </SplitHeading>
+          </div>
           <Reveal delay={80} className="md:max-w-[320px]">
             <p
               className="m-0 leading-[1.5] md:text-right"
