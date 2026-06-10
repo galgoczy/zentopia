@@ -2,6 +2,7 @@
 
 import { useLayoutEffect, useRef } from "react";
 import { gsap, prefersReducedMotion } from "./gsap";
+import { bootPending } from "./bootState";
 
 // Wraps one line of arbitrary JSX in an overflow mask and slides it up into
 // view. Used where the line structure is explicit (e.g. the hero H1), so
@@ -20,10 +21,12 @@ export function MaskLine({
   useLayoutEffect(() => {
     const el = innerRef.current;
     if (!el || prefersReducedMotion()) return;
+    // If the boot intro is about to play, hold the reveal until it lifts.
+    const bootDelay = bootPending() ? 1.25 : 0;
     const tween = gsap.fromTo(
       el,
       { yPercent: 110 },
-      { yPercent: 0, duration: 1.1, ease: "expo.out", delay }
+      { yPercent: 0, duration: 1.1, ease: "expo.out", delay: delay + bootDelay }
     );
     return () => {
       tween.kill();

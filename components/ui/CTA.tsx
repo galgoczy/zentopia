@@ -35,12 +35,13 @@ export function CTAPrimary({
     <button
       type={type}
       onClick={onClick}
-      className={`zen-cta-primary inline-flex items-center gap-2 rounded-lg font-bold leading-none tracking-[-0.01em] ${PRIMARY_PAD[size]} ${className}`}
+      className={`zen-cta-primary zen-pixel-corners inline-flex items-center gap-2 font-bold leading-none tracking-[-0.01em] ${PRIMARY_PAD[size]} ${className}`}
       style={{
         background: Z.lime,
         color: Z.forest,
-        boxShadow: dark
-          ? `0 0 0 1px ${Z.lime}, 0 8px 32px -8px rgba(200,255,107,0.45)`
+        // filter survives the corner clip-path, box-shadow would not
+        filter: dark
+          ? "drop-shadow(0 8px 24px rgba(200,255,107,0.45))"
           : undefined,
       }}
     >

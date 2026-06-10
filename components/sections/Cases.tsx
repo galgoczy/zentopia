@@ -441,10 +441,9 @@ function CaseVisual({
 
   return (
     <div
-      className="relative w-full overflow-hidden transition-transform duration-500 group-hover:scale-[1.015]"
+      className="zen-pixel-corners relative w-full overflow-hidden transition-transform duration-500 group-hover:scale-[1.015]"
       style={{
         height: 184,
-        borderRadius: 8,
         background: `${color}1a`,
         border: `1px solid ${color}40`,
       }}
@@ -466,6 +465,7 @@ function CaseVisual({
         }`}
         draggable={false}
       />
+      <span aria-hidden="true" className="zen-glare" />
       <div
         aria-hidden="true"
         className="absolute top-2.5 right-2.5"

@@ -6,6 +6,7 @@ import Lenis from "lenis";
 import { gsap, ScrollTrigger, prefersReducedMotion } from "./gsap";
 import { HudFrame } from "./HudFrame";
 import { PixelCursor } from "./PixelCursor";
+import { DitherOverlay } from "./DitherOverlay";
 
 // Mounted once in the root layout: drives Lenis smooth scroll, keeps
 // ScrollTrigger in sync with it, and renders the global HUD chrome.
@@ -38,6 +39,7 @@ export function MotionRoot() {
     <>
       <HudFrame />
       <PixelCursor />
+      <DitherOverlay />
     </>
   );
 }

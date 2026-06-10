@@ -6,6 +6,8 @@ import { Nav } from "@/components/sections/Nav";
 import { Hero } from "@/components/sections/Hero";
 import { ZenMarquee } from "@/components/motion/ZenMarquee";
 import { CalibrationWipe } from "@/components/motion/CalibrationWipe";
+import { BootSequence } from "@/components/motion/BootSequence";
+import { GiantWordmark } from "@/components/motion/GiantWordmark";
 import { Services } from "@/components/sections/Services";
 import { Problem } from "@/components/sections/Problem";
 import { Process } from "@/components/sections/Process";
@@ -61,6 +63,7 @@ export default function HomePageEN() {
         }}
       />
       <main className="bg-offwhite">
+        <BootSequence />
         <Nav />
         <Hero />
         <ZenMarquee />
@@ -71,6 +74,7 @@ export default function HomePageEN() {
         <Cases />
         <Founder />
         <Faq />
+        <GiantWordmark />
         <Cta />
         <Footer />
       </main>
