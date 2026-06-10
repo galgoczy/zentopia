@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
 import { Z } from "@/lib/tokens";
+import { gsap, prefersReducedMotion } from "@/components/motion/gsap";
 import { useT } from "@/lib/i18n";
 import { PixelGrid } from "@/components/ui/PixelGrid";
 import { PixelLabel } from "@/components/ui/PixelLabel";
@@ -45,8 +46,36 @@ export function Cases() {
     href: CASE_HREFS[i],
   }));
   const TOTAL_STATS = t.cases.statRow;
+  const sectionRef = useRef<HTMLElement | null>(null);
+
+  // Colour wash: the section's forest background fades in from the page
+  // offwhite as it scrolls into view, instead of a hard edge.
+  useLayoutEffect(() => {
+    const section = sectionRef.current;
+    if (!section || prefersReducedMotion()) return;
+    const tween = gsap.fromTo(
+      section,
+      { backgroundColor: Z.offwhite },
+      {
+        backgroundColor: Z.forest,
+        ease: "none",
+        scrollTrigger: {
+          trigger: section,
+          start: "top 92%",
+          end: "top 45%",
+          scrub: true,
+        },
+      }
+    );
+    return () => {
+      tween.scrollTrigger?.kill();
+      tween.kill();
+    };
+  }, []);
+
   return (
     <section
+      ref={sectionRef}
       id="munkak"
       className="relative overflow-hidden"
       style={{
@@ -71,13 +100,16 @@ export function Cases() {
         <CasesHeader />
         <StatRow />
         <div className="h-7 md:h-12" />
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5 md:gap-5">
+        {/* Mobile: stacked cards */}
+        <div className="grid grid-cols-1 gap-3.5 md:hidden">
           {CASES.map((c, i) => (
             <Reveal key={c.n} delay={i * 80}>
               <CaseCard c={c} />
             </Reveal>
           ))}
         </div>
+        {/* Desktop: pinned horizontal rail */}
+        <HorizontalRail cases={CASES} />
         <div className="flex justify-start md:justify-end mt-8 md:mt-12">
           <a href="#beszeljunk">
             <CTAPrimary size="md" dark className="md:[--cta-size:lg]">
@@ -87,6 +119,79 @@ export function Cases() {
         </div>
       </div>
     </section>
+  );
+}
+
+// Desktop-only: the card row pins to the viewport and the vertical scroll
+// drives it sideways (Volta-style "foundry rail"), with a lime progress
+// line underneath. Falls back to nothing below md — the mobile grid covers it.
+function HorizontalRail({ cases }: { cases: Case[] }) {
+  const wrapRef = useRef<HTMLDivElement | null>(null);
+  const trackRef = useRef<HTMLDivElement | null>(null);
+  const barRef = useRef<HTMLDivElement | null>(null);
+
+  useLayoutEffect(() => {
+    const wrap = wrapRef.current;
+    const track = trackRef.current;
+    const bar = barRef.current;
+    if (!wrap || !track || !bar) return;
+
+    const mm = gsap.matchMedia();
+    mm.add(
+      "(min-width: 768px) and (prefers-reduced-motion: no-preference)",
+      () => {
+        const dist = () => track.scrollWidth - wrap.clientWidth;
+        gsap.to(track, {
+          x: () => -dist(),
+          ease: "none",
+          scrollTrigger: {
+            trigger: wrap,
+            start: "center 55%",
+            end: () => "+=" + dist(),
+            pin: true,
+            scrub: 0.7,
+            invalidateOnRefresh: true,
+          },
+        });
+        gsap.fromTo(
+          bar,
+          { scaleX: 0 },
+          {
+            scaleX: 1,
+            ease: "none",
+            scrollTrigger: {
+              trigger: wrap,
+              start: "center 55%",
+              end: () => "+=" + dist(),
+              scrub: 0.7,
+            },
+          }
+        );
+      }
+    );
+    return () => mm.revert();
+  }, []);
+
+  return (
+    <div ref={wrapRef} className="hidden md:block">
+      <div ref={trackRef} className="flex w-max items-stretch gap-5 will-change-transform">
+        {cases.map((c) => (
+          <div key={c.n} className="w-[42vw] max-w-[600px] shrink-0 flex">
+            <CaseCard c={c} />
+          </div>
+        ))}
+      </div>
+      <div
+        className="mt-6"
+        style={{ height: 2, background: "rgba(250,250,247,0.12)" }}
+      >
+        <div
+          ref={barRef}
+          className="h-full origin-left"
+          style={{ background: Z.lime, transform: "scaleX(0)" }}
+        />
+      </div>
+    </div>
   );
 }
 

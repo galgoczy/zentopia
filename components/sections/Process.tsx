@@ -10,6 +10,7 @@ import { CTAPrimary } from "@/components/ui/CTA";
 import { GlitchText } from "@/components/ui/GlitchText";
 import { Reveal } from "@/components/ui/Reveal";
 import { SplitHeading } from "@/components/motion/SplitHeading";
+import { ScrollTrigger, prefersReducedMotion } from "@/components/motion/gsap";
 
 type Step = { n: string; color: string; title: string; time: string; body: string };
 
@@ -65,53 +66,33 @@ export function Process() {
     return () => io.disconnect();
   }, [isMobile]);
 
-  // Desktop: auto-advance every 1.5s, hold 2.8s, reset, repeat.
+  // Desktop: scroll-driven — the visitor's hand walks the timeline as the
+  // section traverses the viewport. Reduced motion just lights everything up.
   useEffect(() => {
     if (isMobile) return;
     const sectionEl = sectionRef.current;
     if (!sectionEl) return;
+    const stepsLen = STEPS.length;
 
-    let cancelled = false;
-    let timer: ReturnType<typeof setTimeout>;
-    let started = false;
+    if (prefersReducedMotion()) {
+      setActiveIdx(stepsLen - 1);
+      return;
+    }
 
-    const startLoop = () => {
-      if (started) return;
-      started = true;
-      let i = -1;
-      const tick = () => {
-        if (cancelled) return;
-        i++;
-        if (i >= STEPS.length) {
-          timer = setTimeout(() => {
-            if (cancelled) return;
-            i = -1;
-            setActiveIdx(-1);
-            timer = setTimeout(tick, 800);
-          }, 2800);
-          return;
-        }
-        setActiveIdx(i);
-        timer = setTimeout(tick, 1500);
-      };
-      timer = setTimeout(tick, 500);
-    };
-
-    const io = new IntersectionObserver(
-      (entries) => {
-        if (entries.some((e) => e.isIntersecting)) {
-          startLoop();
-          io.disconnect();
-        }
+    const st = ScrollTrigger.create({
+      trigger: sectionEl,
+      start: "top 60%",
+      end: "bottom 85%",
+      onUpdate: (self) => {
+        const idx = Math.min(
+          stepsLen - 1,
+          Math.floor(self.progress * (stepsLen + 1)) - 1
+        );
+        setActiveIdx((cur) => (cur === idx ? cur : idx));
       },
-      { threshold: 0.25 }
-    );
-    io.observe(sectionEl);
-    return () => {
-      cancelled = true;
-      clearTimeout(timer);
-      io.disconnect();
-    };
+    });
+    return () => st.kill();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isMobile]);
 
   return (

@@ -1,6 +1,8 @@
 "use client";
 
+import { useLayoutEffect, useRef } from "react";
 import { Z } from "@/lib/tokens";
+import { gsap } from "@/components/motion/gsap";
 import { useT } from "@/lib/i18n";
 import { PixelGrid } from "@/components/ui/PixelGrid";
 import { PixelLabel } from "@/components/ui/PixelLabel";
@@ -14,15 +16,55 @@ import { MaskLine } from "@/components/motion/MaskLine";
 
 export function Hero() {
   const t = useT();
+  const sectionRef = useRef<HTMLElement | null>(null);
+  const textRef = useRef<HTMLDivElement | null>(null);
+  const bonsaiRef = useRef<HTMLDivElement | null>(null);
+
+  // Depth on exit: text and bonsai leave the viewport at different speeds.
+  useLayoutEffect(() => {
+    const mm = gsap.matchMedia();
+    mm.add(
+      "(min-width: 768px) and (prefers-reduced-motion: no-preference)",
+      () => {
+        gsap.to(textRef.current, {
+          yPercent: -12,
+          ease: "none",
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: "top top",
+            end: "bottom top",
+            scrub: true,
+          },
+        });
+        gsap.to(bonsaiRef.current, {
+          yPercent: 16,
+          ease: "none",
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: "top top",
+            end: "bottom top",
+            scrub: true,
+          },
+        });
+      }
+    );
+    return () => mm.revert();
+  }, []);
+
   return (
-    <section className="relative overflow-hidden" id="manifesto">
+    <section ref={sectionRef} className="relative overflow-hidden" id="manifesto">
       <PixelGrid />
 
       <div className="relative z-[1] px-5 pt-4 pb-7 md:px-14 md:pt-12 md:pb-16 flex flex-col md:flex-row md:items-center justify-between gap-8 md:gap-10">
         {/* Bonsai shows above text on mobile, right side on desktop */}
-        <BonsaiPanel className="order-1 md:order-2 mx-auto md:mx-0" />
+        <div ref={bonsaiRef} className="order-1 md:order-2 mx-auto md:mx-0 will-change-transform">
+          <BonsaiPanel />
+        </div>
 
-        <div className="order-2 md:order-1 flex flex-col gap-5 md:gap-7 max-w-full md:max-w-[660px]">
+        <div
+          ref={textRef}
+          className="order-2 md:order-1 flex flex-col gap-5 md:gap-7 max-w-full md:max-w-[660px] will-change-transform"
+        >
           <Reveal>
             <PixelLabel size={10} className="md:text-[11px]">
               {t.hero.label}
@@ -94,10 +136,10 @@ export function Hero() {
   );
 }
 
-function BonsaiPanel({ className = "" }: { className?: string }) {
+function BonsaiPanel() {
   const t = useT();
   return (
-    <div className={`relative flex items-center justify-center ${className}`}>
+    <div className="relative flex items-center justify-center">
       {/* desktop corner brackets */}
       <span
         className="hidden md:block absolute top-0 left-0 w-[18px] h-[18px]"

@@ -53,6 +53,10 @@ export const hu = {
     ],
   },
 
+  calibrate: {
+    line: "// RENDSZER KALIBRÁLÁSA",
+  },
+
   services: {
     label: "[ 02 ] SZOLGÁLTATÁSOK",
     h2: "Amit a Zentopia épít.",

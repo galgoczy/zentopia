@@ -50,6 +50,10 @@ export const en: Dict = {
     ],
   },
 
+  calibrate: {
+    line: "// CALIBRATING SYSTEM",
+  },
+
   services: {
     label: "[ 02 ] SERVICES",
     h2: "What Zentopia builds.",
