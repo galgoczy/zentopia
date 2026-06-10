@@ -40,8 +40,8 @@ export function CalibrationWipe() {
 
     const tick = (progress: number) => {
       pct.textContent = String(Math.min(99, Math.round(progress * 120))).padStart(2, "0");
-      // sharpen over the first 70% of the traversal
-      draw(Math.min(1, progress / 0.7));
+      // sharpen over the first 80% of the traversal
+      draw(Math.min(1, progress / 0.8));
     };
 
     const mm = gsap.matchMedia();

@@ -38,9 +38,9 @@ export function PixelReveal({
     if (img.complete) draw(0);
 
     const state = { p: 0 };
-    // Quantising the progress makes the resolve read as distinct 8-bit
-    // "frames"; the longer duration lets each stage register.
-    const snap = gsap.utils.snap(1 / 24);
+    // Fine quantisation + fractional-resolution blending in the painter
+    // keep the resolve stepped but smooth.
+    const snap = gsap.utils.snap(1 / 40);
     const tl = gsap.timeline({ delay: bootPending() ? 1.35 : 0.25 });
     tl.fromTo(canvas, { opacity: 0 }, { opacity: 1, duration: 0.18 })
       // flick quickly past the very first coarse frame…
@@ -50,10 +50,10 @@ export function PixelReveal({
         ease: "none",
         onUpdate: () => draw(snap(state.p)),
       })
-      // …then resolve at the original easy pace
+      // …then resolve at an easy pace
       .to(state, {
         p: 1,
-        duration: 1.33,
+        duration: 1.55,
         ease: "power1.inOut",
         onUpdate: () => draw(snap(state.p)),
       })
