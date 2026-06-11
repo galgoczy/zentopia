@@ -38,7 +38,7 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: "/og-image.png",
+        url: "/og-image.png?v=3",
         width: 1200,
         height: 630,
         alt: "Zentopia — AI ügynökség, ami működő rendszereket épít",
@@ -49,7 +49,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: hu.meta.title,
     description: hu.meta.ogDescription,
-    images: ["/og-image.png"],
+    images: ["/og-image.png?v=3"],
   },
 };
 
