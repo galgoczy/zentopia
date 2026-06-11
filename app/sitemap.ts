@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
 
-const SITE = "https://zentopia.io";
+const SITE = "https://www.zentopia.io";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const now = new Date();

@@ -49,16 +49,17 @@ const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" 
   <!-- Wordmark big -->
   <text x="${PAD}" y="${PAD + 130}" font-family="-apple-system, 'Helvetica Neue', Arial, sans-serif" font-size="96" font-weight="700" letter-spacing="-3" fill="${FOREST}">zentopia</text>
 
-  <!-- Tagline lines -->
-  <text x="${PAD}" y="${PAD + 220}" font-family="-apple-system, 'Helvetica Neue', Arial, sans-serif" font-size="40" font-weight="700" letter-spacing="-1.5" fill="${FOREST}">Jövő-technológia.</text>
-  <text x="${PAD}" y="${PAD + 272}" font-family="-apple-system, 'Helvetica Neue', Arial, sans-serif" font-size="40" font-weight="700" letter-spacing="-1.5" fill="${FOREST}">A TE üzletedben.</text>
-  <text x="${PAD}" y="${PAD + 324}" font-family="-apple-system, 'Helvetica Neue', Arial, sans-serif" font-size="40" font-weight="700" letter-spacing="-1.5" fill="${FOREST}">Ma.</text>
+  <!-- Tagline lines — English: better for sharing (HU pros read it fine,
+       international audience too) -->
+  <text x="${PAD}" y="${PAD + 220}" font-family="-apple-system, 'Helvetica Neue', Arial, sans-serif" font-size="40" font-weight="700" letter-spacing="-1.5" fill="${FOREST}">Future tech.</text>
+  <text x="${PAD}" y="${PAD + 272}" font-family="-apple-system, 'Helvetica Neue', Arial, sans-serif" font-size="40" font-weight="700" letter-spacing="-1.5" fill="${FOREST}">In YOUR business.</text>
+  <text x="${PAD}" y="${PAD + 324}" font-family="-apple-system, 'Helvetica Neue', Arial, sans-serif" font-size="40" font-weight="700" letter-spacing="-1.5" fill="${FOREST}">Today.</text>
 
   <!-- Lime accent pill bottom-left -->
   <g transform="translate(${PAD}, ${H - 130})">
-    <rect x="-4" y="-4" width="368" height="60" fill="${FOREST}"/>
-    <rect x="0" y="0" width="360" height="56" fill="${LIME}"/>
-    <text x="22" y="38" font-family="-apple-system, 'Helvetica Neue', Arial, sans-serif" font-size="24" font-weight="700" letter-spacing="-0.5" fill="${FOREST}">Hetek, nem hónapok →</text>
+    <rect x="-4" y="-4" width="328" height="60" fill="${FOREST}"/>
+    <rect x="0" y="0" width="320" height="56" fill="${LIME}"/>
+    <text x="22" y="38" font-family="-apple-system, 'Helvetica Neue', Arial, sans-serif" font-size="24" font-weight="700" letter-spacing="-0.5" fill="${FOREST}">Weeks, not months →</text>
   </g>
 
   <!-- Mono caption bottom-right -->
