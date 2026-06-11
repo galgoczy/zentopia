@@ -5,7 +5,7 @@
 import type { Dict } from "./translations/hu";
 import type { Lang } from "./i18n";
 
-const SITE = "https://zentopia.io";
+const SITE = "https://www.zentopia.io";
 const OG = `${SITE}/og-image.png`;
 
 export function organizationSchema(lang: Lang) {

@@ -98,7 +98,7 @@ export default function GergoCard() {
   const primary = [
     { label: t.fields.phone, href: "tel:+36204680489", value: "+36 20 468 0489", external: false },
     { label: t.fields.email, href: "mailto:gergo@zentopia.io", value: "gergo@zentopia.io", external: false },
-    { label: t.fields.web, href: "https://zentopia.io", value: "zentopia.io", external: true },
+    { label: t.fields.web, href: "https://www.zentopia.io", value: "zentopia.io", external: true },
   ];
 
   const projects = [

@@ -18,7 +18,7 @@ import { Cta } from "@/components/sections/Cta";
 import { Footer } from "@/components/sections/Footer";
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://zentopia.io"),
+  metadataBase: new URL("https://www.zentopia.io"),
   title: hu.meta.title,
   description: hu.meta.description,
   alternates: {
