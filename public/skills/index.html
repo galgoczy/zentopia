@@ -21,7 +21,7 @@
   body{margin:0;background:var(--bg);color:var(--cream);font-family:var(--font-body);overflow:hidden;-webkit-font-smoothing:antialiased;
     -webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent;}
 
-  #flow{position:fixed;inset:0;width:100vw;height:100vh;display:block;z-index:0;transform:translateZ(0);}
+  #flow{position:fixed;inset:0;width:100vw;height:100vh;display:block;z-index:0;transform:translateZ(0);will-change:transform;backface-visibility:hidden;-webkit-backface-visibility:hidden;}
 
   a.corner{text-decoration:none;}
   .corner{position:fixed;z-index:30;font-family:var(--font-display);font-size:12px;letter-spacing:.14em;text-transform:lowercase;color:var(--muted);user-select:none;text-shadow:var(--shadow);transition:color .25s ease;}
@@ -424,7 +424,7 @@ function step(){
 
   if(introActive){
     introT=(now-t0)/1000;
-    if(introT>INTRO_END){ introActive=false; hub.style.opacity=""; hub.style.transform=""; invite.style.opacity=""; svg.style.opacity=""; revealMul=1; lp=[]; }
+    if(introT>INTRO_END){ introActive=false; hub.style.opacity=""; hub.style.transform=""; invite.style.opacity=""; svg.style.opacity=""; revealMul=1; lp=[]; kickCompositor(); }
     else {
       introRot = Math.max(0, Math.min(1, (introT-1.15)/1.25));
       if(introT>=LAUNCH && !launched){ launched=true; for(const p of particles){ p.r=0.0001; p.rv=R*0.055*(0.4+Math.random()*0.95); } }
@@ -454,12 +454,27 @@ function step(){
   project(1); paint(); placeNodes();
 }
 function drawStatic(){ project(0); paint(); placeNodes(); }
+/* iOS WebKit sometimes won't promote the full-screen canvas to its own GPU
+   layer until the layer tree is rebuilt — opening/closing a card does exactly
+   that, which is why the animation only turns smooth after a card cycle.
+   Insert + remove a transparent, masked, composited overlay to force the same
+   rebuild on load, invisibly. */
+function kickCompositor(){
+  try{
+    const k=document.createElement("div");
+    k.setAttribute("aria-hidden","true");
+    k.style.cssText="position:fixed;inset:0;z-index:99;pointer-events:none;opacity:0;transform:translateZ(0);will-change:transform;-webkit-mask:linear-gradient(#000 0 0);mask:linear-gradient(#000 0 0);";
+    document.body.appendChild(k);
+    void k.offsetHeight;
+    requestAnimationFrame(()=>requestAnimationFrame(()=>{ try{ k.remove(); }catch(_){ } }));
+  }catch(_){ }
+}
 let raf=null,running=false;
 function loop(){step();raf=requestAnimationFrame(loop);}
 function start(){if(running)return;running=true;loop();}
 function stop(){running=false;if(raf)cancelAnimationFrame(raf);raf=null;}
 document.addEventListener("visibilitychange",()=>{document.hidden?stop():(reduced&&!introActive?null:start());});
-function boot(){ layout(); setSize(); applyLang("hu"); sampleLogo(); t0=performance.now(); if(reduced){ drawStatic(); } else { start(); } }
+function boot(){ layout(); setSize(); applyLang("hu"); sampleLogo(); t0=performance.now(); if(reduced){ drawStatic(); } else { start(); requestAnimationFrame(()=>requestAnimationFrame(kickCompositor)); } }
 window.addEventListener("resize",()=>{layout();setSize();if(reduced&&!introActive)drawStatic();});
 if(domLogo.complete && domLogo.naturalWidth){ boot(); } else { domLogo.addEventListener("load", boot, {once:true}); setTimeout(()=>{ if(!running) boot(); }, 1200); }
 </script>
