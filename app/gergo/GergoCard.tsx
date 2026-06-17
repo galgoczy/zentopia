@@ -23,9 +23,7 @@ const COPY: Record<Lang, {
   cvDownload: string;
   cvDownloadSub: string;
   projectsLabel: string;
-  skillsLabel: string;
-  skillsTitle: string;
-  skillsSub: string;
+  skillMap: string;
   fields: { phone: string; email: string; web: string };
   projects: { selfiemata: string; youtube: string; alfie: string };
 }> = {
@@ -43,9 +41,7 @@ const COPY: Record<Lang, {
     cvDownload: "Letöltés PDF-ben",
     cvDownloadSub: "A4 · nyomtatható",
     projectsLabel: "Pár nyilvános projekt",
-    skillsLabel: "KÉPESSÉGEK",
-    skillsTitle: "Képességeim",
-    skillsSub: "interaktív · skill-térkép",
+    skillMap: "Interaktív skill-térkép",
     fields: { phone: "Telefon", email: "Email", web: "Web" },
     projects: {
       selfiemata: "élménypont · AI fotóbox",
@@ -67,9 +63,7 @@ const COPY: Record<Lang, {
     cvDownload: "Download as PDF",
     cvDownloadSub: "A4 · print-ready",
     projectsLabel: "A few public projects",
-    skillsLabel: "SKILLS",
-    skillsTitle: "My Skills",
-    skillsSub: "interactive · skill map",
+    skillMap: "Interactive Skill Map",
     fields: { phone: "Phone", email: "Email", web: "Web" },
     projects: {
       selfiemata: "experience point · AI photobooth",
@@ -272,18 +266,31 @@ export default function GergoCard() {
           </span>
         </div>
 
-        {/* vCard download CTA */}
-        <a
-          href="/galgoczy.vcf"
-          download
-          className="zen-cta-primary group inline-flex items-center gap-2 mt-7 rounded-lg font-sans font-bold leading-none tracking-[-0.01em] py-[15px] px-[22px] text-[15px]"
-          style={{ background: Z.lime, color: Z.forest }}
-        >
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-            <path d="M8 2v9m0 0l-3-3m3 3l3-3M3 13h10" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
-          {t.vcard}
-        </a>
+        {/* Primary actions — vCard download + the interactive skill map (showcase) */}
+        <div className="flex flex-wrap items-center gap-3 mt-7">
+          <a
+            href="/galgoczy.vcf"
+            download
+            className="zen-cta-primary group inline-flex items-center gap-2 rounded-lg font-sans font-bold leading-none tracking-[-0.01em] py-[15px] px-[22px] text-[15px]"
+            style={{ background: Z.lime, color: Z.forest }}
+          >
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <path d="M8 2v9m0 0l-3-3m3 3l3-3M3 13h10" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+            {t.vcard}
+          </a>
+          <a
+            href="/skills"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="zen-arrow-host group inline-flex items-center gap-2 rounded-lg font-sans font-bold leading-none tracking-[-0.01em] py-[15px] px-[22px] text-[15px] transition-[background,border-color] duration-200 hover:bg-[rgba(162,137,255,0.1)]"
+            style={{ background: "transparent", color: Z.forest, border: `2px solid ${Z.violet}` }}
+          >
+            <span aria-hidden="true" style={{ color: Z.violet, fontSize: 15, lineHeight: 1 }}>◉</span>
+            {t.skillMap}
+            <span className="zen-arrow-nudge" aria-hidden="true" style={{ color: Z.violet }}>↗</span>
+          </a>
+        </div>
 
         {/* Primary contact block — phone / email / web in one card */}
         <div className="mt-7">
@@ -405,59 +412,6 @@ export default function GergoCard() {
             </li>
           ))}
         </ul>
-
-        {/* Skills block — interactive skill map subpage */}
-        <div className="mt-8">
-          <span
-            className="font-pixel uppercase"
-            style={{ fontSize: 10, color: Z.ember, letterSpacing: "0.08em" }}
-          >
-            {t.skillsLabel}
-          </span>
-          <div
-            className="mt-4 overflow-hidden relative"
-            style={{
-              background: Z.white,
-              border: `1px solid ${Z.hairline}`,
-              borderRadius: 14,
-            }}
-          >
-            <span
-              aria-hidden="true"
-              className="absolute left-0 top-0 bottom-0 w-1"
-              style={{ background: Z.violet }}
-            />
-            <a
-              href="/skills"
-              target="_blank"
-              rel="noopener noreferrer"
-              className={`${id}-row group relative flex items-center gap-4 px-5 py-4 transition-colors duration-200 hover:bg-[rgba(15,31,26,0.025)]`}
-              style={{ textDecoration: "none", color: Z.forest }}
-            >
-              <div className="flex flex-col min-w-0 flex-1">
-                <span
-                  className="font-mono uppercase"
-                  style={{ fontSize: 11, color: Z.slate, letterSpacing: "0.08em" }}
-                >
-                  {t.skillsSub}
-                </span>
-                <span
-                  className="font-sans font-bold truncate"
-                  style={{ fontSize: 19, color: Z.forest, letterSpacing: "-0.02em" }}
-                >
-                  {t.skillsTitle}
-                </span>
-              </div>
-              <span
-                className={`${id}-arrow transition-transform duration-200`}
-                style={{ color: Z.violet, fontSize: 22 }}
-                aria-hidden="true"
-              >
-                ↗
-              </span>
-            </a>
-          </div>
-        </div>
 
         {/* CV / Resume block — view online + download PDF */}
         <div className="mt-8">

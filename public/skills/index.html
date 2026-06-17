@@ -226,7 +226,7 @@ function renderCard(d){
   const tg=L.skills.map(s=>'<span class="tag">'+s+'</span>').join("");
   cbody.innerHTML='<div class="ptag">'+T.area+'</div><h2 id="card-title">'+L.title+'</h2><p class="tagline">'+L.tagline+'</p><p class="kicker">'+listLabel+'</p><ul>'+listHtml+'</ul><p class="kicker">'+T.skills+'</p><div class="tags">'+tg+'</div>';
 }
-function openCard(i){open=true;activeI=i;cardA=200;cardAEnd=cardA+720;renderCard(domains[i]);document.body.classList.add("panel-open");card.setAttribute("aria-hidden","false");
+function openCard(i){open=true;activeI=i;cardA=200;cardAEnd=cardA+360;renderCard(domains[i]);document.body.classList.add("panel-open");card.setAttribute("aria-hidden","false");
   nodeEls.forEach((n,j)=>n.classList.toggle("active",j===i));spokes.forEach((s,j)=>s.classList.toggle("active",j===i));card.scrollTop=0;document.getElementById("close").focus();}
 function closeCard(){open=false;activeI=-1;document.body.classList.remove("panel-open");card.setAttribute("aria-hidden","true");
   nodeEls.forEach(n=>n.classList.remove("active"));spokes.forEach(s=>s.classList.remove("active"));}
@@ -344,7 +344,7 @@ function initParticles(){
   alloc(n);
 }
 
-let K=0.00336;  /* vortex rotation speed (×0.8 → 20% slower; scales normal + press-boost) */
+let K=0.003024;  /* vortex rotation speed (×0.72 vs base → another 10% slower; scales normal + press-boost) */
 function emit(p){
   const wx=p.r*Math.cos(p.theta), wz=p.r*Math.sin(p.theta), f=wz/R;
   const persp=1+f*DEPTH;
