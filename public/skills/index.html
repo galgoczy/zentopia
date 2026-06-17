@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<title>Galgóczy Gergely — skillek és tudás</title>
+<title>Galgóczy Gergely — skillek és tapasztalat</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Sora:wght@300;400;600&display=swap" rel="stylesheet">
@@ -21,7 +21,7 @@
   body{margin:0;background:var(--bg);color:var(--cream);font-family:var(--font-body);overflow:hidden;-webkit-font-smoothing:antialiased;
     -webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent;}
 
-  #flow{position:fixed;inset:0;width:100vw;height:100vh;display:block;z-index:0;}
+  #flow{position:fixed;inset:0;width:100vw;height:100vh;display:block;z-index:0;transform:translateZ(0);}
 
   a.corner{text-decoration:none;}
   .corner{position:fixed;z-index:30;font-family:var(--font-display);font-size:12px;letter-spacing:.14em;text-transform:lowercase;color:var(--muted);user-select:none;text-shadow:var(--shadow);transition:color .25s ease;}
@@ -51,12 +51,15 @@
   .hub{text-align:center;pointer-events:none;transition:opacity .4s ease;}
   .hub .logohit{display:inline-block;padding:18px;pointer-events:auto;cursor:pointer;touch-action:none;-webkit-touch-callout:none;-webkit-user-select:none;user-select:none;transition:transform .18s ease;}
   .hub .logohit:active{transform:scale(.93);}
+  /* Static base glow + a compositor-only breathe (transform/opacity).
+     Animating drop-shadow filters janks badly in Safari, so the brightness
+     swell lives on the canvas centre glow instead (see glowBreath). */
   .hub .logo{display:block;margin:0 auto;width:clamp(44px,7vw,56px);height:auto;opacity:1;pointer-events:none;-webkit-user-drag:none;
-    filter:blur(0.8px) drop-shadow(0 0 10px rgba(201,242,107,.4)) drop-shadow(0 0 26px rgba(201,242,107,.24)) drop-shadow(0 0 60px rgba(201,242,107,.15));
-    animation:flare 5s ease-in-out infinite;}
-  @keyframes flare{
-    0%,100%{ filter:blur(0.8px) drop-shadow(0 0 10px rgba(201,242,107,.4)) drop-shadow(0 0 26px rgba(201,242,107,.24)) drop-shadow(0 0 60px rgba(201,242,107,.15)); }
-    50%{ filter:blur(0.8px) drop-shadow(0 0 30px rgba(201,242,107,1)) drop-shadow(0 0 74px rgba(201,242,107,.9)) drop-shadow(0 0 150px rgba(201,242,107,.6)); }
+    filter:blur(0.8px) drop-shadow(0 0 16px rgba(201,242,107,.55)) drop-shadow(0 0 40px rgba(201,242,107,.3)) drop-shadow(0 0 90px rgba(201,242,107,.18));
+    animation:breathe 5s ease-in-out infinite;will-change:transform,opacity;backface-visibility:hidden;}
+  @keyframes breathe{
+    0%,100%{ transform:scale(1);opacity:.9; }
+    50%{ transform:scale(1.07);opacity:1; }
   }
   .hub .invite{margin-top:16px;font-family:var(--font-display);font-size:11.5px;letter-spacing:.16em;color:var(--lime);text-shadow:var(--shadow);}
   body.panel-open .hub{opacity:0;}
@@ -141,8 +144,8 @@
 <script>
 let LANG="hu";
 const STR={
-  hu:{sub:"skillek és tudás", invite:"↗ válassz egy fénypontot", hint:"húzd meg / lökd meg a pontokat · nyomd a közepet a gyorsabb örvényhez", area:"terület", milestones:"Fontosabb állomások", industries:"Fontosabb iparágak", skills:"Skillek", close:"Bezárás"},
-  en:{sub:"skills & expertise", invite:"↗ choose an area", hint:"drag / flick the points · press the centre to spin faster", area:"area", milestones:"Key milestones", industries:"Key industries", skills:"Skills", close:"Close"}
+  hu:{sub:"skillek és tapasztalat", invite:"↗ válassz egy fénypontot", hint:"húzd meg / lökd meg a pontokat · nyomd a közepet a gyorsabb örvényhez", area:"terület", milestones:"Fontosabb állomások", industries:"Fontosabb iparágak", skills:"Skillek", close:"Bezárás"},
+  en:{sub:"skills & experience", invite:"↗ choose an area", hint:"drag / flick the points · press the centre to spin faster", area:"area", milestones:"Key milestones", industries:"Key industries", skills:"Skills", close:"Close"}
 };
 const domains = [
   { id:"komm", angle:-90,
@@ -188,7 +191,7 @@ let open=false, activeI=-1, curSpot=-1;
 let nodeT=0, omega=0.0013; const BASE_OMEGA=0.0013;
 let boost=0, pressing=false, pressPid=null;
 let dragging=false, grabI=-1, moved=false, startX=0, startY=0, lastAng=0, lastT=0, vel=0, dragPid=null;
-let pulseT=0, cardA=0;
+let pulseT=0, cardA=0, cardAEnd=0, glowBreath=0;
 
 (function(){
   const el=document.getElementById("pt-name"), txt=el.textContent.trim();
@@ -223,7 +226,7 @@ function renderCard(d){
   const tg=L.skills.map(s=>'<span class="tag">'+s+'</span>').join("");
   cbody.innerHTML='<div class="ptag">'+T.area+'</div><h2 id="card-title">'+L.title+'</h2><p class="tagline">'+L.tagline+'</p><p class="kicker">'+listLabel+'</p><ul>'+listHtml+'</ul><p class="kicker">'+T.skills+'</p><div class="tags">'+tg+'</div>';
 }
-function openCard(i){open=true;activeI=i;cardA=200;renderCard(domains[i]);document.body.classList.add("panel-open");card.setAttribute("aria-hidden","false");
+function openCard(i){open=true;activeI=i;cardA=200;cardAEnd=cardA+720;renderCard(domains[i]);document.body.classList.add("panel-open");card.setAttribute("aria-hidden","false");
   nodeEls.forEach((n,j)=>n.classList.toggle("active",j===i));spokes.forEach((s,j)=>s.classList.toggle("active",j===i));card.scrollTop=0;document.getElementById("close").focus();}
 function closeCard(){open=false;activeI=-1;document.body.classList.remove("panel-open");card.setAttribute("aria-hidden","true");
   nodeEls.forEach(n=>n.classList.remove("active"));spokes.forEach(s=>s.classList.remove("active"));}
@@ -341,7 +344,7 @@ function initParticles(){
   alloc(n);
 }
 
-let K=0.0042;   /* rotation speed -30% */
+let K=0.00336;  /* vortex rotation speed (×0.8 → 20% slower; scales normal + press-boost) */
 function emit(p){
   const wx=p.r*Math.cos(p.theta), wz=p.r*Math.sin(p.theta), f=wz/R;
   const persp=1+f*DEPTH;
@@ -378,7 +381,7 @@ function paint(){
   ctx.globalAlpha=1;
   ctx.save(); ctx.translate(cx,cy); ctx.scale(1, TILT+0.35);
   const eg=ctx.createRadialGradient(0,0,0,0,0,R*0.5);
-  eg.addColorStop(0,"rgba(201,242,107,"+(0.05+focus*0.13)+")"); eg.addColorStop(1,"rgba(201,242,107,0)");
+  eg.addColorStop(0,"rgba(201,242,107,"+(0.05+focus*0.13+glowBreath*0.10)+")"); eg.addColorStop(1,"rgba(201,242,107,0)");
   ctx.fillStyle=eg; ctx.fillRect(-W,-H,W*2,H*2); ctx.restore();
 }
 function drawLP(alpha){
@@ -408,9 +411,11 @@ function eo(t){ return 1-(1-t)*(1-t); }
 function step(){
   const now=performance.now();
   pulseT=now*0.004;
+  glowBreath=0.5+0.5*Math.sin(now*0.0013);   /* ~4.8s breathe for the centre glow */
   focus += ((open?1:0)-focus)*0.05;
   boost += ((pressing?1:0)-boost)*(pressing?0.022:0.10);
-  if(open){ cardA+=2.4; card.style.setProperty("--a", cardA+"deg"); }
+  /* edge light sweeps exactly twice (720°) on open, then rests */
+  if(open && cardA<cardAEnd){ cardA+=2.4; card.style.setProperty("--a", cardA+"deg"); }
 
   if(introActive){
     introT=(now-t0)/1000;
