@@ -103,6 +103,16 @@
   .backdrop{position:fixed;inset:0;z-index:15;background:rgba(5,10,8,0);pointer-events:none;transition:background .4s ease;}
   body.panel-open .backdrop{background:rgba(5,10,8,.42);pointer-events:auto;}
 
+  /* Compositor warm-up: with .cwarm active we still toggle .panel-open so the
+     browser builds the real card / mask / backdrop layers (which is what makes
+     iOS finally promote the canvas to its own GPU layer), but render it as a
+     visual no-op — card at ~1% opacity, backdrop off, logo/hint left as-is. */
+  body.cwarm .card{opacity:.012 !important;filter:none !important;transition:none !important;pointer-events:none !important;}
+  body.cwarm .card::before{transition:none !important;}
+  body.cwarm .backdrop{background:transparent !important;transition:none !important;}
+  body.cwarm .hub{opacity:1 !important;transition:none !important;}
+  body.cwarm .hint{opacity:1 !important;transition:none !important;}
+
   .hint{position:fixed;left:50%;bottom:26px;transform:translateX(-50%);z-index:30;font-family:var(--font-display);font-size:11px;letter-spacing:.14em;color:var(--muted);text-transform:lowercase;transition:opacity .4s ease;text-align:center;width:92%;text-shadow:var(--shadow);}
   body.panel-open .hint{opacity:0;}
 
@@ -459,22 +469,26 @@ function drawStatic(){ project(0); paint(); placeNodes(); }
    that, which is why the animation only turns smooth after a card cycle.
    Insert + remove a transparent, masked, composited overlay to force the same
    rebuild on load, invisibly. */
+let _kicking=false;
 function kickCompositor(){
+  if(_kicking || open) return; _kicking=true;
   try{
-    const k=document.createElement("div");
-    k.setAttribute("aria-hidden","true");
-    k.style.cssText="position:fixed;inset:0;z-index:99;pointer-events:none;opacity:0;transform:translateZ(0);will-change:transform;-webkit-mask:linear-gradient(#000 0 0);mask:linear-gradient(#000 0 0);";
-    document.body.appendChild(k);
-    void k.offsetHeight;
-    requestAnimationFrame(()=>requestAnimationFrame(()=>{ try{ k.remove(); }catch(_){ } }));
-  }catch(_){ }
+    /* Replicate a real card open+close (the only thing that unsticks the
+       canvas layer), but masked to a visual no-op by .cwarm. */
+    document.body.classList.add("cwarm","panel-open");
+    void document.body.offsetHeight;          // build the layer tree now
+    requestAnimationFrame(()=>requestAnimationFrame(()=>{
+      document.body.classList.remove("panel-open");   // "close"
+      requestAnimationFrame(()=>{ document.body.classList.remove("cwarm"); _kicking=false; });
+    }));
+  }catch(_){ document.body.classList.remove("cwarm","panel-open"); _kicking=false; }
 }
 let raf=null,running=false;
 function loop(){step();raf=requestAnimationFrame(loop);}
 function start(){if(running)return;running=true;loop();}
 function stop(){running=false;if(raf)cancelAnimationFrame(raf);raf=null;}
 document.addEventListener("visibilitychange",()=>{document.hidden?stop():(reduced&&!introActive?null:start());});
-function boot(){ layout(); setSize(); applyLang("hu"); sampleLogo(); t0=performance.now(); if(reduced){ drawStatic(); } else { start(); requestAnimationFrame(()=>requestAnimationFrame(kickCompositor)); } }
+function boot(){ layout(); setSize(); applyLang("hu"); sampleLogo(); t0=performance.now(); if(reduced){ drawStatic(); } else { start(); [600,1400,INTRO_END*1000+400,INTRO_END*1000+1600].forEach(ms=>setTimeout(kickCompositor,ms)); } }
 window.addEventListener("resize",()=>{layout();setSize();if(reduced&&!introActive)drawStatic();});
 if(domLogo.complete && domLogo.naturalWidth){ boot(); } else { domLogo.addEventListener("load", boot, {once:true}); setTimeout(()=>{ if(!running) boot(); }, 1200); }
 </script>
