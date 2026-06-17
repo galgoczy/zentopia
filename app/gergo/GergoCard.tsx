@@ -23,6 +23,7 @@ const COPY: Record<Lang, {
   cvDownload: string;
   cvDownloadSub: string;
   projectsLabel: string;
+  skillMap: string;
   fields: { phone: string; email: string; web: string };
   projects: { selfiemata: string; youtube: string; alfie: string };
 }> = {
@@ -40,6 +41,7 @@ const COPY: Record<Lang, {
     cvDownload: "Letöltés PDF-ben",
     cvDownloadSub: "A4 · nyomtatható",
     projectsLabel: "Pár nyilvános projekt",
+    skillMap: "Interaktív skill-térkép",
     fields: { phone: "Telefon", email: "Email", web: "Web" },
     projects: {
       selfiemata: "élménypont · AI fotóbox",
@@ -61,6 +63,7 @@ const COPY: Record<Lang, {
     cvDownload: "Download as PDF",
     cvDownloadSub: "A4 · print-ready",
     projectsLabel: "A few public projects",
+    skillMap: "Interactive Skill Map",
     fields: { phone: "Phone", email: "Email", web: "Web" },
     projects: {
       selfiemata: "experience point · AI photobooth",
@@ -263,18 +266,31 @@ export default function GergoCard() {
           </span>
         </div>
 
-        {/* vCard download CTA */}
-        <a
-          href="/galgoczy.vcf"
-          download
-          className="zen-cta-primary group inline-flex items-center gap-2 mt-7 rounded-lg font-sans font-bold leading-none tracking-[-0.01em] py-[15px] px-[22px] text-[15px]"
-          style={{ background: Z.lime, color: Z.forest }}
-        >
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-            <path d="M8 2v9m0 0l-3-3m3 3l3-3M3 13h10" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
-          {t.vcard}
-        </a>
+        {/* Primary actions — vCard download + the interactive skill map (showcase) */}
+        <div className="flex flex-wrap items-center gap-3 mt-7">
+          <a
+            href="/galgoczy.vcf"
+            download
+            className="zen-cta-primary group inline-flex items-center gap-2 rounded-lg font-sans font-bold leading-none tracking-[-0.01em] py-[15px] px-[22px] text-[15px]"
+            style={{ background: Z.lime, color: Z.forest }}
+          >
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <path d="M8 2v9m0 0l-3-3m3 3l3-3M3 13h10" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+            {t.vcard}
+          </a>
+          <a
+            href="/skills"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="zen-arrow-host group inline-flex items-center gap-2 rounded-lg font-sans font-bold leading-none tracking-[-0.01em] py-[15px] px-[22px] text-[15px] transition-[background,border-color] duration-200 hover:bg-[rgba(162,137,255,0.1)]"
+            style={{ background: "transparent", color: Z.forest, border: `2px solid ${Z.violet}` }}
+          >
+            <span aria-hidden="true" style={{ color: Z.violet, fontSize: 15, lineHeight: 1 }}>◉</span>
+            {t.skillMap}
+            <span className="zen-arrow-nudge" aria-hidden="true" style={{ color: Z.violet }}>↗</span>
+          </a>
+        </div>
 
         {/* Primary contact block — phone / email / web in one card */}
         <div className="mt-7">
