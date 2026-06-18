@@ -276,7 +276,7 @@ let TILT=0.42, DEPTH=0.42;
 let dpr=1,cx=0,cy=0,bgGrad=null,R=400,rr=240,S=600,Sc=300,W=0,H=0;
 let particles=[], focus=0;
 
-let introActive=!reduced, t0=performance.now(), introT=0, introRot=0, revealMul=reduced?1:0, launched=false;
+let introActive=!reduced, t0=performance.now(), introT=0, introRot=0, revealMul=reduced?1:0, launched=false, introHold=false;
 const LAUNCH=1.0, INTRO_END=3.05, SPRING=0.02, DAMP=0.88;
 /* logo-pixel layer for the intro pixelate-explode */
 let lp=[], lpReady=false, lpExploded=false;
@@ -432,7 +432,7 @@ function step(){
   if(open && cardA<cardAEnd){ cardA+=2.4*fr; card.style.setProperty("--a", cardA+"deg"); }
 
   if(introActive){
-    introT=(now-t0)/1000;
+    introT=introHold?0:(now-t0)/1000;
     if(introT>INTRO_END){ introActive=false; hub.style.opacity=""; hub.style.transform=""; invite.style.opacity=""; svg.style.opacity=""; revealMul=1; lp=[]; }
     else {
       introRot = Math.max(0, Math.min(1, (introT-1.15)/1.25));
@@ -496,11 +496,14 @@ document.addEventListener("visibilitychange",()=>{document.hidden?stop():(reduce
 function boot(){
   layout(); setSize(); applyLang("hu"); sampleLogo(); t0=performance.now();
   if(reduced){ drawStatic(); revealBoot(); return; }
+  // Hold the intro at frame 0 while we warm the compositor behind the cover,
+  // then reveal and start the intro — so none of the opening is missed.
+  introHold=true;
   start();
-  // Warm the compositor with a real card render behind the cover, then reveal.
   kickCompositor();
-  setTimeout(kickCompositor, 380);
-  setTimeout(revealBoot, 720);
+  setTimeout(kickCompositor, 360);
+  setTimeout(revealBoot, 560);                              // start fading the cover
+  setTimeout(()=>{ t0=performance.now(); introHold=false; }, 1120); // intro begins after the cover is gone
 }
 window.addEventListener("resize",()=>{layout();setSize();if(reduced&&!introActive)drawStatic();});
 if(domLogo.complete && domLogo.naturalWidth){ boot(); } else { domLogo.addEventListener("load", boot, {once:true}); setTimeout(()=>{ if(!running) boot(); }, 1200); }
