@@ -21,7 +21,7 @@
   body{margin:0;background:var(--bg);color:var(--cream);font-family:var(--font-body);overflow:hidden;-webkit-font-smoothing:antialiased;
     -webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent;}
 
-  #flow{position:fixed;inset:0;width:100vw;height:100vh;display:block;z-index:0;transform:translateZ(0);will-change:transform;backface-visibility:hidden;-webkit-backface-visibility:hidden;}
+  #flow{position:fixed;top:0;left:0;width:100vw;height:100vh;display:block;z-index:0;transform:translateZ(0);will-change:transform;backface-visibility:hidden;-webkit-backface-visibility:hidden;}
 
   a.corner{text-decoration:none;}
   .corner{position:fixed;z-index:30;font-family:var(--font-display);font-size:12px;letter-spacing:.14em;text-transform:lowercase;color:var(--muted);user-select:none;text-shadow:var(--shadow);transition:color .25s ease;}
@@ -40,7 +40,7 @@
   @keyframes ripple{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
   .pt-sub{font-family:var(--font-display);font-size:clamp(10px,1.8vw,13px);letter-spacing:.36em;text-transform:lowercase;color:var(--soft-green);margin-top:9px;text-shadow:var(--shadow);}
 
-  .stage{position:fixed;inset:0;z-index:10;display:grid;place-items:center;}
+  .stage{position:fixed;top:0;left:0;width:100vw;z-index:10;display:grid;place-items:center;}
   .orbit{position:relative;}
   #rings{position:absolute;inset:0;overflow:visible;pointer-events:none;}
   #plane{fill:none;stroke:rgba(201,242,107,.12);stroke-width:1;}
@@ -93,9 +93,9 @@
   .node{position:absolute;left:0;top:0;transform:translate(-50%,-50%);background:none;border:0;padding:0;cursor:grab;color:inherit;outline:none;width:150px;touch-action:none;-webkit-user-select:none;user-select:none;will-change:transform;}
   .node:active{cursor:grabbing;}
   .node .inner{display:flex;flex-direction:column;align-items:center;gap:9px;}
-  .node .ball{width:11px;height:11px;border-radius:50%;background:var(--soft-green);box-shadow:0 0 18px 3px rgba(127,174,144,.62);transition:background .8s ease,box-shadow .8s ease,transform .5s ease;}
+  .node .ball{width:13.2px;height:13.2px;border-radius:50%;background:var(--soft-green);box-shadow:0 0 22px 4px rgba(127,174,144,.62);transition:background .8s ease,box-shadow .8s ease,transform .5s ease;}
   .node .lbl{font-family:var(--font-display);font-size:12.5px;font-weight:500;letter-spacing:.05em;line-height:1.3;text-align:center;color:var(--muted);white-space:pre-line;transition:color .8s ease;text-shadow:var(--shadow);}
-  .node:hover .ball,.node:focus-visible .ball,.node.active .ball,.node.spot .ball{background:var(--lime);box-shadow:0 0 33px 9px rgba(201,242,107,.66);transform:scale(1.4);}
+  .node:hover .ball,.node:focus-visible .ball,.node.active .ball,.node.spot .ball{background:var(--lime);box-shadow:0 0 40px 11px rgba(201,242,107,.66);transform:scale(1.4);}
   .node:hover .lbl,.node:focus-visible .lbl,.node.active .lbl,.node.spot .lbl{color:var(--cream);}
   .node:focus-visible{outline:2px solid var(--lime);outline-offset:10px;border-radius:14px;}
   body.panel-open .node{pointer-events:none;}
@@ -209,7 +209,7 @@ let pulseT=0, cardA=0, cardAEnd=0, glowBreath=0, lastNow=0, fr=1;
     else { const s=document.createElement("span"); s.className="rch"; s.textContent=ch; s.style.animationDelay=(i*0.05)+"s"; s.setAttribute("aria-hidden","true"); el.appendChild(s); } });
 })();
 
-const orbit=document.getElementById("orbit"), svg=document.getElementById("rings"), plane=document.getElementById("plane");
+const orbit=document.getElementById("orbit"), svg=document.getElementById("rings"), plane=document.getElementById("plane"), stage=document.querySelector(".stage");
 const hub=document.getElementById("hub"), invite=document.getElementById("invite"), domLogo=document.querySelector(".hub .logo");
 const nodeEls=[], spokes=[];
 domains.forEach((d,i)=>{
@@ -318,6 +318,10 @@ function sampleLogo(){
 }
 function layout(){
   W=window.innerWidth; H=window.innerHeight;
+  // Pin the DOM stage to the exact visible height so its centre matches the
+  // canvas centre (cy=H/2). iOS '100vh' is taller than innerHeight, which
+  // otherwise pushes the bonsai/orbit above the particle convergence point.
+  stage.style.height=H+"px";
   S=Math.max(280,Math.min(Math.min(W,H)*0.86,760)); Sc=S/2;
   orbit.style.width=orbit.style.height=S+"px";
   svg.setAttribute("viewBox","0 0 "+S+" "+S); svg.setAttribute("width",S); svg.setAttribute("height",S);
@@ -327,6 +331,9 @@ function setSize(){
   TILT = mob?0.66:0.42; DEPTH = mob?0.30:0.42;
   dpr=Math.min(window.devicePixelRatio||1,1.5);
   canvas.width=W*dpr; canvas.height=H*dpr; ctx.setTransform(dpr,0,0,dpr,0,0);
+  // Display the canvas at exactly W×H px (no 100vh stretch) so the drawn
+  // centre lands on the real screen centre, matching the stage.
+  canvas.style.width=W+"px"; canvas.style.height=H+"px";
   cx=W/2; cy=H/2;
   R = mob ? Math.min(W*0.96, H*0.52) : Math.min(W*0.60, H*0.96);
   rr = mob ? Math.min(R*0.62, W*0.38, H*0.34) : Math.min(R*0.58, W*0.32, H*0.46);
