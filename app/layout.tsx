@@ -44,7 +44,7 @@ export default function RootLayout({
             is up; the timeout is a failsafe if hydration dies. */}
         <script
           dangerouslySetInnerHTML={{
-            __html: `(function(){try{if(sessionStorage.getItem('zen-booted'))return;if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;var p=location.pathname;if(p!=='/'&&p!=='/en'&&p!=='/en/')return;document.documentElement.classList.add('zen-booting');setTimeout(function(){document.documentElement.classList.remove('zen-booting')},5000);}catch(e){}})();`,
+            __html: `(function(){try{if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;var p=location.pathname;var k;if(p==='/'||p==='/en'||p==='/en/')k='zen-booted';else if(p==='/contact'||p==='/contact/')k='zen-booted-contact';else return;if(sessionStorage.getItem(k))return;document.documentElement.classList.add('zen-booting');setTimeout(function(){document.documentElement.classList.remove('zen-booting')},5000);}catch(e){}})();`,
           }}
         />
       </head>
