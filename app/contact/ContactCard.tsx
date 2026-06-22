@@ -20,9 +20,9 @@ export default function ContactCard() {
       className="min-h-screen w-full flex items-stretch justify-center overflow-x-hidden"
       style={{ background: Z.forestDeep }}
     >
-      {/* Opening intro — kept outside the rotated wrapper so it plays
-          upright (slit grows top→bottom, halves part left/right). */}
-      <ContactIntro />
+      {/* Opening intro — flipped 180° to match the upside-down card, so the
+          label reads upright for the person the card faces. */}
+      <ContactIntro flip />
 
       {/* Rotated wrapper — the whole card is upside-down. */}
       <div

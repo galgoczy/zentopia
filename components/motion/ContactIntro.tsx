@@ -23,7 +23,7 @@ function pending(): boolean {
 // One-shot intro for the contact card, mirroring the homepage boot: a lime
 // slit grows down a forest-deep screen while a pixel counter runs up, then
 // the two halves part to reveal the page. Skipped for reduced motion.
-export function ContactIntro() {
+export function ContactIntro({ flip = false }: { flip?: boolean }) {
   const [show, setShow] = useState(false);
   const rootRef = useRef<HTMLDivElement | null>(null);
 
@@ -86,6 +86,7 @@ export function ContactIntro() {
       ref={rootRef}
       aria-hidden="true"
       className="fixed inset-0 z-[200] pointer-events-none"
+      style={flip ? { transform: "rotate(180deg)" } : undefined}
     >
       <div
         data-half-l
