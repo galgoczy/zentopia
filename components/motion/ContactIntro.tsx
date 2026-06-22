@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { Z } from "@/lib/tokens";
 import { gsap, prefersReducedMotion } from "./gsap";
 
-const KEY = "zen-booted-gergo";
+const KEY = "zen-booted-contact";
 
 // Per-session flag, independent of the homepage boot, so the contact card
 // still plays its intro for direct (QR / business-card) visits.

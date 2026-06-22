@@ -5,6 +5,7 @@ import Image from "next/image";
 import { Z } from "@/lib/tokens";
 import { PixelGrid } from "@/components/ui/PixelGrid";
 import { GlitchTE } from "@/components/ui/GlitchTE";
+import { ContactIntro } from "@/components/motion/ContactIntro";
 
 // Mobile-first digital business card I show in person. The whole sheet is
 // rotated 180° so when I hold the phone up to someone facing me, they read
@@ -19,6 +20,10 @@ export default function ContactCard() {
       className="min-h-screen w-full flex items-stretch justify-center overflow-x-hidden"
       style={{ background: Z.forestDeep }}
     >
+      {/* Opening intro — kept outside the rotated wrapper so it plays
+          upright (slit grows top→bottom, halves part left/right). */}
+      <ContactIntro />
+
       {/* Rotated wrapper — the whole card is upside-down. */}
       <div
         className="relative w-full max-w-[480px] flex flex-col overflow-x-hidden"
