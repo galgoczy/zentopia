@@ -6,6 +6,7 @@ import { Z } from "@/lib/tokens";
 import { PixelGrid } from "@/components/ui/PixelGrid";
 import { GlitchTE } from "@/components/ui/GlitchTE";
 import { GlitchText } from "@/components/ui/GlitchText";
+import { ContactIntro } from "@/components/motion/ContactIntro";
 
 type Lang = "hu" | "en";
 
@@ -133,6 +134,7 @@ export default function GergoCard() {
       className="min-h-screen w-full relative overflow-hidden"
       style={{ background: Z.offwhite }}
     >
+      <ContactIntro />
       <PixelGrid />
 
       <style>{`
