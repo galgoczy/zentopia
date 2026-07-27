@@ -9,6 +9,11 @@ import { PixelCursor } from "./PixelCursor";
 import { DitherOverlay } from "./DitherOverlay";
 import { GlitchPixels } from "./GlitchPixels";
 
+// How far past the nav an anchor target's top edge is taken, so the section's
+// heading lands near the top instead of below its own leading padding.
+// Mirrored by the scroll-padding-top in globals.css.
+const ANCHOR_LEAD = 40;
+
 // Mounted once in the root layout: drives Lenis smooth scroll, keeps
 // ScrollTrigger in sync with it, and renders the global HUD chrome.
 export function MotionRoot() {
@@ -41,12 +46,14 @@ export function MotionRoot() {
     const lenis = new Lenis();
 
     // Anchor links scroll through Lenis. Handled here rather than via Lenis's
-    // `anchors` option so the offset can track the nav's live height.
-    const navOffset = () =>
-      parseInt(
+    // `anchors` option so the offset can track the nav's live height. The
+    // target's top edge is tucked ANCHOR_LEAD past the nav so its heading sits
+    // near the top rather than below a band of the section's own padding.
+    const anchorOffset = () =>
+      (parseInt(
         getComputedStyle(document.documentElement).getPropertyValue("--zen-nav-h"),
         10
-      ) || 78;
+      ) || 78) - ANCHOR_LEAD;
 
     // Scroll-driven sections between here and the target (the pinned
     // calibration interlude, the drifting wordmark band) resize as they come
@@ -54,7 +61,7 @@ export function MotionRoot() {
     // in flight and leaves it stopping short of the section's top edge.
     // Re-measure on arrival and close the gap.
     const settle = (target: HTMLElement, tries: number) => {
-      const drift = Math.round(target.getBoundingClientRect().top - navOffset());
+      const drift = Math.round(target.getBoundingClientRect().top - anchorOffset());
       if (Math.abs(drift) <= 1 || tries >= 3) return;
       lenis.scrollTo(window.scrollY + drift, {
         duration: tries === 0 ? 0.35 : 0.15,
@@ -72,7 +79,7 @@ export function MotionRoot() {
       if (!target) return;
       e.preventDefault();
       lenis.scrollTo(target, {
-        offset: -navOffset(),
+        offset: -anchorOffset(),
         onComplete: () => settle(target, 0),
       });
       history.pushState(null, "", `#${id}`);
