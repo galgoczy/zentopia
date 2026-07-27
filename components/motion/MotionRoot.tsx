@@ -48,6 +48,20 @@ export function MotionRoot() {
         10
       ) || 78;
 
+    // Scroll-driven sections between here and the target (the pinned
+    // calibration interlude, the drifting wordmark band) resize as they come
+    // into range, which moves the target while the smooth scroll is already
+    // in flight and leaves it stopping short of the section's top edge.
+    // Re-measure on arrival and close the gap.
+    const settle = (target: HTMLElement, tries: number) => {
+      const drift = Math.round(target.getBoundingClientRect().top - navOffset());
+      if (Math.abs(drift) <= 1 || tries >= 3) return;
+      lenis.scrollTo(window.scrollY + drift, {
+        duration: tries === 0 ? 0.35 : 0.15,
+        onComplete: () => settle(target, tries + 1),
+      });
+    };
+
     const onAnchorClick = (e: MouseEvent) => {
       if (e.defaultPrevented || e.button !== 0) return;
       if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
@@ -57,7 +71,10 @@ export function MotionRoot() {
       const target = document.getElementById(id);
       if (!target) return;
       e.preventDefault();
-      lenis.scrollTo(target, { offset: -navOffset() });
+      lenis.scrollTo(target, {
+        offset: -navOffset(),
+        onComplete: () => settle(target, 0),
+      });
       history.pushState(null, "", `#${id}`);
     };
     document.addEventListener("click", onAnchorClick);
