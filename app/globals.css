@@ -29,7 +29,9 @@ img {
 /* Smooth scroll for anchors */
 html {
   scroll-behavior: smooth;
-  scroll-padding-top: 64px;
+  /* kept in sync with the sticky nav's measured height by MotionRoot, so a
+     fragment link lands with the target's top edge clear of the nav */
+  scroll-padding-top: var(--zen-nav-h, 78px);
 }
 
 /* Reusable utility classes — animation-heavy primitives */

@@ -9,6 +9,13 @@ const nextConfig = {
   async rewrites() {
     return [{ source: "/skills", destination: "/skills/index.html" }];
   },
+  // Shareable short links that drop straight into the booking section.
+  async redirects() {
+    return [
+      { source: "/foglalas", destination: "/#beszeljunk", permanent: false },
+      { source: "/booking", destination: "/en#beszeljunk", permanent: false },
+    ];
+  },
 };
 
 export default nextConfig;
