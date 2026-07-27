@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { usePathname } from "next/navigation";
 import Lenis from "lenis";
 import { gsap, ScrollTrigger, prefersReducedMotion } from "./gsap";
+import { BOOT_MS_TOTAL } from "./BootSequence";
 import { HudFrame } from "./HudFrame";
 import { PixelCursor } from "./PixelCursor";
 import { DitherOverlay } from "./DitherOverlay";
@@ -86,6 +87,37 @@ export function MotionRoot() {
     };
     document.addEventListener("click", onAnchorClick);
 
+    // A shared link (/book, /#beszeljunk) already carries the fragment, so the
+    // browser jumps there while parsing — before ScrollTrigger pins the
+    // calibration interlude and inserts its spacer ABOVE the target. Pinning
+    // also disables the browser's scroll anchoring, so nothing compensates and
+    // the section ends up pushed a screen or more past the viewport. Take aim
+    // again once mounted, and keep re-aiming while the layout is still moving.
+    const hashId = decodeURIComponent(window.location.hash.slice(1));
+    const landing = hashId ? document.getElementById(hashId) : null;
+    const timers: number[] = [];
+    let aiming = landing !== null;
+    const stopAiming = () => {
+      aiming = false;
+    };
+
+    if (landing) {
+      const aim = () => {
+        if (!aiming) return;
+        lenis.scrollTo(landing, { offset: -anchorOffset(), immediate: true });
+      };
+      aim();
+      // after hydration, after the pins settle, after late assets, and once
+      // more when the boot intro has finished playing
+      for (const delay of [50, 250, 700, BOOT_MS_TOTAL + 150]) {
+        timers.push(window.setTimeout(aim, delay));
+      }
+      // a visitor who starts scrolling outranks the automatic re-aim
+      window.addEventListener("wheel", stopAiming, { passive: true });
+      window.addEventListener("touchstart", stopAiming, { passive: true });
+      window.addEventListener("keydown", stopAiming);
+    }
+
     lenis.on("scroll", ScrollTrigger.update);
     const raf = (time: number) => lenis.raf(time * 1000);
     gsap.ticker.add(raf);
@@ -93,6 +125,10 @@ export function MotionRoot() {
 
     return () => {
       document.removeEventListener("click", onAnchorClick);
+      timers.forEach(clearTimeout);
+      window.removeEventListener("wheel", stopAiming);
+      window.removeEventListener("touchstart", stopAiming);
+      window.removeEventListener("keydown", stopAiming);
       gsap.ticker.remove(raf);
       lenis.destroy();
     };
